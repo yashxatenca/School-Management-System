@@ -251,7 +251,7 @@ export default function CreateStudentPage() {
                     })}
                     type="text"
                     className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none"
-                    placeholder="Create password"
+                    placeholder="Create password and password be: 123"
                   />
                   {errors.password && <p className="text-xs text-red-500">{errors.password.message}</p>}
                 </div>

@@ -2,7 +2,7 @@ import express, { Application, NextFunction, Request, Response } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { errorhandler } from "./core/errors/errorHandler";
-import teacherroute from "./api/route/teacher.crud.";
+import teacherroute from "./api/route/teacher.crud";
 import teacherauthroute from './api/route/auth.teacher.route'
 import { connectDatabase } from "./config/Database";
 

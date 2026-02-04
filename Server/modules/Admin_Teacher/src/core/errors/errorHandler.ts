@@ -1,26 +1,32 @@
-import type {Request, Response, NextFunction } from 'express';
-import { ApiError
- } from './ApiErrors';
-import { stat } from 'node:fs';
+import { Request, Response, NextFunction } from "express";
+import { ApiError } from "./ApiErrors";
 
 export const errorhandler = (
-     err: Error | ApiError,
+  err: any,
   req: Request,
   res: Response,
   next: NextFunction
-) =>{
-    let statusCode = 500;
-    let message = "Internal Server Error";
-    if(err instanceof ApiError){
-        statusCode =err.statusCode;
-        message = err.message;
-    }
+) => {
+  console.error("🔥 ERROR MESSAGE:", err.message);
+  console.error("🔥 ERROR STACK:", err.stack);
 
-    res.status(statusCode).json({
+  if (err instanceof ApiError) {
+    return res.status(err.statusCode).json({
+      success: false,
+      message: err.message,
+    });
+  }
+
+  // Mongoose duplicate key
+  if (err.code === 11000) {
+    return res.status(409).json({
+      success: false,
+      message: "Duplicate value found",
+    });
+  }
+
+  return res.status(500).json({
     success: false,
-    message,
-    ...(process.env.NODE_ENV === "development" && {
-      stack: err.stack,
-    }),
+    message: "Internal Server Error",
   });
 };

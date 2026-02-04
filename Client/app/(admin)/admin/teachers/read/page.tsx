@@ -23,7 +23,7 @@ export default function TeachersPage() {
     staleTime: 5 * 60 * 1000, // cache 5 min
   });
 
-  const teachers: Teacher[] = teachersResponse?.teacher || [];
+  const teachers: Teacher[] = teachersResponse?.teachers || [];
 
   /* ---------------- SEARCH TEACHER ---------------- */
   const {

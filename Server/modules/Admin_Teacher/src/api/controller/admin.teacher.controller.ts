@@ -4,22 +4,26 @@ import { AdminTeacherService } from "../services/teacher.info.service";
 export class AdminTeacherController {
 
   static async Create(req: Request, res: Response) {
-    const teacher = await AdminTeacherService.CreateTeacher(
-      req.body,
-      req.user!.id
-    );
+  console.log("REQ.USER 👉", req.user);
+  console.log("REQ.BODY 👉", req.body);
 
-    res.status(201).json({
-      success: true,
-      message: "Teacher created successfully",
-      teacher,
-    });
-  }
+  const teacher = await AdminTeacherService.CreateTeacher(
+    req.body.data,
+    req.user!.id
+  );
+
+  res.status(201).json({
+    success: true,
+    message: "Teacher created successfully",
+    teacher,
+  });
+}
 
   static async Read(req: Request, res: Response) {
     const teachers = await AdminTeacherService.ReadAllTeacher(
       req.user!.id
     );
+    console.log(teachers)
 
     res.status(200).json({
       success: true,

@@ -21,14 +21,14 @@ router.get("/teacher", (_req, res) => {
 
 // CREATE teacher
 router.post(
-  "/",
+  "/create",
   authenticationmiddleware,
   catchAsync(AdminTeacherController.Create)
 );
 
 // READ all teachers (by principal)
 router.get(
-  "/",
+  "/read",
   authenticationmiddleware,
   catchAsync(AdminTeacherController.Read)
 );
