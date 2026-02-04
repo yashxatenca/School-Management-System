@@ -1,20 +1,57 @@
+import express from "express";
 import { AdminTeacherController } from "../controller/admin.teacher.controller";
 import { catchAsync } from "../../core/errors/catchAsync";
-import {authenticationmiddleware } from '../middlewares/authmid'
+import { authenticationmiddleware } from "../middlewares/authmid";
 
-import express, { Router } from 'express'
 const router = express.Router();
 
-router.get("/teacher", (req,res)=>{
-res.json({
-    message:"teacher  api is working in controller"
-})
+/* =====================================================
+   HEALTH CHECK
+===================================================== */
+router.get("/teacher", (_req, res) => {
+  res.json({
+    success: true,
+    message: "Teacher API is working",
+  });
 });
 
-router.post("/create", authenticationmiddleware,  catchAsync(AdminTeacherController.Create));
-router.get("/read", authenticationmiddleware, catchAsync(AdminTeacherController.Read));
-router.get('/:id', authenticationmiddleware, catchAsync(AdminTeacherController.ReadById))
-router.get("/readbystaffid", authenticationmiddleware, catchAsync(AdminTeacherController.ReadByStaff_Id))
-router.delete("/delete/:id" , authenticationmiddleware,catchAsync(AdminTeacherController.Delete));
-router.put("/update" , authenticationmiddleware,catchAsync(AdminTeacherController.Update));
+/* =====================================================
+   TEACHER ROUTES (PROTECTED)
+===================================================== */
+
+// CREATE teacher
+router.post(
+  "/",
+  authenticationmiddleware,
+  catchAsync(AdminTeacherController.Create)
+);
+
+// READ all teachers (by principal)
+router.get(
+  "/",
+  authenticationmiddleware,
+  catchAsync(AdminTeacherController.Read)
+);
+
+// READ teacher by staff_id
+router.get(
+  "/staff/:staff_id",
+  authenticationmiddleware,
+  catchAsync(AdminTeacherController.ReadByStaffId)
+);
+
+// UPDATE teacher by staff_id
+router.put(
+  "/staff/:staff_id",
+  authenticationmiddleware,
+  catchAsync(AdminTeacherController.Update)
+);
+
+// DELETE teacher by mongo _id
+router.delete(
+  "/:id",
+  authenticationmiddleware,
+  catchAsync(AdminTeacherController.Delete)
+);
+
 export default router;

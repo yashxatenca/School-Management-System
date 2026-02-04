@@ -1,53 +1,55 @@
-import { Teacher , CreateTeacherDTO} from "../interfaces/admin.interface";
-import { Teacher_Model
- } from "../models/admin.teacher.model";
+import { Teacher, CreateTeacherDTO } from "../interfaces/admin.interface";
+import { Teacher_Model } from "../models/admin.teacher.model";
 
 export class AdminTeacherRepo {
-    static async addteacher(data:CreateTeacherDTO){
-        return await Teacher_Model.create(data);
-    }
 
-    static async deleteteacher(id:string){
-        return await Teacher_Model.findByIdAndDelete(id);
-    }
-    
-static async updateteacher(staff_id: string, data: Object) {
-  return await Teacher_Model.findOneAndUpdate(
-    { staff_id },
-    { $set: data },   // 🔥 IMPORTANT
-    { new: true }
-  );
-}
+  // CREATE
+  static async createTeacher(
+    data: CreateTeacherDTO
+  ): Promise<Teacher> {
+    return await Teacher_Model.create(data);
+  }
 
-    static async readteacher(principalId:string){
-        return await Teacher_Model.find({principalId:principalId});
-    }
+  // DELETE
+  static async deleteTeacherById(
+    id: string
+  ): Promise<Teacher | null> {
+    return await Teacher_Model.findByIdAndDelete(id);
+  }
 
- static async readteacherbystaff_id(staff_id: string) {
-    try {
-        const user = await Teacher_Model.findOne({ staff_id });
-        
+  // UPDATE
+  static async updateTeacherByStaffId(
+    staff_id: string,
+    data: Partial<Teacher>
+  ): Promise<Teacher | null> {
+    return await Teacher_Model.findOneAndUpdate(
+      { staff_id },
+      { $set: data },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+  }
 
-        // If user is found, return true. If null, return false.
-        return !!user; 
-    } catch (error) {
-        // Throw the error so the controller can handle the 500 status
-        throw new Error("Error querying teacher existence");
-    }
-}
-    static async  checkstaffbyemail(email:string){
-        return await Teacher_Model.findOne({email});
-    }
+  // READ ALL (BY PRINCIPAL)
+  static async getTeachersByPrincipal(
+    principalId: string
+  ): Promise<Teacher[]> {
+    return await Teacher_Model.find({ principalId });
+  }
 
+  // READ ONE
+  static async getTeacherByStaffId(
+    staff_id: string
+  ): Promise<Teacher | null> {
+    return await Teacher_Model.findOne({ staff_id });
+  }
 
-    static async checkstaff(staff_id:string){
-        return await Teacher_Model.findOne({staff_id})
-
-    }
-
-    static async readbyid(staff_id:string){
-        return await Teacher_Model.findOne({staff_id})
-
-    }
-
+  // EXISTS CHECK
+  static async existsByEmail(
+    email: string
+  ): Promise<boolean> {
+    return !!(await Teacher_Model.exists({ email }));
+  }
 }

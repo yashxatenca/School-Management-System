@@ -1,4 +1,4 @@
-import express, { Application, Request, Response } from "express";
+import express, { Application, NextFunction, Request, Response } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { errorhandler } from "./core/errors/errorHandler";
@@ -35,6 +35,9 @@ app.use("/api/admin/teacher",(req,res,next)=>{
 } , teacherroute);
 
 app.use("/api/teacher/auth",teacherauthroute )
-app.use(errorhandler);
+app.use((req:Request,res:Response,next:NextFunction)=>{
+  console.log("some error accoured")
+  next();
+}, errorhandler);
 
 export default app; // 👈 THIS LINE FIXES REDECLARE ISSUE

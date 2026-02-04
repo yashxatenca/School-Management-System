@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { ApiError } from "../../core/errors/ApiErrors";
 import { Token } from "../../core/utils/user.token";
-import Teacherauthenticationservice from "../services/admin.teacher.auth.service";
+import {Teacherauthenticationservice} from "../services/auth.teacher.service";
 
 export class Authteachercontroller {
  //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -16,7 +16,7 @@ export class Authteachercontroller {
 
 
       
-      const user = await Teacherauthenticationservice.checkPassword(email, password);
+      const user = await Teacherauthenticationservice.checkpasswordandreturnuser(email, password);
 
       if (!user) {
         throw new  ApiError(400, "Invalid email or password");
@@ -61,7 +61,7 @@ export class Authteachercontroller {
       throw new ApiError(402, "Not a valid user")
 
     }
-    const user =  await Teacherauthenticationservice.getUser(id);
+    const user =  await Teacherauthenticationservice.getuserbyid(id);
   
     if(user === null)
       res.status(403).json({
