@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 import { Request } from "express";
 import { Document } from "mongoose";
-export type Role = "admin" | "teacher" | "student"
+export type Role = "admin" | "teacher" 
 export interface Teacher extends Document {
   staff_id: string;
   role?:string;

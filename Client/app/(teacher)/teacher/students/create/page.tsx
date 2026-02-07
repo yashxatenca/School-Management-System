@@ -77,6 +77,8 @@ export default function CreateStudentPage() {
       sectionId: data.sectionSelect === "Other" ? data.customSection : data.sectionSelect,
     };
 
+    console.log(finalPayload)
+
     // 2. Send to API
     mutation.mutate(finalPayload);
   };
