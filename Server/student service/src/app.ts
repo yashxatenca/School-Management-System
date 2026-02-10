@@ -18,7 +18,6 @@ application.use('/api/student/info/', inforouter)
 
 
 application.get("/", (req,res)=>res.send("student service is running"));
-application.get("/kuldeep/:age", (req, res)=>res.json({name:"kuldeep", age:req.params.age}));
 
 
 // database and other configuration question 

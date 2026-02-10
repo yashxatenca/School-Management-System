@@ -6,28 +6,14 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { Loader2, Save, UserPlus, X } from "lucide-react";
 import { toast } from "react-toastify";
+import { StudentFormData } from "@/interface/Student";
 
 // --- CONFIGURATION ---
 const CLASSES = ["PG", "LKG", "UKG", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
 const SECTIONS = ["A", "B", "C", "D", "E"];
 
 // --- FORM DATA TYPE ---
-type StudentFormData = {
-  fullName: string;
-  email: string;
-  password: string;
-  
-  // Dropdown selections
-  classSelect: string; 
-  sectionSelect: string;
-  
-  // Manual inputs (only used if "Other" is selected)
-  customClass?: string;
-  customSection?: string;
 
-  rollNumber: string;
-  gender: "Male" | "Female" | "Other";
-};
 
 // --- MOCK API ---
 const createStudentApi = async (data: any) => {

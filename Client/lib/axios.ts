@@ -17,3 +17,13 @@ export const BackendTeacherApi = axios.create({
     "Content-Type": "application/json",
   },
 });
+// 
+export const BackendTeacherStudentApi = axios.create({
+  baseURL: "http://localhost:8003",
+  withCredentials: true,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+
