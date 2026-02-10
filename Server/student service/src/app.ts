@@ -2,6 +2,7 @@
 import express from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser';
+import { connectDatabase } from './config/Database';
 import inforouter from './api/route/student.info.route'
 
 const application = express();
@@ -17,4 +18,10 @@ application.use('/api/student/info/', inforouter)
 
 
 application.get("/", (req,res)=>res.send("student service is running"));
+application.get("/kuldeep/:age", (req, res)=>res.json({name:"kuldeep", age:req.params.age}));
+
+
+// database and other configuration question 
+
+connectDatabase();
 export default application;

@@ -61,22 +61,23 @@ const StudentSchema = new Schema<StudentDocument>(
   },
   { timestamps: true }
 );
-StudentSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
+// 1. Password Encryption Hook
+StudentSchema.pre("save", async function () {
+  // Use 'this.isModified' - no 'next' needed
+  if (!this.isModified("password")) return; 
 
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
-  next();
+  // Function ends, Mongoose continues automatically
 });
 
-StudentSchema.methods.comparePassword = async function (
-  candidate: string
-) {
+StudentSchema.methods.comparePassword = async function (candidate: string) {
   return bcrypt.compare(candidate, this.password);
 };
 
-StudentSchema.pre("save", async function (next) {
-  if (this.studentId) return next();
+// 2. Student ID Generation Hook
+StudentSchema.pre("save", async function () {
+  if (this.studentId) return;
 
   const counter = await GlobalIdModel.findOneAndUpdate(
     { key: "student" },
@@ -84,13 +85,13 @@ StudentSchema.pre("save", async function (next) {
     { new: true, upsert: true }
   );
 
-  if (counter.seq > 999999) {
+  if (counter && counter.seq > 999999) {
     throw new Error("6-digit Student ID limit exceeded");
   }
 
-  this.studentId = String(counter.seq).padStart(6, "0");
-  next();
+  this.studentId = String(counter?.seq).padStart(6, "0");
 });
+
 
 const StudentModel = mongoose.model<StudentDocument>(
   "Student",
