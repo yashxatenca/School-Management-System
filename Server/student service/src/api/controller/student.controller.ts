@@ -6,6 +6,7 @@ export class StudentController {
 
   static async create(req: Request, res: Response) {
     try {
+      
       const student = await StudentController.service.addStudent(req.body);
 
       res.status(201).json({
@@ -13,6 +14,7 @@ export class StudentController {
         studentId: student.studentId,
       });
     } catch (err: any) {
+      console.log(err)
       res.status(400).json({ error: err.message });
     }
   }
@@ -30,7 +32,7 @@ export class StudentController {
     try {
       const student =
         await StudentController.service.getStudentByStudentId(
-          req.params.studentId
+          req.params.student_id
         );
 
       res.json(student);
@@ -43,7 +45,7 @@ export class StudentController {
     try {
       const student =
         await StudentController.service.updateStudent(
-          req.params.studentId,
+          req.body.studentId,
           req.body
         );
 
@@ -52,14 +54,16 @@ export class StudentController {
         student,
       });
     } catch (err: any) {
+
       res.status(404).json({ error: err.message });
     }
   }
 
   static async delete(req: Request, res: Response) {
+  
     try {
       await StudentController.service.deleteStudent(
-        req.params.studentId
+        req.params.id
       );
 
       res.json({ message: "Student deleted successfully" });

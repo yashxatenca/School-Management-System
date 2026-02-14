@@ -56,10 +56,8 @@ const navItems: NavItem[] = [
     href: "/teacher/students", 
     icon: Users,
     subItems: [
-      { name: "All Students", href: "/teacher/students", icon: Users }, 
+      { name: "All Students", href: "/teacher/students/show", icon: Users }, 
       { name: "Add Student", href: "/teacher/students/create", icon: UserPlus }, 
-      { name: "Update Student", href: "/teacher/students/update", icon: UserCog }, 
-      { name: "Delete Student", href: "/teacher/students/delete", icon: Trash2 }, 
       { name: "Attendance", href: "/teacher/attendance", icon: ClipboardList },
       { name: "Student Remarks", href: "/teacher/students/remarks", icon: MessageSquare }, // New: Behavior logs
     ],

@@ -14,7 +14,7 @@ export interface StudentDocument extends Document {
   password: string;
   gender: "male" | "female" | "other";
   rollNumber: number;
-  classId: mongoose.Types.ObjectId;
-  sectionId: mongoose.Types.ObjectId;
+  classId: string;
+  sectionId: string;
   comparePassword(candidate: string): Promise<boolean>;
 }

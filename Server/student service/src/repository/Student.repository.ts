@@ -12,22 +12,25 @@ export class StudentRepository {
   }
 
   async findByStudentId(studentId: string): Promise<StudentDocument | null> {
-    return StudentModel.findOne({ studentId }).lean();
+    console.log(studentId)
+    return await StudentModel.findById(studentId);
+
   }
+
 
   async updateByStudentId(
     studentId: string,
     data: UpdateStudentDTO
   ): Promise<StudentDocument | null> {
-    return StudentModel.findOneAndUpdate(
-      { studentId },
+    return await StudentModel.findOneAndUpdate(
+      { _id:studentId },
       data,
       { new: true }
     );
   }
 
   async deleteByStudentId(studentId: string): Promise<boolean> {
-    const result = await StudentModel.findOneAndDelete({ studentId });
+    const result = await StudentModel.findOneAndDelete({_id: studentId });
     return !!result;
   }
 }

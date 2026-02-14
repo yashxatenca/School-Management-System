@@ -32,7 +32,6 @@ const StudentSchema = new Schema<StudentDocument>(
     password: {
       type: String,
       required: true,
-      minlength: 8,
       select: false,
     },
 
@@ -40,6 +39,7 @@ const StudentSchema = new Schema<StudentDocument>(
       type: String,
       enum: ["male", "female", "other"],
       required: true,
+       lowercase: true,
     },
 
     rollNumber: {
@@ -48,14 +48,13 @@ const StudentSchema = new Schema<StudentDocument>(
     },
 
     classId: {
-      type: Schema.Types.ObjectId,
-      ref: "Class",
+     type:String, 
       required: true,
     },
 
     sectionId: {
-      type: Schema.Types.ObjectId,
-      ref: "Section",
+      type: String,
+    
       required: true,
     },
   },

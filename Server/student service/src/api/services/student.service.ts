@@ -17,6 +17,7 @@ export class StudentService {
   }
 
   async getStudentByStudentId(studentId: string) {
+    console.log(studentId)
     const student = await this.repo.findByStudentId(studentId);
     if (!student) {
       throw new Error("Student not found");

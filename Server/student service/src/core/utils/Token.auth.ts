@@ -1,5 +1,5 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { ApiError } from "../errors/ApiErrors"; // Adjust path if needed
+import { AppError } from "../errors/AppError"; // Adjust path if needed
 import { Types } from "mongoose"; // Better to use Types.ObjectId if using Mongoose
 
 interface TokenDetails {
@@ -11,7 +11,7 @@ interface TokenDetails {
 export class Token {
   static createToken(data: TokenDetails): string {
     if (!process.env.JWT_SECRET) {
-      throw new ApiError(500, "JWT secret not configured");
+      throw new AppError("JWT secret not configured", 500);
     }
 
     return jwt.sign(
@@ -27,14 +27,14 @@ export class Token {
 
   static verifyToken(token: string): JwtPayload {
     if (!process.env.JWT_SECRET) {
-      throw new ApiError(500, "JWT secret not configured");
+      throw new AppError("JWT secret not configured", 500);
     }
 
     try {
       return jwt.verify(token, process.env.JWT_SECRET) as JwtPayload;
     } catch (error) {
       // Optional: You can log the specific error (expired vs invalid) here for debugging
-      throw new ApiError(401, "Invalid or expired token");
+      throw new AppError( "Invalid or expired token", 401);
     }
   }
 }

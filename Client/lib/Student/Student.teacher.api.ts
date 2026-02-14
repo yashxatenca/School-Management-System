@@ -21,6 +21,7 @@ export const getStudentById = async (studentId: string) => {
 
 // UPDATE: Update student info
 export const updateStudent = async (updateData: any) => {
+    console.log(updateData)
     const { data } = await BackendTeacherStudentApi.put("/api/student/info/update", updateData);
     return data;
 };

@@ -1,56 +1,64 @@
 "use client";
 
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { Loader2, Save, UserPlus, X } from "lucide-react";
 import { toast } from "react-toastify";
 import { StudentFormData } from "@/interface/Student";
 
+// 1. Import the real API function (Ensure this path matches where you saved the api file)
+// If your file is at src/api/student.api.ts, import from there.
+import { createStudent } from "@/lib/Student/Student.teacher.api"; 
+
 // --- CONFIGURATION ---
 const CLASSES = ["PG", "LKG", "UKG", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
 const SECTIONS = ["A", "B", "C", "D", "E"];
 
-// --- FORM DATA TYPE ---
 
-
-// --- MOCK API ---
-const createStudentApi = async (data: any) => {
-  // Logic to swap "Other" with actual custom values happens before this function is called
-  console.log("🚀 Sending to Backend:", data); 
-  return new Promise((resolve) => setTimeout(resolve, 1500));
-};
 
 export default function CreateStudentPage() {
   const router = useRouter();
+  const queryClient = useQueryClient(); // Useful to invalidate queries after creation
   
   const {
     register,
     handleSubmit,
-    watch, // Needed to see what user selected
+    watch,
     formState: { errors },
     reset
   } = useForm<StudentFormData>();
 
-  // Watch the dropdowns to conditionally show input fields
+  // Watch dropdowns for conditional rendering
   const selectedClass = watch("classSelect");
   const selectedSection = watch("sectionSelect");
 
+  // --- MUTATION (Real API) ---
   const mutation = useMutation({
-    mutationFn: createStudentApi, 
-    onSuccess: () => {
+    mutationFn: (data: any) => createStudent(data), // Calls the real API
+    onSuccess: (response) => {
+      // 1. Show success message
       toast.success("Student account created successfully!");
+      
+      // 2. Refresh the student list (if you have a query fetching students)
+      queryClient.invalidateQueries({ queryKey: ['students'] }); 
+
+      // 3. Reset form or redirect
       reset(); 
+      // router.push('/dashboard/students'); // Uncomment if you want to redirect after save
     },
-    onError: (error) => {
-      toast.error("Failed to create student.");
-      console.error(error);
+    onError: (error: any) => {
+      console.error("Creation Error:", error);
+      // Try to get the specific message from backend, fallback to generic
+      const errMsg = error?.response?.data?.message || "Failed to create student. Please try again.";
+      toast.error(errMsg);
     },
   });
 
   const onSubmit = (data: StudentFormData) => {
-    // 1. Prepare the final payload
+    // 1. Prepare the Payload
+    // Logic: Map the dropdown selection to the final field. If "Other", use the custom input.
     const finalPayload = {
       fullName: data.fullName,
       email: data.email,
@@ -58,14 +66,14 @@ export default function CreateStudentPage() {
       gender: data.gender,
       rollNumber: data.rollNumber,
       
-      // Logic: If "Other" is selected, use the custom field. Otherwise, use the dropdown.
+      // We send these as 'classId' and 'sectionId' (or whatever your backend expects)
       classId: data.classSelect === "Other" ? data.customClass : data.classSelect,
       sectionId: data.sectionSelect === "Other" ? data.customSection : data.sectionSelect,
     };
 
-    console.log(finalPayload)
+    console.log("🚀 Submitting Payload:", finalPayload);
 
-    // 2. Send to API
+    // 2. Trigger Mutation
     mutation.mutate(finalPayload);
   };
 
@@ -129,7 +137,7 @@ export default function CreateStudentPage() {
               </div>
             </div>
 
-            {/* 2. Academic Allocation (DYNAMIC) */}
+            {/* 2. Class Allocation */}
             <div>
               <h3 className="text-xs font-bold text-indigo-600 uppercase tracking-wider mb-4 border-b pb-2">
                 2. Class Allocation
@@ -153,7 +161,7 @@ export default function CreateStudentPage() {
                     {errors.classSelect && <p className="text-xs text-red-500">{errors.classSelect.message}</p>}
                   </div>
 
-                  {/* Condition: Show text input if "Other" is selected */}
+                  {/* Custom Class Input */}
                   {selectedClass === "Other" && (
                      <div className="animate-in fade-in slide-in-from-top-2 duration-300">
                        <input
@@ -183,12 +191,12 @@ export default function CreateStudentPage() {
                     {errors.sectionSelect && <p className="text-xs text-red-500">{errors.sectionSelect.message}</p>}
                   </div>
 
-                  {/* Condition: Show text input if "Other" is selected */}
+                  {/* Custom Section Input */}
                   {selectedSection === "Other" && (
                      <div className="animate-in fade-in slide-in-from-top-2 duration-300">
                        <input
                          {...register("customSection", { required: "Please type the section" })}
-                         placeholder="Type Section (e.g. F, Z, Top)"
+                         placeholder="Type Section (e.g. F, Z)"
                          className="w-full px-4 py-2 rounded-lg border-2 border-indigo-100 focus:border-indigo-500 focus:ring-0 outline-none bg-indigo-50/30 text-indigo-700 placeholder:text-indigo-300"
                        />
                        {errors.customSection && <p className="text-xs text-red-500 mt-1">{errors.customSection.message}</p>}
@@ -209,7 +217,7 @@ export default function CreateStudentPage() {
               </div>
             </div>
 
-            {/* 3. Credentials */}
+            {/* 3. Login Credentials */}
             <div>
               <h3 className="text-xs font-bold text-indigo-600 uppercase tracking-wider mb-4 border-b pb-2">
                 3. Login Credentials
@@ -239,7 +247,7 @@ export default function CreateStudentPage() {
                     })}
                     type="text"
                     className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none"
-                    placeholder="Create password and password be: 123"
+                    placeholder="Create password"
                   />
                   {errors.password && <p className="text-xs text-red-500">{errors.password.message}</p>}
                 </div>
