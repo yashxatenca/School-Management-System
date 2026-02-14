@@ -1,4 +1,4 @@
-FROM node: 20-apline
+FROM node:20-apline
 
 WORKDIR /src
 
@@ -13,7 +13,6 @@ COPY . .
 RUN npm run build 
 
 
-EXPOSE 8001 
-
+EXPOSE 8002 
 
 CMD ["npm", "start"]
