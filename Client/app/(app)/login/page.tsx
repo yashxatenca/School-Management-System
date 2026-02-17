@@ -2,11 +2,11 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { GoogleLogin } from "@react-oauth/google";
-import {api, BackendTeacherApi} from "@/lib/axios";
-
+import { api, BackendTeacherApi, BackendTeacherStudentApi } from "@/lib/axios";
 import { useDispatch } from "react-redux";
 import { setAdmin } from "@/app/redux/Slice/authSlice";
-import {setTeacher } from '@/app/redux/Slice/teacher.auth.slice'
+import { setTeacher } from "@/app/redux/Slice/teacher.auth.slice";
+import { setStudent, logoutStudent } from "@/app/redux/Slice/student.authslice";
 
 type Role = "student" | "teacher" | "principal";
 
@@ -17,49 +17,53 @@ export default function LoginPageClient() {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  // ================= EMAIL + PASSWORD LOGIN =================
-  const handleEmailLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const form = new FormData(e.currentTarget);
-    const email = form.get("email");
-    const password = form.get("password");
 
     try {
-      if(role === "teacher"){
-        const res = await BackendTeacherApi.post("/api/teacher/auth/login", {
-        email,
-        password,
-        role,
-      });
+      // ================= TEACHER LOGIN =================
+      if (role === "teacher") {
+        const email = form.get("email");
+        const password = form.get("password");
 
-      if(res.data.success){
-        dispatch(setTeacher(res.data.data));
-        router.push("/teacher/dashboard")
+        const res = await BackendTeacherApi.post(
+          "/api/teacher/auth/login",
+          { email, password }
+        );
+
+        if (res.data.success) {
+          dispatch(setTeacher(res.data.data));
+          router.push("/teacher/dashboard");
+        }
       }
 
-      
-      }
-     else{
-       const res = await api.post("/api/student/auth/login", {
-        email,
-        password,
-        role,
-      });
+      // ================= STUDENT LOGIN =================
+      else if (role === "student") {
+        const studentId = form.get("studentId");
+        const password = form.get("password");
 
-      console.log(res.data)
-     }
+        const res = await BackendTeacherStudentApi.post(
+          "/api/v1/student/auth/login",
+          { studentId, password }
+        );
+        if(res.data.success){
+          dispatch(setStudent(res.data.student));
+          router.push("/student/dashboard");
+
+
+        }
+      }
     } catch (error: any) {
       alert(error.response?.data?.message || "Login failed");
     }
   };
 
-  // ================= GOOGLE LOGIN (PRINCIPAL) =================
+  // ================= PRINCIPAL GOOGLE LOGIN =================
   const handleGoogleLogin = async (token: string) => {
     try {
-      const res = await api.post("/api/auth/admin/login", {
-        token,
-      });
+      const res = await api.post("/api/auth/admin/login", { token });
 
       if (res.data?.success) {
         dispatch(setAdmin(res.data.user));
@@ -86,14 +90,35 @@ export default function LoginPageClient() {
             />
           </div>
         ) : (
-          <form onSubmit={handleEmailLogin} className="space-y-4">
-            <input
-              name="email"
-              type="email"
-              placeholder="Email"
-              required
-              className="w-full border px-4 py-2 rounded focus:ring-2 focus:ring-indigo-500"
-            />
+          <form onSubmit={handleLogin} className="space-y-4">
+
+            {/* TEACHER INPUT */}
+            {role === "teacher" && (
+              <input
+                name="email"
+                type="email"
+                placeholder="Teacher Email"
+                required
+                className="w-full border px-4 py-2 rounded focus:ring-2 focus:ring-indigo-500"
+              />
+            )}
+
+            {/* STUDENT INPUT */}
+            {role === "student" && (
+              <input
+                name="studentId"
+                type="text"
+                placeholder="Enter 6 Digit Student ID"
+                required
+                maxLength={6}
+                pattern="\d{6}"
+                onInput={(e) =>
+                  (e.currentTarget.value = e.currentTarget.value.replace(/\D/g, ""))
+                }
+                className="w-full border px-4 py-2 rounded focus:ring-2 focus:ring-indigo-500"
+              />
+            )}
+
             <input
               name="password"
               type="password"
@@ -101,6 +126,7 @@ export default function LoginPageClient() {
               required
               className="w-full border px-4 py-2 rounded focus:ring-2 focus:ring-indigo-500"
             />
+
             <button className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700">
               Login
             </button>

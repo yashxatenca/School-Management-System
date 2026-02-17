@@ -4,6 +4,7 @@ import { Types } from "mongoose"; // Better to use Types.ObjectId if using Mongo
 
 interface TokenDetails {
   id: Types.ObjectId | string;
+  studentId: string;
   email: string;
   role ?: string ; // ✅ Made required so you don't forget to pass it
 }
@@ -18,6 +19,7 @@ export class Token {
       {
         id: data.id,
         email: data.email,
+        studentId: data.studentId,
         role: data.role, // ✅ Uses the dynamic role passed from Controller
       },
       process.env.JWT_SECRET,

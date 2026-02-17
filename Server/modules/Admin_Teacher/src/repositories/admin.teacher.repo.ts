@@ -1,55 +1,32 @@
 import { Teacher, CreateTeacherDTO } from "../interfaces/admin.interface";
 import { Teacher_Model } from "../models/admin.teacher.model";
-
 export class AdminTeacherRepo {
 
-  // CREATE
-  static async createTeacher(
-    data: CreateTeacherDTO
-  ): Promise<Teacher> {
-    return await Teacher_Model.create(data);
+  static async createTeacher(data: CreateTeacherDTO, principalId: string) {
+    return await Teacher_Model.create({ ...data, principalId });
   }
 
-  // DELETE
-  static async deleteTeacherById(
-    id: string
-  ): Promise<Teacher | null> {
+  static async getAllTeachers() {
+    return await Teacher_Model.find().lean();
+  }
+
+  static async getTeacherById(id: string) {
+    return await Teacher_Model.findById(id).lean();
+  }
+
+  static async updateTeacherById(id: string, data: Partial<Teacher>) {
+    return await Teacher_Model.findByIdAndUpdate(
+      id,
+      { $set: data },
+      { new: true, runValidators: true }
+    ).lean();
+  }
+
+  static async deleteTeacherById(id: string) {
     return await Teacher_Model.findByIdAndDelete(id);
   }
 
-  // UPDATE
-  static async updateTeacherByStaffId(
-    staff_id: string,
-    data: Partial<Teacher>
-  ): Promise<Teacher | null> {
-    return await Teacher_Model.findOneAndUpdate(
-      { staff_id },
-      { $set: data },
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
-  }
-
-  // READ ALL (BY PRINCIPAL)
-  static async getTeachersByPrincipal(
-    principalId: string
-  ): Promise<Teacher[]> {
-    return await Teacher_Model.find({ principalId });
-  }
-
-  // READ ONE
-  static async getTeacherByStaffId(
-    staff_id: string
-  ): Promise<Teacher | null> {
-    return await Teacher_Model.findOne({ staff_id });
-  }
-
-  // EXISTS CHECK
-  static async existsByEmail(
-    email: string
-  ): Promise<boolean> {
-    return !!(await Teacher_Model.exists({ email }));
+  static async findByEmail(email: string) {
+    return await Teacher_Model.findOne({ email }).lean();
   }
 }

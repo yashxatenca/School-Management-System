@@ -1,14 +1,14 @@
 import express from "express";
 import { AdminTeacherController } from "../controller/admin.teacher.controller";
 import { catchAsync } from "../../core/errors/catchAsync";
-import { authenticationmiddleware } from "../middlewares/authmid";
+import { adminmiddleware } from "../middlewares/admin.mid";
 
 const router = express.Router();
 
 /* =====================================================
    HEALTH CHECK
 ===================================================== */
-router.get("/teacher", (_req, res) => {
+router.get("/health", (_req, res) => {
   res.json({
     success: true,
     message: "Teacher API is working",
@@ -19,39 +19,9 @@ router.get("/teacher", (_req, res) => {
    TEACHER ROUTES (PROTECTED)
 ===================================================== */
 
-// CREATE teacher
-router.post(
-  "/create",
-  authenticationmiddleware,
-  catchAsync(AdminTeacherController.Create)
-);
-
-// READ all teachers (by principal)
-router.get(
-  "/read",
-  authenticationmiddleware,
-  catchAsync(AdminTeacherController.Read)
-);
-
-// READ teacher by staff_id
-router.get(
-  "/staff/:staff_id",
-  authenticationmiddleware,
-  catchAsync(AdminTeacherController.ReadByStaffId)
-);
-
-// UPDATE teacher by staff_id
-router.put(
-  "/staff/:staff_id",
-  authenticationmiddleware,
-  catchAsync(AdminTeacherController.Update)
-);
-
-// DELETE teacher by mongo _id
-router.delete(
-  "/:id",
-  authenticationmiddleware,
-  catchAsync(AdminTeacherController.Delete)
-);
-
+router.post("/create", adminmiddleware, catchAsync(AdminTeacherController.Create));
+router.get("/read", adminmiddleware, catchAsync(AdminTeacherController.Read));
+router.get("/:id",adminmiddleware,  catchAsync(AdminTeacherController.ReadById));
+router.put("/update/:id",adminmiddleware,  catchAsync(AdminTeacherController.Update));
+router.delete("/delete/:id",adminmiddleware,  catchAsync(AdminTeacherController.Delete));
 export default router;

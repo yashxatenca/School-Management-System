@@ -10,6 +10,7 @@ export const authenticationmiddleware = async (
 ) => {
   try {
     const token = req.cookies?.teachertoken;
+    
 
     if (!token) {
       throw new ApiError(401, 'Auth token is missing');

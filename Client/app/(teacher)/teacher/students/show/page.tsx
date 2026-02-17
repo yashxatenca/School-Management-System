@@ -118,7 +118,8 @@ export default function StudentListPage() {
                 <th className="px-6 py-4">Student Name</th>
                 <th className="px-6 py-4">Roll No</th>
                 <th className="px-6 py-4">Class / Section</th>
-                <th className="px-6 py-4">Contact</th>
+                <th className="px-6 py-4">Email</th>
+                <th className="px-6 py-4">Student Id</th>
                 <th className="px-6 py-4 text-right">Actions</th>
               </tr>
             </thead>
@@ -160,6 +161,12 @@ export default function StudentListPage() {
                     {/* Email */}
                     <td className="px-6 py-4 text-gray-500">
                       {student.email}
+                    </td>
+
+                     {/* Student Id
+                      */}
+                    <td className="px-6 py-4 text-gray-500">
+                      {student?.studentId || "N/A"}
                     </td>
 
                     {/* Actions */}

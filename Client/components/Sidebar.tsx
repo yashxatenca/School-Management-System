@@ -41,8 +41,6 @@ const navItems: NavItem[] = [
     icon: UserCog,
     subItems: [
       { name: "Create Teacher", href: "/admin/teachers/create", icon: Plus },
-      { name: "Manage Teachers", href: "/admin/teachers/manage", icon: Edit },
-      { name: "Delete Teacher", href: "/admin/teachers/delete", icon: Trash2 },
       { name: "Read Teacher", href:"/admin/teachers/read", icon:Eye }
     ],
   },

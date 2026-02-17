@@ -16,3 +16,16 @@ export type TeacherUser = {
   role:"teacher";
 }
 
+export type StudentUser = {
+  _id: string;
+  studentId: string;
+  fullName: string;
+  email: string;
+  gender: "male" | "female" | "other";
+  rollNumber: number;
+  classId: string;
+  sectionId: string;
+  role: "student";
+};
+
+
