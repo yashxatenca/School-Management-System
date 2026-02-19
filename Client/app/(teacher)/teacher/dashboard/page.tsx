@@ -1,5 +1,7 @@
 "use client";
 import React from "react";
+import { RootState } from "@/app/redux/store";
+import { useSelector } from "react-redux";
 import {
   Users,
   BookOpen,
@@ -7,6 +9,7 @@ import {
   School,
   CalendarDays,
 } from "lucide-react";
+import TeacherProfileCard from "../../(components)/TeacherProfileCard";
 
 const stats = [
   { title: "Total Students", value: "320", icon: Users,   color: "bg-blue-50 text-blue-700" },
@@ -16,12 +19,13 @@ const stats = [
 ];
 
 export default function TeacherDashboardPage() {
+  const { user } = useSelector((state: RootState) => state.teacherauthstate);
   return (
     <div className="space-y-8 pb-12">
       {/* Header */}
       <header className="space-y-1">
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900">
-          👋 Welcome back, Teacher
+          👋 Welcome back, {user?.name}
         </h1>
         <p className="text-gray-600 text-sm sm:text-base">
           Here's your teaching overview and today's snapshot
@@ -107,22 +111,7 @@ export default function TeacherDashboardPage() {
         {/* Right sidebar */}
         <div className="space-y-6 lg:space-y-7">
           {/* Profile */}
-          <section className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 text-center">
-            <div className="inline-block relative">
-              <img
-                src="/avatar.png"
-                alt="Teacher"
-                className="h-20 w-20 rounded-full object-cover ring-2 ring-indigo-100 ring-offset-2 mx-auto"
-              />
-            </div>
-            <h3 className="mt-4 text-lg font-semibold text-gray-900">
-              Teacher Name
-            </h3>
-            <p className="text-sm text-gray-600 mt-0.5">Mathematics Faculty</p>
-            <button className="mt-5 w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition shadow-sm">
-              View Full Profile
-            </button>
-          </section>
+          <TeacherProfileCard user={user}/>
 
           {/* Quick Actions */}
           <section className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">

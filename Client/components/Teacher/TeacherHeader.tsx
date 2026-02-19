@@ -37,7 +37,7 @@ export default function TeacherHeader({ setOpen }: Props) {
         </button>
 
         <h1 className="text-lg sm:text-xl font-semibold text-gray-900 tracking-tight">
-          Teacher Dashboard
+          {user?.name}
         </h1>
       </div>
 

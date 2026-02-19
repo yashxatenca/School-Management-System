@@ -23,3 +23,9 @@ export interface TeachersResponse {
 export interface SingleTeacherResponse {
   teacher: Teacher;
 }
+
+export interface TeacherProfile{
+  name?:string;
+  subject?:string,
+  image?:string;
+}
