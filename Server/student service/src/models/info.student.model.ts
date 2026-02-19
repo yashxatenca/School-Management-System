@@ -34,7 +34,10 @@ const StudentSchema = new Schema<StudentDocument>(
       required: true,
       select: false,
     },
-
+    role:{
+      type:String,
+      default:"student",
+    },
     gender: {
       type: String,
       enum: ["male", "female", "other"],

@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
-import { BackendTeacherApi } from "@/lib/axios";
+import { BackendTeacherApi } from "@/lib/api/axios";
 import { setTeacher, logoutTeacher } from "@/app/redux/Slice/teacher.auth.slice";
 import { useEffect } from "react";
 

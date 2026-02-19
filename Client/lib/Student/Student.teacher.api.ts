@@ -1,5 +1,5 @@
 // src/api/student.api.ts
-import { BackendTeacherStudentApi } from '../axios';
+import { BackendTeacherStudentApi } from '../api/axios';
 
 // CREATE: Add a new student
 export const createStudent = async (studentData: any) => {

@@ -5,9 +5,9 @@ import { usePathname, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { useMutation } from "@tanstack/react-query";
 import { RootState } from "@/app/redux/store";
-import { logoutStudent } from "@/app/redux/Slice/student.auth.slice";
-import FullScreenLoader from "@/components/FullScreenLoader";
-import { LogoutStudent } from "@/lib/student_api/StudentApi";
+import { logoutStudent } from "@/app/redux/Slice/student.authslice";
+import FullScreenLoader from "@/components/ui/FullScreenLoader";
+import { logout } from "@/lib/Student/Student.auth.api";
 import { useState } from "react";
 import {
   LayoutDashboard,
@@ -76,7 +76,7 @@ export default function StudentSidebar({
   const [mobileOpenItem, setMobileOpenItem] = useState<string | null>(null);
 
   const logoutMutation = useMutation({
-    mutationFn: LogoutStudent,
+    mutationFn: logout,
     onSuccess: () => {
       dispatch(logoutStudent());
       router.replace("/");

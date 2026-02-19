@@ -2,11 +2,11 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { GoogleLogin } from "@react-oauth/google";
-import { api, BackendTeacherApi, BackendTeacherStudentApi } from "@/lib/axios";
+import { api, BackendTeacherApi, BackendTeacherStudentApi } from "@/lib/api/axios";
 import { useDispatch } from "react-redux";
 import { setAdmin } from "@/app/redux/Slice/authSlice";
 import { setTeacher } from "@/app/redux/Slice/teacher.auth.slice";
-import { setStudent, logoutStudent } from "@/app/redux/Slice/student.authslice";
+import { setStudent } from "@/app/redux/Slice/student.authslice";
 
 type Role = "student" | "teacher" | "principal";
 

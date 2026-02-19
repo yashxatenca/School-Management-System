@@ -29,5 +29,21 @@ export class AuthControllerStudent{
     }
     }
 
+    static async StudentDetails(req: Request, res: Response){
+        try {
+            let id = req.user?.id;
+            if(!id) throw new AppError("Student is not Authroized", 400);
+            const student = await AuthControllerStudent.service.StudentDetail(id);
 
+            if(!student) throw new AppError("Student not found", 404);
+            res.status(200).json({
+                message: "Student details retrieved successfully",
+                student,
+                success:true,
+              });
+        } catch (err: any) {
+            console.log(err)
+          res.status(400).json({ error: err.message });
+        }
+    }
 }

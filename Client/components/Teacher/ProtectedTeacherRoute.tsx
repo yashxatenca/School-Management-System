@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
-import FullScreenLoader from "@/components/FullScreenLoader";
+import FullScreenLoader from "@/components/ui/FullScreenLoader";
 
 export default function TeacherProtectedRoute({
   children,

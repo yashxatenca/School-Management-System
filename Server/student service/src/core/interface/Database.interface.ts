@@ -11,6 +11,7 @@ export interface StudentDocument extends Document {
   studentId: string; // 6-digit numeric string
   fullName: string;
   email: string;
+  role?: "student";
   password: string;
   gender: "male" | "female" | "other";
   rollNumber: number;

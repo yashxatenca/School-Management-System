@@ -14,3 +14,13 @@ export type StudentFormData = {
   rollNumber: string;
   gender: "Male" | "Female" | "Other";
 };
+
+export type StudentEditableData = {
+  dob: string;
+  bloodGroup: string;
+  studentPhone: string;
+  fatherName: string;
+  fatherPhone: string;
+  motherName: string;
+  address: string;
+};

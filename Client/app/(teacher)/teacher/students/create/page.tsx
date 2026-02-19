@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { Loader2, Save, UserPlus, X } from "lucide-react";
 import { toast } from "react-toastify";
-import { StudentFormData } from "@/interface/Student";
+import { StudentFormData } from "@/interface/student/Student";
 
 // 1. Import the real API function (Ensure this path matches where you saved the api file)
 // If your file is at src/api/student.api.ts, import from there.

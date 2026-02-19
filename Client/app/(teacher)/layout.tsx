@@ -1,34 +1,25 @@
 "use client";
-
 import { useState } from "react";
 import ReduxProvider from "@/app/redux/provider";
 import TeacherSidebar from "@/components/Teacher/TeacherSidebar";
+import TeacherHeader from "@/components/Teacher/TeacherHeader";
 import TeacherAuthBootstrap from "@/components/Teacher/TeacherAuthBootstrap";
-import TeacherProtectedRoute from "@/components/Teacher/ProtectedTeacherRoute"; // ✅ fixed
-import AdminHeader from "@/components/AdminHeader"; // generic header
+import TeacherProtectedRoute from "@/components/Teacher/ProtectedTeacherRoute";
 
 function TeacherLayoutInner({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <TeacherProtectedRoute>
-      <div className="min-h-screen bg-gray-50 flex flex-col">
-
-        {/* ===== Header ===== */}
-        <AdminHeader setOpen={setSidebarOpen} isOpen={sidebarOpen} />
+      <div className="min-h-screen bg-gray-50/40 flex flex-col">
+        <TeacherHeader setOpen={setSidebarOpen} />
 
         <div className="flex flex-1 overflow-hidden">
-
-          {/* ===== Sidebar ===== */}
           <TeacherSidebar open={sidebarOpen} setOpen={setSidebarOpen} />
 
-          {/* ===== Main Content ===== */}
-          <main className="flex-1 overflow-y-auto pt-16 lg:pt-0">
-            <div className="max-w-7xl mx-auto px-4 py-6">
-              {children}
-            </div>
+          <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-gradient-to-b from-gray-50/0 to-gray-100/30">
+            <div className="mx-auto w-full max-w-[1600px]">{children}</div>
           </main>
-
         </div>
       </div>
     </TeacherProtectedRoute>
@@ -38,10 +29,7 @@ function TeacherLayoutInner({ children }: { children: React.ReactNode }) {
 export default function TeacherLayout({ children }: { children: React.ReactNode }) {
   return (
     <ReduxProvider>
-      {/* Init teacher auth */}
       <TeacherAuthBootstrap />
-
-      {/* Layout */}
       <TeacherLayoutInner>{children}</TeacherLayoutInner>
     </ReduxProvider>
   );

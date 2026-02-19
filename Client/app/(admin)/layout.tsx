@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import AdminHeader from "@/components/AdminHeader";
-import Sidebar from "@/components/Sidebar";
+import AdminHeader from "@/components/Admin/AdminHeader";
+import Sidebar from "@/components/Admin/Sidebar";
 import ReduxProvider from "../redux/provider";
 
 function AdminLayoutInner({ children }: { children: React.ReactNode }) {

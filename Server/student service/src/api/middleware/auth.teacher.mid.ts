@@ -14,7 +14,7 @@ export const authteachermiddleware = async (
   next: NextFunction
 ) => {
   try {
-    const token = req.cookies?.teachertoken;
+    const token =  req.cookies?.student_token ? req.cookies.student_token : req.cookies?.teacher_token;
 
     if (!token) {
       throw new AppError('Auth token is missing', 401);

@@ -6,8 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 
 import { store } from "./redux/store";
-import GlobalLoader from "@/components/GlobalLoader";
-import AdminAuthBootstrap from "@/components/AdminAuthBootstrap";
+import GlobalLoader from "@/components/ui/GlobalLoader";
+import AdminAuthBootstrap from "@/components/Admin/AdminAuthBootstrap";
 
 export default function ClientProviders({
   children,

@@ -1,4 +1,4 @@
-import { BackendAuthStudentApi } from '../axios';
+import { BackendAuthStudentApi } from '../api/axios';
 
 export const login = async (email: string, password: string) => {
 

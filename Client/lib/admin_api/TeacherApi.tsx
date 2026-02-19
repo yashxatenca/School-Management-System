@@ -1,5 +1,5 @@
-import { BackendTeacherApi } from "../axios";
-import { Teacher, TeachersResponse, SingleTeacherResponse} from '../../interface/Teacher.interface'
+import { BackendTeacherApi } from "../api/axios";
+import { Teacher, TeachersResponse, SingleTeacherResponse} from '../../interface/teacher/Teacher.interface'
 
 
 /* ---------------- CREATE ---------------- */

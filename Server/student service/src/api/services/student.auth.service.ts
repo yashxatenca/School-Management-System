@@ -18,4 +18,11 @@ export class StudentAuthService{
         if(!isMatch) throw new AppError("Invalid Password", 401);
         return student;
     };
+
+    async StudentDetail(id: string){
+        if(!id) throw new AppError("unauthrozied", 500);
+
+        return await this.repo.studentby_id(id);
+        
+    }
 }

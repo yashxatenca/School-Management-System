@@ -2,14 +2,26 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
-import { BackendStudentApi } from "@/lib/axios";
-import { setStudent, logoutStudent } from "@/app/redux/Slice/student.auth.slice";
+import { BackendAuthStudentApi } from "@/lib/api/axios";
+import { setStudent, logoutStudent } from "@/app/redux/Slice/student.authslice";
 import { useEffect } from "react";
 
 const fetchStudent = async () => {
-  const res = await BackendStudentApi.get("/api/student/auth/user");
-  return res.data.user;
+  try {
+    const res = await BackendAuthStudentApi.get(
+      "/api/v1/student/auth/user"
+    );
+
+    if (res.data?.success) {
+      return res.data.student;
+    }
+
+    return null;
+  } catch (error) {
+    return null;
+  }
 };
+
 
 export default function StudentAuthBootstrap() {
   const dispatch = useDispatch();
@@ -20,12 +32,12 @@ export default function StudentAuthBootstrap() {
     retry: false,
     refetchOnWindowFocus: false,
   });
+useEffect(() => {
+  if (isSuccess && data) {
+    dispatch(setStudent(data)); // because now data = student
+  }
+}, [isSuccess, data, dispatch]);
 
-  useEffect(() => {
-    if (isSuccess && data) {
-      dispatch(setStudent(data));
-    }
-  }, [isSuccess, data, dispatch]);
 
   useEffect(() => {
     if (isError) {

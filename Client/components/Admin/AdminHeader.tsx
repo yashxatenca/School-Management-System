@@ -46,6 +46,7 @@ export default function AdminHeader({ setOpen, isOpen }: AdminHeaderProps) {
         flex-1 text-center lg:text-left
         text-xl font-semibold tracking-tight text-gray-900
       ">
+        
        {user.name}
       </h1>
 

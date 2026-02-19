@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useMutation } from "@tanstack/react-query";
 import { RootState } from "@/app/redux/store";
 import { logoutAdmin } from "@/app/redux/Slice/authSlice";
-import FullScreenLoader from "./FullScreenLoader";
+import FullScreenLoader from "../ui/FullScreenLoader";
 import { LogoutUser } from "@/lib/admin_api/User.Api";
 import { useState } from "react";
 import {

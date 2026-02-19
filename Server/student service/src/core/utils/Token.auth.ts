@@ -1,10 +1,10 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { AppError } from "../errors/AppError"; // Adjust path if needed
 import { Types } from "mongoose"; // Better to use Types.ObjectId if using Mongoose
-
+import { JwtUser} from '../interface/interface.app'
 interface TokenDetails {
   id: Types.ObjectId | string;
-  studentId: string;
+  studentId?: string;
   email: string;
   role ?: string ; // ✅ Made required so you don't forget to pass it
 }
@@ -33,7 +33,7 @@ export class Token {
     }
 
     try {
-      return jwt.verify(token, process.env.JWT_SECRET) as JwtPayload;
+     return jwt.verify(token, process.env.JWT_SECRET!) as JwtUser;
     } catch (error) {
       // Optional: You can log the specific error (expired vs invalid) here for debugging
       throw new AppError( "Invalid or expired token", 401);

@@ -12,7 +12,6 @@ export class StudentRepository {
   }
 
   async findByStudentId(studentId: string): Promise<StudentDocument | null> {
-    console.log(studentId)
     return await StudentModel.findById(studentId);
 
   }

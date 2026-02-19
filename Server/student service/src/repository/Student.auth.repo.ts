@@ -22,5 +22,11 @@ export class StudentAuthRepository{
     
     }
 
+    async studentby_id(id:string){
+        const user = await StudentModel.findById({_id:id});
+        return user;
+
+    }
+
 
 }

@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
-import FullScreenLoader from "@/components/FullScreenLoader";
+import FullScreenLoader from "@/components/ui/FullScreenLoader";
 
 export default function ProtectedStudentRoute({
   children,
@@ -14,25 +14,41 @@ export default function ProtectedStudentRoute({
   const router = useRouter();
 
   const { isAuthenticated, user, authChecked } = useSelector(
-    (state: RootState) => state.studentauthstate   // 👈 student slice
+    (state: RootState) => state.studentauthstate
   );
 
   useEffect(() => {
+    // 🚫 Don't run anything until auth check completes
     if (!authChecked) return;
 
+    // 🔐 Not logged in → go to login
     if (!isAuthenticated) {
       router.replace("/student/login");
       return;
     }
 
-    if (user?.role !== "student") {
+    // 🚫 Logged in but wrong role
+    if (user?.role && user.role !== "student") {
       router.replace("/unauthorized");
+      return;
     }
   }, [authChecked, isAuthenticated, user?.role, router]);
 
-  if (!authChecked) return <FullScreenLoader />;
+  // ⏳ While checking auth → show loader
+  if (!authChecked) {
+    return <FullScreenLoader />;
+  }
 
-  if (!isAuthenticated || user?.role !== "student") return null;
+  // 🚫 After check, not authenticated
+  if (!isAuthenticated) {
+    return null;
+  }
 
+  // 🚫 Wrong role
+  if (user?.role && user.role !== "student") {
+    return null;
+  }
+
+  // ✅ All good
   return <>{children}</>;
 }

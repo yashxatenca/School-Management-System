@@ -1,5 +1,4 @@
 "use client";
-
 import React from "react";
 import {
   Users,
@@ -10,195 +9,165 @@ import {
 } from "lucide-react";
 
 const stats = [
-  {
-    title: "Total Students",
-    value: "320",
-    icon: Users,
-    color: "bg-blue-100 text-blue-600",
-  },
-  {
-    title: "Classes",
-    value: "8",
-    icon: BookOpen,
-    color: "bg-green-100 text-green-600",
-  },
-  {
-    title: "Sections",
-    value: "16",
-    icon: School,
-    color: "bg-purple-100 text-purple-600",
-  },
-  {
-    title: "Today's Attendance",
-    value: "85%",
-    icon: ClipboardList,
-    color: "bg-orange-100 text-orange-600",
-  },
+  { title: "Total Students", value: "320", icon: Users,   color: "bg-blue-50 text-blue-700" },
+  { title: "Classes",        value: "8",   icon: BookOpen, color: "bg-emerald-50 text-emerald-700" },
+  { title: "Sections",       value: "16",  icon: School,   color: "bg-violet-50 text-violet-700" },
+  { title: "Today's Attendance", value: "85%", icon: ClipboardList, color: "bg-amber-50 text-amber-700" },
 ];
 
 export default function TeacherDashboardPage() {
   return (
-    <div className="space-y-8">
-
-      {/* ===== Header ===== */}
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">
+    <div className="space-y-8 pb-12">
+      {/* Header */}
+      <header className="space-y-1">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900">
           👋 Welcome back, Teacher
         </h1>
-        <p className="text-gray-500 mt-1">
-          Here’s your teaching overview and daily activity
+        <p className="text-gray-600 text-sm sm:text-base">
+          Here's your teaching overview and today's snapshot
         </p>
-      </div>
+      </header>
 
-      {/* ===== Stats Cards ===== */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
         {stats.map((item) => (
           <div
             key={item.title}
-            className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 hover:shadow-md transition"
+            className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow transition-shadow duration-200 p-5 sm:p-6"
           >
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-4">
               <div>
-                <p className="text-sm text-gray-500">{item.title}</p>
-                <p className="text-3xl font-bold text-gray-900 mt-1">
+                <p className="text-sm text-gray-500 font-medium">{item.title}</p>
+                <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-1.5">
                   {item.value}
                 </p>
               </div>
-
               <div
-                className={`h-12 w-12 rounded-lg flex items-center justify-center ${item.color}`}
+                className={`h-12 w-12 sm:h-14 sm:w-14 rounded-xl flex items-center justify-center ${item.color} shrink-0`}
               >
-                <item.icon className="h-6 w-6" />
+                <item.icon className="h-6 w-6 sm:h-7 sm:w-7" />
               </div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* ===== Main Grid ===== */}
+      {/* Main content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-        {/* Left Section */}
+        {/* Left – bigger area */}
         <div className="lg:col-span-2 space-y-6">
-
-          {/* Classes Overview */}
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+          {/* My Classes */}
+          <section className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 sm:p-6">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-5 flex items-center gap-2">
               📚 My Classes
             </h2>
-
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {["Class 6-A", "Class 7-B", "Class 8-A", "Class 9-C"].map(
-                (cls) => (
-                  <div
-                    key={cls}
-                    className="border rounded-lg p-4 hover:bg-gray-50 transition"
-                  >
-                    <p className="font-medium text-gray-900">{cls}</p>
-                    <p className="text-sm text-gray-500">
-                      Students: 40 | Subject: Maths
-                    </p>
-                  </div>
-                )
-              )}
+              {["Class 6-A", "Class 7-B", "Class 8-A", "Class 9-C"].map((cls) => (
+                <div
+                  key={cls}
+                  className="border border-gray-200 rounded-lg p-4 hover:border-indigo-200 hover:bg-indigo-50/40 transition-colors"
+                >
+                  <p className="font-medium text-gray-900">{cls}</p>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Students: 40 • Subject: Mathematics
+                  </p>
+                </div>
+              ))}
             </div>
-          </div>
+          </section>
 
-          {/* Attendance Panel */}
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+          {/* Today's Attendance */}
+          <section className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 sm:p-6">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-5 flex items-center gap-2">
               📝 Today's Attendance
             </h2>
-
-            <div className="space-y-3">
+            <div className="space-y-4">
               {[
                 { cls: "Class 6-A", percent: "90%" },
                 { cls: "Class 7-B", percent: "82%" },
                 { cls: "Class 8-A", percent: "88%" },
               ].map((item) => (
-                <div
-                  key={item.cls}
-                  className="flex items-center justify-between"
-                >
-                  <span className="text-gray-700">{item.cls}</span>
-                  <div className="w-2/3 bg-gray-200 rounded-full h-2">
+                <div key={item.cls} className="space-y-1.5">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="font-medium text-gray-800">{item.cls}</span>
+                    <span className="text-gray-600 font-medium">{item.percent}</span>
+                  </div>
+                  <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
                     <div
-                      className="bg-indigo-600 h-2 rounded-full"
+                      className="h-full bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-full transition-all"
                       style={{ width: item.percent }}
                     />
                   </div>
-                  <span className="text-sm text-gray-600 w-12 text-right">
-                    {item.percent}
-                  </span>
                 </div>
               ))}
             </div>
-          </div>
+          </section>
         </div>
 
-        {/* Right Section */}
-        <div className="space-y-6">
-
-          {/* Profile Card */}
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 text-center">
-            <img
-              src="/avatar.png"
-              className="h-20 w-20 rounded-full mx-auto ring-2 ring-indigo-500"
-              alt="Teacher"
-            />
-            <h3 className="mt-3 text-lg font-semibold text-gray-900">
+        {/* Right sidebar */}
+        <div className="space-y-6 lg:space-y-7">
+          {/* Profile */}
+          <section className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 text-center">
+            <div className="inline-block relative">
+              <img
+                src="/avatar.png"
+                alt="Teacher"
+                className="h-20 w-20 rounded-full object-cover ring-2 ring-indigo-100 ring-offset-2 mx-auto"
+              />
+            </div>
+            <h3 className="mt-4 text-lg font-semibold text-gray-900">
               Teacher Name
             </h3>
-            <p className="text-sm text-gray-500">Mathematics Teacher</p>
-
-            <button className="mt-4 w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
-              View Profile
+            <p className="text-sm text-gray-600 mt-0.5">Mathematics Faculty</p>
+            <button className="mt-5 w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition shadow-sm">
+              View Full Profile
             </button>
-          </div>
+          </section>
 
           {/* Quick Actions */}
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+          <section className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-5 flex items-center gap-2">
               ⚡ Quick Actions
             </h2>
-
-            <div className="space-y-3">
-              <button className="w-full px-4 py-2 border rounded-lg hover:bg-gray-50 transition text-left">
-                ➕ Mark Attendance
-              </button>
-              <button className="w-full px-4 py-2 border rounded-lg hover:bg-gray-50 transition text-left">
-                📢 Post Notice
-              </button>
-              <button className="w-full px-4 py-2 border rounded-lg hover:bg-gray-50 transition text-left">
-                📚 Add Homework
-              </button>
-              <button className="w-full px-4 py-2 border rounded-lg hover:bg-gray-50 transition text-left">
-                🧾 Upload Marks
-              </button>
+            <div className="grid grid-cols-1 gap-3">
+              {[
+                { label: "Mark Attendance", emoji: "➕" },
+                { label: "Post Notice",      emoji: "📢" },
+                { label: "Add Homework",     emoji: "📚" },
+                { label: "Upload Marks",     emoji: "🧾" },
+              ].map((action) => (
+                <button
+                  key={action.label}
+                  className="w-full text-left px-4 py-3 border border-gray-200 rounded-lg hover:border-indigo-200 hover:bg-indigo-50/50 transition font-medium text-gray-800 flex items-center gap-3"
+                >
+                  <span>{action.emoji}</span>
+                  {action.label}
+                </button>
+              ))}
             </div>
-          </div>
+          </section>
 
-          {/* Schedule */}
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
-              📅 Today’s Schedule
+          {/* Today's Schedule */}
+          <section className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-5 flex items-center gap-2">
+              📅 Today's Schedule
             </h2>
-
             <ul className="space-y-3 text-sm">
-              <li className="flex justify-between">
-                <span>Class 6-A</span>
-                <span className="text-gray-500">09:00 - 09:45</span>
-              </li>
-              <li className="flex justify-between">
-                <span>Class 7-B</span>
-                <span className="text-gray-500">10:00 - 10:45</span>
-              </li>
-              <li className="flex justify-between">
-                <span>Class 8-A</span>
-                <span className="text-gray-500">11:00 - 11:45</span>
-              </li>
+              {[
+                { cls: "Class 6-A", time: "09:00 – 09:45" },
+                { cls: "Class 7-B", time: "10:00 – 10:45" },
+                { cls: "Class 8-A", time: "11:00 – 11:45" },
+              ].map((item) => (
+                <li
+                  key={item.cls}
+                  className="flex justify-between items-center py-1 border-b border-gray-50 last:border-0"
+                >
+                  <span className="font-medium text-gray-800">{item.cls}</span>
+                  <span className="text-gray-500">{item.time}</span>
+                </li>
+              ))}
             </ul>
-          </div>
+          </section>
         </div>
       </div>
     </div>

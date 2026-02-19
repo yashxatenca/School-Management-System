@@ -1,5 +1,5 @@
 
-import ProtectedRoute from "@/components/ProtectedRoute";
+import ProtectedRoute from "@/components/Admin/ProtectedRoute";
 export default function PrincipalDashboard() {
   return (
     <ProtectedRoute role="admin">
