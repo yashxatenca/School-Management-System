@@ -7,7 +7,7 @@ import { setAdmin, logoutAdmin } from "@/app/redux/Slice/authSlice";
 import { useEffect } from "react";
 
 const fetchAdmin = async () => {
-  const res = await api.get("/api/auth/admin/adminuser");
+  const res = await api.get("/api/v1/auth/admin/adminuser");
   return res.data.user;
 };
 

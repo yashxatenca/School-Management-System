@@ -34,8 +34,7 @@ export default function TeachersPage() {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-8">
-
+    <div className="p-6 max-w-6xl mx-auto space-y-8">
       {/* Header */}
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-bold flex items-center gap-2">
@@ -53,24 +52,20 @@ export default function TeachersPage() {
 
       {/* Table */}
       <div className="bg-white border rounded-xl shadow-sm overflow-x-auto">
-        <table className="w-full min-w-[900px] text-left">
+        <table className="w-full min-w-[700px] text-left">
           <thead className="bg-gray-50 border-b text-gray-600 text-sm">
             <tr>
-              <th className="p-4">Staff ID</th>
+              <th className="p-4">Teacher ID</th>
               <th className="p-4">Name</th>
               <th className="p-4">Email</th>
-              <th className="p-4">Contact</th>
-              <th className="p-4">DOB</th>
-              <th className="p-4">Gender</th>
               <th className="p-4 text-center">Actions</th>
             </tr>
           </thead>
 
           <tbody className="divide-y divide-gray-100">
-
             {isLoading && (
               <tr>
-                <td colSpan={7} className="p-6 text-center">
+                <td colSpan={4} className="p-6 text-center">
                   <Loader2 className="animate-spin mx-auto text-gray-500" />
                 </td>
               </tr>
@@ -78,17 +73,16 @@ export default function TeachersPage() {
 
             {!isLoading && teachers.length === 0 && (
               <tr>
-                <td colSpan={7} className="p-6 text-center text-gray-400">
+                <td colSpan={4} className="p-6 text-center text-gray-400">
                   No teachers available
                 </td>
               </tr>
             )}
 
             {teachers.map((teacher) => (
-              <tr key={teacher._id} className="hover:bg-gray-50">
-
+              <tr key={teacher.teacher_id} className="hover:bg-gray-50">
                 <td className="p-4 font-mono">
-                  {teacher.staff_id}
+                  {teacher.teacher_id}
                 </td>
 
                 <td className="p-4 font-medium">
@@ -99,24 +93,8 @@ export default function TeachersPage() {
                   {teacher.email}
                 </td>
 
-                <td className="p-4 text-gray-500">
-                  {teacher.contact}
-                </td>
-
-                <td className="p-4 text-gray-500">
-                  {teacher.dateOfBirth
-                    ? new Date(teacher.dateOfBirth).toLocaleDateString("en-IN")
-                    : "-"}
-                </td>
-
-                <td className="p-4 capitalize text-gray-500">
-                  {teacher.gender}
-                </td>
-
                 <td className="p-4">
                   <div className="flex justify-center gap-2">
-
-                    {/* EDIT (_id only) */}
                     <Link
                       href={`/admin/teachers/edit/${teacher._id}`}
                       className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
@@ -124,20 +102,16 @@ export default function TeachersPage() {
                       <Edit size={18} />
                     </Link>
 
-                    {/* DELETE (_id only) */}
                     <button
                       onClick={() => handleDelete(teacher._id)}
                       className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
                     >
                       <Trash2 size={18} />
                     </button>
-
                   </div>
                 </td>
-
               </tr>
             ))}
-
           </tbody>
         </table>
       </div>

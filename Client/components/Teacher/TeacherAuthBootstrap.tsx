@@ -2,13 +2,13 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
-import { BackendTeacherApi } from "@/lib/api/axios";
+import { BackendTeacherApi, api} from "@/lib/api/axios";
 import { setTeacher, logoutTeacher } from "@/app/redux/Slice/teacher.auth.slice";
 import { useEffect } from "react";
 
 const fetchTeacher = async () => {
-  const res = await BackendTeacherApi.get("/api/teacher/auth/user");
-  return res.data.user;
+  const res = await api.get("/api/v1/auth/teacher/profile");
+  return res.data.teacher;
 };
 
 export default function TeacherAuthBootstrap() {

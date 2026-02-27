@@ -1,31 +1,12 @@
 export interface Teacher {
-  _id?: string; // MongoDB ID often useful
-  staff_id: string;
+  _id?: string;            // MongoDB ID
+  teacher_id: string;      // Backend field (IMPORTANT: staff_id → teacher_id)
   name: string;
   email: string;
-  contact: string;
-  dateOfBirth: Date | string; // Allow string for easier handling of API responses
-  gender?: "male" | "female" | "other" | string;
-  
-  password?: string; // optional because select:false
-  role?: string;
-  
-  // Optional timestamps
+  password?: string;       // optional because select:false in backend
+
+  role?: "teacher" | "admin" | string;
+
   createdAt?: string;
   updatedAt?: string;
-}
-
-// Response types for better type safety
-export interface TeachersResponse {
-  teachers: Teacher[];
-}
-
-export interface SingleTeacherResponse {
-  teacher: Teacher;
-}
-
-export interface TeacherProfile{
-  name?:string;
-  subject?:string,
-  image?:string;
 }

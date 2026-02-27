@@ -1,43 +1,71 @@
-import { BackendTeacherApi } from "../api/axios";
-import { Teacher, TeachersResponse, SingleTeacherResponse} from '../../interface/teacher/Teacher.interface'
-
+import { api } from "../api/axios";
+import { Teacher } from "@/interface/teacher/Teacher.interface";
 
 /* ---------------- CREATE ---------------- */
 
 export const createTeacher = async (payload: Teacher) => {
-  const { data }    = await BackendTeacherApi.post("/api/admin/teacher/create", { data: payload });
+  const { data } = await api.post(
+    "/api/v1/auth/teacher/create",
+    payload
+  );
   return data;
 };
 
-/* ---------------- READ ---------------- */
+/* ---------------- READ ALL ---------------- */
 
 export const fetchTeachers = async () => {
-  const { data } = await BackendTeacherApi.get("/api/admin/teacher/read");
+  const { data } = await api.get(
+    "/api/v1/auth/teacher/read"
+  );
   return data;
 };
+
+/* ---------------- READ BY ID ---------------- */
 
 export const fetchTeacherById = async (id: string) => {
-  const { data } = await BackendTeacherApi.get(`/api/admin/teacher/${id}`);
-  return data;
-};
-
-export const updateTeacher = async (id: string, payload: Partial<Teacher>) => {
-  const { data } = await BackendTeacherApi.put(
-    `/api/admin/teacher/update/${id}`,
-    { data: payload }
+  const { data } = await api.get(
+    `/api/v1/auth/teacher/read/${id}`
   );
   return data;
 };
+
+/* ---------------- UPDATE ---------------- */
+
+export const updateTeacher = async (
+  id: string,
+  payload: Partial<Teacher>
+) => {
+  const { data } = await api.put(
+    `/api/v1/auth/teacher/update/${id}`,
+    payload
+  );
+  return data;
+};
+
+/* ---------------- DELETE ---------------- */
 
 export const deleteTeacher = async (id: string) => {
-  const { data } = await BackendTeacherApi.delete(
-    `/api/admin/teacher/delete/${id}`
+  const { data } = await api.delete(
+    `/api/v1/auth/teacher/delete/${id}`
   );
   return data;
 };
 
-/* ---------------- AUTH ---------------- */
-export async function LogoutUser() {
-  const res = await BackendTeacherApi.post("/api/teacher/auth/logout");
-  return res.data;
-}
+/* ---------------- LOGIN ---------------- */
+
+export const loginTeacher = async (email: string | null, password: string | null) => {
+  const { data } = await api.post(
+    "/api/v1/auth/teacher/login",
+    { email, password }
+  );
+  return data;
+};
+
+/* ---------------- LOGOUT ---------------- */
+
+export const LogoutUser = async () => {
+  const { data } = await api.post(
+    "/api/v1/auth/teacher/logout"
+  );
+  return data;
+};

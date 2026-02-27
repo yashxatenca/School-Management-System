@@ -11,50 +11,36 @@ export default function EditTeacherPage() {
   const router = useRouter();
   const params = useParams();
   const queryClient = useQueryClient();
-  const id = params.id as string; // 🔥 This is Mongo _id
+  const id = params.id as string; // Mongo _id
 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    contact: "",
-    gender: "male",
-    dateOfBirth: "",
   });
 
-  /* ================= FETCH TEACHER (_id) ================= */
+  /* ================= FETCH TEACHER ================= */
   const { data, isLoading } = useQuery({
     queryKey: ["teacher", id],
     queryFn: () => fetchTeacherById(id),
     enabled: !!id,
   });
 
-  const teacher = data?.teacher;
+  // ✅ IMPORTANT FIX
+  const teacher = data?.data;
 
-  /* ================= AUTO FILL FORM ================= */
+  /* ================= AUTO FILL ================= */
   useEffect(() => {
     if (teacher) {
       setFormData({
         name: teacher.name || "",
         email: teacher.email || "",
-        contact: teacher.contact || "",
-        gender: teacher.gender || "male",
-        dateOfBirth: teacher.dateOfBirth
-          ? new Date(teacher.dateOfBirth).toISOString().split("T")[0]
-          : "",
       });
     }
   }, [teacher]);
 
-  /* ================= UPDATE MUTATION ================= */
+  /* ================= UPDATE ================= */
   const updateMutation = useMutation({
-    mutationFn: async () => {
-      return updateTeacher(id, {
-        ...formData,
-        dateOfBirth: formData.dateOfBirth
-          ? new Date(formData.dateOfBirth)
-          : undefined,
-      });
-    },
+    mutationFn: () => updateTeacher(id, formData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["teachers"] });
       queryClient.invalidateQueries({ queryKey: ["teacher", id] });
@@ -71,7 +57,7 @@ export default function EditTeacherPage() {
     updateMutation.mutate();
   };
 
-  /* ================= LOADING STATE ================= */
+  /* ================= LOADING ================= */
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -80,7 +66,6 @@ export default function EditTeacherPage() {
     );
   }
 
-  /* ================= NOT FOUND ================= */
   if (!teacher) {
     return (
       <div className="text-center py-10 text-gray-500">
@@ -106,13 +91,13 @@ export default function EditTeacherPage() {
       <div className="bg-white border rounded-xl p-6 shadow-sm">
         <form onSubmit={handleSubmit} className="space-y-5">
 
-          {/* Staff ID (Read Only) */}
+          {/* Teacher ID (Read Only) */}
           <div>
             <label className="block text-xs font-bold text-gray-500 uppercase mb-1">
-              Staff ID
+              Teacher ID
             </label>
             <input
-              value={teacher.staff_id}
+              value={teacher.teacher_id}
               disabled
               className="w-full bg-gray-100 border rounded-lg p-2.5 text-gray-500 font-mono"
             />
@@ -147,55 +132,6 @@ export default function EditTeacherPage() {
               className="w-full border rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none"
               required
             />
-          </div>
-
-          {/* Contact */}
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Contact Number
-            </label>
-            <input
-              value={formData.contact}
-              onChange={(e) =>
-                setFormData({ ...formData, contact: e.target.value })
-              }
-              className="w-full border rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none"
-              required
-            />
-          </div>
-
-          {/* Date of Birth */}
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Date of Birth
-            </label>
-            <input
-              type="date"
-              value={formData.dateOfBirth}
-              onChange={(e) =>
-                setFormData({ ...formData, dateOfBirth: e.target.value })
-              }
-              className="w-full border rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none"
-              required
-            />
-          </div>
-
-          {/* Gender */}
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Gender
-            </label>
-            <select
-              value={formData.gender}
-              onChange={(e) =>
-                setFormData({ ...formData, gender: e.target.value })
-              }
-              className="w-full border rounded-lg p-2.5 bg-white focus:ring-2 focus:ring-indigo-500 outline-none"
-            >
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="other">Other</option>
-            </select>
           </div>
 
           {/* Buttons */}

@@ -2,9 +2,10 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { GoogleLogin } from "@react-oauth/google";
-import { api, BackendTeacherApi, BackendTeacherStudentApi } from "@/lib/api/axios";
+import { loginTeacher } from "@/lib/admin_api/TeacherApi"
 import { useDispatch } from "react-redux";
 import { setAdmin } from "@/app/redux/Slice/authSlice";
+import { api } from "@/lib/api/axios";
 import { setTeacher } from "@/app/redux/Slice/teacher.auth.slice";
 import { setStudent } from "@/app/redux/Slice/student.authslice";
 
@@ -28,13 +29,10 @@ export default function LoginPageClient() {
         const email = form.get("email");
         const password = form.get("password");
 
-        const res = await BackendTeacherApi.post(
-          "/api/teacher/auth/login",
-          { email, password }
-        );
+       const res = await loginTeacher(email, password);
 
-        if (res.data.success) {
-          dispatch(setTeacher(res.data.data));
+
+        if (res.success) {
           router.push("/teacher/dashboard");
         }
       }
@@ -44,8 +42,8 @@ export default function LoginPageClient() {
         const studentId = form.get("studentId");
         const password = form.get("password");
 
-        const res = await BackendTeacherStudentApi.post(
-          "/api/v1/student/auth/login",
+        const res = await api.post(
+          "/api/v1/auth/student/login",
           { studentId, password }
         );
         if(res.data.success){
@@ -63,7 +61,7 @@ export default function LoginPageClient() {
   // ================= PRINCIPAL GOOGLE LOGIN =================
   const handleGoogleLogin = async (token: string) => {
     try {
-      const res = await api.post("/api/auth/admin/login", { token });
+      const res = await api.post("/api/v1/auth/admin/login", { token });
 
       if (res.data?.success) {
         dispatch(setAdmin(res.data.user));

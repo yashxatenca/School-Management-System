@@ -16,7 +16,6 @@ export default function TeacherProtectedRoute({
   const { isAuthenticated, user, authChecked } = useSelector(
     (state: RootState) => state.teacherauthstate   // 👈 teacher slice
   );
-  console.log(user)
   useEffect(() => {
     if (!authChecked) return;
 
