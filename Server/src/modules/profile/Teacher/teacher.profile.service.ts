@@ -1,0 +1,49 @@
+import repository from "./teacher.profile.repo";
+import { ITeacherProfile } from "./teacher.profile.interface";
+import { Types } from "mongoose";
+class TeacherProfileService {
+
+  async createProfile(
+    id: string,
+    body: Partial<ITeacherProfile>
+  ): Promise<ITeacherProfile> {
+
+    const existing = await repository.findByAuthId(
+      new Types.ObjectId(id)
+    );
+
+    if (existing) {
+      throw new Error("Profile already exists");
+    }
+
+    return await repository.create({
+      ...body,
+      authId: new Types.ObjectId(id),
+    });
+  }
+
+  async getProfile(id:string) {
+    console.log("Fetching profile for authId:", id);
+    const profile = await repository.findByAuthId(
+      new Types.ObjectId(id)
+    );
+
+    if (!profile) {
+      throw new Error("Profile not found");
+    }
+
+    return profile;
+  }
+
+  async updateProfile(
+    id:string,
+    body: Partial<ITeacherProfile>
+  ) {
+    return await repository.updateByAuthId(
+      new Types.ObjectId(id),
+      body
+    );
+  }
+}
+
+export default new TeacherProfileService();
