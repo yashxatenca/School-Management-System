@@ -1,22 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose';
-
-export interface IAdminProfile extends Document {
-  name: string;
-  email: string;
-  phone: string;
-  role: string;
-  designation: string;
-  gender: string;
-  dateOfBirth: Date;
-  joiningDate: Date;
-  qualification: string;
-  experienceYears: number;
-  emergencyContact: string;
-  bio: string;
-  profileStatus: 'ACTIVE' | 'SUSPENDED';
-}
-
-const AdminProfileSchema: Schema = new Schema(
+import { IAdminProfile } from './admin.profile.interface'
+const AdminProfileSchema: Schema = new Schema<IAdminProfile>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true, lowercase: true },
