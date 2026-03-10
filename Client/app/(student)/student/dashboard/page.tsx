@@ -1,19 +1,19 @@
 "use client";
 
-import { 
-  BookOpen, 
-  Calendar, 
-  Clock, 
-  FileText, 
-  GraduationCap, 
-  Megaphone, 
+import {
+  BookOpen,
+  Calendar,
+  Clock,
+  FileText,
+  GraduationCap,
+  Megaphone,
   Video,
   AlertCircle,
   CheckCircle2,
   ChevronRight
 } from "lucide-react";
 import Link from "next/link";
-import { usedispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from '@/app/redux/store'
 
 // --- 1. MOCK DATA (Ensure this is present!) ---
@@ -43,11 +43,11 @@ const notices = [
 
 export default function StudentDashboard() {
 
-    const user = useSelector((state:RootState) => state.studentauthstate.user);
-    console.log(user)
+  const user = useSelector((state: RootState) => state.studentauthstate.user);
+  console.log(user)
   return (
     <div className="p-4 md:p-6 max-w-7xl mx-auto space-y-6">
-      
+
       {/* --- Header --- */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -79,10 +79,10 @@ export default function StudentDashboard() {
 
       {/* --- Main Content Grid --- */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
+
         {/* LEFT COLUMN (Timeline & Tasks) */}
         <div className="lg:col-span-2 space-y-6">
-          
+
           {/* Today's Schedule */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div className="p-4 border-b flex items-center justify-between bg-gray-50/50">
@@ -143,7 +143,7 @@ export default function StudentDashboard() {
 
         {/* RIGHT COLUMN (Notice Board & Actions) */}
         <div className="space-y-6">
-          
+
           {/* NOTICE BOARD (Fixed Visibility) */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col h-full max-h-[400px]">
             <div className="p-4 border-b flex items-center justify-between bg-yellow-50">
@@ -153,7 +153,7 @@ export default function StudentDashboard() {
               </h2>
               <span className="text-xs font-bold bg-yellow-200 text-yellow-800 px-2 py-0.5 rounded-full">New</span>
             </div>
-            
+
             <div className="p-4 space-y-4 overflow-y-auto">
               {notices.map((notice) => (
                 <div key={notice.id} className="group relative pl-4 border-l-2 border-gray-200 hover:border-indigo-500 transition-all">
@@ -169,11 +169,11 @@ export default function StudentDashboard() {
                 </div>
               ))}
             </div>
-            
+
             <div className="p-3 border-t bg-gray-50 text-center">
-               <Link href="/student/notices" className="text-xs font-medium text-indigo-600 hover:underline flex items-center justify-center gap-1">
-                 View All Notices <ChevronRight className="h-3 w-3" />
-               </Link>
+              <Link href="/student/notices" className="text-xs font-medium text-indigo-600 hover:underline flex items-center justify-center gap-1">
+                View All Notices <ChevronRight className="h-3 w-3" />
+              </Link>
             </div>
           </div>
 
@@ -182,12 +182,12 @@ export default function StudentDashboard() {
             <h3 className="font-bold mb-4">Quick Links</h3>
             <div className="grid grid-cols-2 gap-3">
               <Link href="/student/results" className="bg-white/10 hover:bg-white/20 p-3 rounded-lg text-center transition backdrop-blur-sm">
-                 <GraduationCap className="h-5 w-5 mx-auto mb-1 text-indigo-200" />
-                 <span className="text-xs font-medium">Results</span>
+                <GraduationCap className="h-5 w-5 mx-auto mb-1 text-indigo-200" />
+                <span className="text-xs font-medium">Results</span>
               </Link>
               <Link href="/student/leave" className="bg-white/10 hover:bg-white/20 p-3 rounded-lg text-center transition backdrop-blur-sm">
-                 <AlertCircle className="h-5 w-5 mx-auto mb-1 text-indigo-200" />
-                 <span className="text-xs font-medium">Apply Leave</span>
+                <AlertCircle className="h-5 w-5 mx-auto mb-1 text-indigo-200" />
+                <span className="text-xs font-medium">Apply Leave</span>
               </Link>
             </div>
           </div>

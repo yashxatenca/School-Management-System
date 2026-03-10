@@ -96,14 +96,14 @@ export default function TeachersPage() {
                 <td className="p-4">
                   <div className="flex justify-center gap-2">
                     <Link
-                      href={`/admin/teachers/edit/${teacher._id}`}
+                      href={`/admin/teachers/edit/${teacher._id!}`}
                       className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
                     >
                       <Edit size={18} />
                     </Link>
 
                     <button
-                      onClick={() => handleDelete(teacher._id)}
+                      onClick={() => handleDelete(teacher._id!)}
                       className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
                     >
                       <Trash2 size={18} />

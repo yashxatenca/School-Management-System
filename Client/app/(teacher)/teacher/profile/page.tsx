@@ -21,16 +21,20 @@ export default function ProfilePage() {
     return <div className="p-10 text-center animate-pulse">Loading Profile...</div>;
   }
 
+  if (!authUser) {
+    return null;
+  }
+
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       <h1 className="text-2xl font-bold text-gray-800 mb-4">My Profile</h1>
-      
+
       {/* 1. Hamesha dikhega (Redux se Name/Email lega) */}
-      <TeacherProfileCard 
+      <TeacherProfileCard
         user={{
-          _id: authUser?._id,
-          name: authUser?.name,
-          email: authUser?.email,
+          _id: authUser._id,
+          name: authUser.name,
+          email: authUser.email,
           image: profile?.profileImage || "/teacherdefault.png"
         }}
       />
@@ -44,7 +48,7 @@ export default function ProfilePage() {
         {!profile ? (
           <div className="text-center py-10">
             <p className="text-gray-500 mb-4">You haven't added your professional details yet.</p>
-            <Link 
+            <Link
               href={`/teacher/profile/edit/${authUser?._id}`}
               className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
             >

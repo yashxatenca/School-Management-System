@@ -6,8 +6,8 @@ import adminRoutes from "./modules/auth/Admin/route/admin.auth.route";
 import teacherRoutes from "./modules/auth/Teacher/route/teacher.auth.routes";
 import studentRoutes from './modules/auth/Student/route/student.auth.route'
 import connectDB from "./config/Database";
-
 import teacherprofileRoute from './modules/profile/Teacher/teacher.profile.route'
+import adminprofileRoute from './modules/profile/Admin/admin.profile.route'
 
 const app: Application = express();
 
@@ -60,7 +60,11 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/api/v1/auth/admin", adminRoutes);
 app.use("/api/v1/auth/teacher", teacherRoutes);
 app.use("/api/v1/auth/student", studentRoutes);
-app.use("/api/v1/teacher/profile", teacherprofileRoute)
+app.use("/api/v1/teacher/profile", teacherprofileRoute);
+app.use("/api/v1/admin/profile", (req, res, next) => {
+  console.log("Admin profile route hit");
+  next();
+}, adminprofileRoute);
 
 /* ========================
    404 HANDLER

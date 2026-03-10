@@ -1,5 +1,5 @@
-export type AdminUser =  {
-    _id: string;
+export type AdminUser = {
+  _id: string;
   name: string;
   email: string;
   role: "admin";
@@ -10,10 +10,10 @@ export type AdminUser =  {
 }
 
 export type TeacherUser = {
-  _id:string;
-  name:string;
-  email:string;
-  role:"teacher";
+  _id: string;
+  name: string;
+  email: string;
+  role: "teacher";
 }
 
 export type StudentUser = {
@@ -26,6 +26,15 @@ export type StudentUser = {
   classId: string;
   sectionId: string;
   role: "student";
+
+  // Editable fields
+  dob?: string;
+  bloodGroup?: string;
+  studentPhone?: string;
+  fatherName?: string;
+  fatherPhone?: string;
+  motherName?: string;
+  address?: string;
 };
 
 

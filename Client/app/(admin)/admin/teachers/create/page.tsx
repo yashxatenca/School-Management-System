@@ -53,10 +53,10 @@ export default function CreateTeacherPage() {
     const data = Object.fromEntries(formData.entries());
 
     mutation.mutate({
-      name: data.name,
+      name: data.name as string,
       teacher_id: generatedId,
-      email: data.email,
-      password: data.password,
+      email: data.email as string,
+      password: data.password as string,
     });
   };
 

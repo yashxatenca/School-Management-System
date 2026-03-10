@@ -1,5 +1,6 @@
 import { api } from "../api/axios";
 import { Teacher } from "@/interface/teacher/Teacher.interface";
+export type { Teacher };
 
 /* ---------------- CREATE ---------------- */
 

@@ -3,10 +3,10 @@ import { AdminRepo } from "../repository/admin.auth.repo";
 import { ApiError } from "../../../../core/errors/ApiErrors";
 import { Token } from "../../../../core/utils/user.token";
 import { AdminRole } from "../interface/admin.interface";
-
+import profileservice from '../../../profile/Admin/admin.profile.service'
 export class AdminAuthService {
   static async createAndLoginUser(googletoken: string) {
-   
+
     // 1️⃣ Token check
     if (!googletoken) {
       throw new ApiError(401, "Firebase token required");
@@ -41,8 +41,15 @@ export class AdminAuthService {
         role: AdminRole.ADMIN,
         authProvider: "google",
       });
+
+
+
+
+
+
     }
 
+    await profileservice.createProfile(user._id.toString());
     // 6️⃣ Create backend JWT
     const jwtToken = Token.createToken({
       id: user._id.toString(),
@@ -58,25 +65,25 @@ export class AdminAuthService {
   }
 
 
-  static async GetUser(id:string){
-    if(!id){
+  static async GetUser(id: string) {
+    if (!id) {
       throw new ApiError(400, "id not found")
     }
 
     const user = await AdminRepo.findwithid(id);
-    if(!user){
+    if (!user) {
       throw new ApiError(400, "User not found");
     }
     return user;
   }
   // logout user 
 
-  static async LogoutUser(id:string){
-    if(!id){
+  static async LogoutUser(id: string) {
+    if (!id) {
       throw new ApiError(400, "Unauthrized")
     }
     const user = await AdminRepo.findwithid(id)
-    if(!user){
+    if (!user) {
       return false;
     }
     return true;

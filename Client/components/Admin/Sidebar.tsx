@@ -12,8 +12,8 @@ import { useState } from "react";
 import {
   LayoutDashboard,
   Users,
-  Eye,
   UserCog,
+  Eye,
   BookOpen,
   Settings,
   LogOut,
@@ -41,13 +41,14 @@ const navItems: NavItem[] = [
     icon: UserCog,
     subItems: [
       { name: "Create Teacher", href: "/admin/teachers/create", icon: Plus },
-      { name: "Read Teacher", href:"/admin/teachers/read", icon:Eye }
+      { name: "Read Teacher", href: "/admin/teachers/read", icon: Eye }
     ],
   },
   { name: "Students", href: "/admin/students", icon: Users },
   { name: "Classes", href: "/admin/classes", icon: BookOpen },
   { name: "Sections", href: "/admin/sections", icon: School },
   { name: "Settings", href: "/admin/settings", icon: Settings },
+  { name: "Profile", href: "/admin/profile", icon: UserCog }
 ];
 
 export default function Sidebar({ open, setOpen }: { open: boolean; setOpen: (open: boolean) => void }) {

@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { GoogleLogin } from "@react-oauth/google";
 import { loginTeacher } from "@/lib/admin_api/TeacherApi"
@@ -11,7 +12,7 @@ import { setStudent } from "@/app/redux/Slice/student.authslice";
 
 type Role = "student" | "teacher" | "principal";
 
-export default function LoginPageClient() {
+function LoginContent() {
   const searchParams = useSearchParams();
   const role = (searchParams.get("role") as Role) || "student";
 
@@ -26,10 +27,10 @@ export default function LoginPageClient() {
     try {
       // ================= TEACHER LOGIN =================
       if (role === "teacher") {
-        const email = form.get("email");
-        const password = form.get("password");
+        const email = form.get("email") as string | null;
+        const password = form.get("password") as string | null;
 
-       const res = await loginTeacher(email, password);
+        const res = await loginTeacher(email, password);
 
 
         if (res.success) {
@@ -46,7 +47,7 @@ export default function LoginPageClient() {
           "/api/v1/auth/student/login",
           { studentId, password }
         );
-        if(res.data.success){
+        if (res.data.success) {
           dispatch(setStudent(res.data.student));
           router.push("/student/dashboard");
 
@@ -132,5 +133,13 @@ export default function LoginPageClient() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-gray-100">Loading...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 }

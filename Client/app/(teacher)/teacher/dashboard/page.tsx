@@ -12,9 +12,9 @@ import {
 import TeacherProfileCard from "../../(components)/TeacherProfileCard";
 
 const stats = [
-  { title: "Total Students", value: "320", icon: Users,   color: "bg-blue-50 text-blue-700" },
-  { title: "Classes",        value: "8",   icon: BookOpen, color: "bg-emerald-50 text-emerald-700" },
-  { title: "Sections",       value: "16",  icon: School,   color: "bg-violet-50 text-violet-700" },
+  { title: "Total Students", value: "320", icon: Users, color: "bg-blue-50 text-blue-700" },
+  { title: "Classes", value: "8", icon: BookOpen, color: "bg-emerald-50 text-emerald-700" },
+  { title: "Sections", value: "16", icon: School, color: "bg-violet-50 text-violet-700" },
   { title: "Today's Attendance", value: "85%", icon: ClipboardList, color: "bg-amber-50 text-amber-700" },
 ];
 
@@ -111,7 +111,7 @@ export default function TeacherDashboardPage() {
         {/* Right sidebar */}
         <div className="space-y-6 lg:space-y-7">
           {/* Profile */}
-          <TeacherProfileCard user={user}/>
+          {user && <TeacherProfileCard user={user} />}
 
           {/* Quick Actions */}
           <section className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
@@ -121,9 +121,9 @@ export default function TeacherDashboardPage() {
             <div className="grid grid-cols-1 gap-3">
               {[
                 { label: "Mark Attendance", emoji: "➕" },
-                { label: "Post Notice",      emoji: "📢" },
-                { label: "Add Homework",     emoji: "📚" },
-                { label: "Upload Marks",     emoji: "🧾" },
+                { label: "Post Notice", emoji: "📢" },
+                { label: "Add Homework", emoji: "📚" },
+                { label: "Upload Marks", emoji: "🧾" },
               ].map((action) => (
                 <button
                   key={action.label}

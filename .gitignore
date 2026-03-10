@@ -35,6 +35,13 @@ coverage/
 # Kafka logs (if any)
 kafka-logs/
 
+*.js
+*.js.map
+*.txt
+*d.ts.map
+*.d.ts
+
+
 # Ignore by service
 Server/services/*/node_modules/
 Client/node_modules/
