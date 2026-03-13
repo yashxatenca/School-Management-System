@@ -1,8 +1,8 @@
-import { School } from "./admin.school.model";
+import { School } from "../admin.school.model";
 import { ISchoolProfile } from "../school.global.interface";
 import mongoose, { Types } from 'mongoose'
 
-class SchoolRepo {
+export class SchoolRepo {
     static async createSchool(id: string) {
         let user = await School.create({
             authId: new mongoose.Types.ObjectId(id)
@@ -34,5 +34,3 @@ class SchoolRepo {
 
     }
 }
-
-export default new SchoolRepo();

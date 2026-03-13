@@ -1,7 +1,7 @@
 // models/School.model.ts
 
 import mongoose, { Schema, Document } from 'mongoose';
-import { ISchoolProfile } from '../school.global.interface'; // Adjust path as needed
+import { ISchoolProfile } from "./school.global.interface"  // Adjust path as needed
 
 // Extend the Document interface with our ISchoolProfile
 export interface ISchoolDocument extends ISchoolProfile, Document { }

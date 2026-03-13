@@ -4,6 +4,7 @@ import { ApiError } from "../../../../core/errors/ApiErrors";
 import { Token } from "../../../../core/utils/user.token";
 import { AdminRole } from "../interface/admin.interface";
 import profileservice from '../../../profile/Admin/admin.profile.service'
+import { SchoolRepo } from "../../../school/Admin/admin.school.repo";
 export class AdminAuthService {
   static async createAndLoginUser(googletoken: string) {
 
@@ -41,15 +42,11 @@ export class AdminAuthService {
         role: AdminRole.ADMIN,
         authProvider: "google",
       });
-
-
-
-
-
-
+      await profileservice.createProfile(user._id.toString());
+      await SchoolRepo.createSchool(user._id.toString());
     }
 
-    await profileservice.createProfile(user._id.toString());
+
     // 6️⃣ Create backend JWT
     const jwtToken = Token.createToken({
       id: user._id.toString(),

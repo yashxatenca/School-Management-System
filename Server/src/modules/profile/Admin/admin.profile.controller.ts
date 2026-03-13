@@ -4,7 +4,7 @@ import service from "./admin.profile.service";
 class AdminProfileController {
 
     async create(req: Request, res: Response) {
-        console.log(req.body)
+
         try {
             const result = await service.createProfile(req.user?.id, req.body);
 

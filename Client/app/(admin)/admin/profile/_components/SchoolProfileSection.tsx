@@ -1,20 +1,30 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { School } from 'lucide-react';
-import { Section, Grid, Input, Textarea } from './ProfileUi'; // Adjust import path if needed
-import { createSchoolInfo, updateSchoolInfo, type SchoolInfo } from '@/lib/admin_api/AdminProfile.api';
+import React, { useState, useEffect } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { School } from "lucide-react";
+import { Section, Grid, Input, Textarea } from "./ProfileUi";
 
-interface SchoolProfileSectionProps {
-    schoolData?: Partial<SchoolInfo>;
-    profileExists: boolean;
-}
+import {
+    getSchoolInfo,
+    updateSchoolInfo,
+    type SchoolInfo,
+} from "@/lib/admin_api/AdminProfile.api";
 
-export default function SchoolProfileSection({ schoolData, profileExists }: SchoolProfileSectionProps) {
+export default function SchoolProfileSection() {
     const queryClient = useQueryClient();
+
     const [editSchool, setEditSchool] = useState(false);
     const [schoolForm, setSchoolForm] = useState<Partial<SchoolInfo>>({});
+
+    /* ================= FETCH SCHOOL INFO ================= */
+
+    const { data: schoolData, isLoading } = useQuery({
+        queryKey: ["schoolInfo"],
+        queryFn: getSchoolInfo,
+    });
+
+    /* ================= PREFILL FORM ================= */
 
     useEffect(() => {
         if (schoolData) {
@@ -22,19 +32,25 @@ export default function SchoolProfileSection({ schoolData, profileExists }: Scho
         }
     }, [schoolData]);
 
+    /* ================= UPDATE SCHOOL INFO ================= */
+
     const schoolMutation = useMutation({
-        mutationFn: (payload: Partial<SchoolInfo>) =>
-            profileExists
-                ? updateSchoolInfo(payload)
-                : createSchoolInfo(payload),
+        mutationFn: (payload: Partial<SchoolInfo>) => updateSchoolInfo(payload),
         onSuccess: (updated) => {
-            queryClient.setQueryData(["adminProfile"], (old: any) => ({
-                ...(old ?? {}),
-                school: updated
-            }));
+            queryClient.setQueryData(["schoolInfo"], updated);
             setEditSchool(false);
-        }
+        },
     });
+
+    /* ================= LOADING ================= */
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center p-10">
+                Loading School Information...
+            </div>
+        );
+    }
 
     return (
         <Section
@@ -48,60 +64,135 @@ export default function SchoolProfileSection({ schoolData, profileExists }: Scho
             <Grid>
                 <Input
                     label="School Name"
-                    value={schoolForm.schoolName}
+                    value={schoolForm.schoolName || ''}
                     disabled={!editSchool}
-                    onChange={(e: any) => setSchoolForm({ ...schoolForm, schoolName: e.target.value })}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setSchoolForm({ ...schoolForm, schoolName: e.target.value })
+                    }
                 />
+
                 <Input
-                    label="Board of Education"
-                    value={schoolForm.board}
+                    label="School Code"
+                    value={schoolForm.schoolCode || ''}
                     disabled={!editSchool}
-                    onChange={(e: any) => setSchoolForm({ ...schoolForm, board: e.target.value })}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setSchoolForm({ ...schoolForm, schoolCode: e.target.value })
+                    }
                 />
+
                 <Input
                     label="Affiliation Number"
-                    value={schoolForm.affiliationNumber}
+                    value={schoolForm.affiliationNumber || ''}
                     disabled={!editSchool}
-                    onChange={(e: any) => setSchoolForm({ ...schoolForm, affiliationNumber: e.target.value })}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setSchoolForm({
+                            ...schoolForm,
+                            affiliationNumber: e.target.value,
+                        })
+                    }
                 />
+
                 <Input
-                    label="Principal Name"
-                    value={schoolForm.principalName}
-                    disabled={!editSchool}
-                    onChange={(e: any) => setSchoolForm({ ...schoolForm, principalName: e.target.value })}
-                />
-                <Input
-                    type="number"
                     label="Established Year"
-                    value={schoolForm.establishedYear}
+                    value={schoolForm.establishedYear || ''}
                     disabled={!editSchool}
-                    onChange={(e: any) => setSchoolForm({ ...schoolForm, establishedYear: Number(e.target.value) })}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setSchoolForm({
+                            ...schoolForm,
+                            establishedYear: e.target.value,
+                        })
+                    }
                 />
+
                 <Input
-                    label="School Email"
-                    type="email"
-                    value={schoolForm.schoolEmail}
+                    label="Board"
+                    value={schoolForm.board || ''}
                     disabled={!editSchool}
-                    onChange={(e: any) => setSchoolForm({ ...schoolForm, schoolEmail: e.target.value })}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setSchoolForm({ ...schoolForm, board: e.target.value })
+                    }
                 />
+
+                <Input
+                    label="School Type"
+                    value={schoolForm.schoolType || ''}
+                    disabled={!editSchool}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setSchoolForm({ ...schoolForm, schoolType: e.target.value })
+                    }
+                />
+
+                <Input
+                    label="Website"
+                    value={schoolForm.website || ''}
+                    disabled={!editSchool}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setSchoolForm({ ...schoolForm, website: e.target.value })
+                    }
+                />
+
+                <Input
+                    label="Support Email"
+                    type="email"
+                    value={schoolForm.supportEmail || ''}
+                    disabled={!editSchool}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setSchoolForm({ ...schoolForm, supportEmail: e.target.value })
+                    }
+                />
+
                 <Input
                     label="School Phone"
-                    value={schoolForm.schoolPhone}
+                    value={schoolForm.schoolPhone || ''}
                     disabled={!editSchool}
-                    onChange={(e: any) => setSchoolForm({ ...schoolForm, schoolPhone: e.target.value })}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setSchoolForm({ ...schoolForm, schoolPhone: e.target.value })
+                    }
                 />
+
                 <Input
-                    label="Website URL"
-                    value={schoolForm.website}
+                    label="Total Students"
+                    type="number"
+                    value={schoolForm.totalStudents || ''}
                     disabled={!editSchool}
-                    onChange={(e: any) => setSchoolForm({ ...schoolForm, website: e.target.value })}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setSchoolForm({
+                            ...schoolForm,
+                            totalStudents: Number(e.target.value),
+                        })
+                    }
+                />
+
+                <Input
+                    label="Total Teachers"
+                    type="number"
+                    value={schoolForm.totalTeachers || ''}
+                    disabled={!editSchool}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setSchoolForm({
+                            ...schoolForm,
+                            totalTeachers: Number(e.target.value),
+                        })
+                    }
                 />
             </Grid>
+
+            <Textarea
+                label="School Motto"
+                value={schoolForm.motto || ''}
+                disabled={!editSchool}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                    setSchoolForm({ ...schoolForm, motto: e.target.value })
+                }
+            />
+
             <Textarea
                 label="Complete Address"
-                value={schoolForm.address}
+                value={schoolForm.address || ''}
                 disabled={!editSchool}
-                onChange={(e: any) => setSchoolForm({ ...schoolForm, address: e.target.value })}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                    setSchoolForm({ ...schoolForm, address: e.target.value })
+                }
             />
         </Section>
     );
