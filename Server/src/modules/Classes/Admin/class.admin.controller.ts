@@ -20,7 +20,8 @@ export class AdminClassController {
 
     static async getClassById(req: Request, res: Response, next: NextFunction) {
         try {
-            const classId = new Types.ObjectId(req.params.id);
+            const id = req.params.id as string;
+            const classId = new Types.ObjectId(id);
             const classData = await AdminClassService.findClassById(classId);
 
             if (!classData) {
@@ -38,7 +39,8 @@ export class AdminClassController {
 
     static async updateClass(req: Request, res: Response, next: NextFunction) {
         try {
-            const classId = new Types.ObjectId(req.params.id);
+            const id = req.params.id as string;
+            const classId = new Types.ObjectId(id);
             const payload = req.body;
 
             const updatedClass = await AdminClassService.updateClass(classId, payload);
@@ -59,7 +61,8 @@ export class AdminClassController {
 
     static async deleteClass(req: Request, res: Response, next: NextFunction) {
         try {
-            const classId = new Types.ObjectId(req.params.id);
+            const id = req.params.id as string;
+            const classId = new Types.ObjectId(id);
             const deletedClass = await AdminClassService.deleteClass(classId);
 
             res.status(200).json({

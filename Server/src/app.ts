@@ -2,13 +2,12 @@ import express, { Application, Request, Response } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { errorhandler } from "./core/errors/errorHandler";
-import adminRoutes from "./modules/auth/Admin/route/admin.auth.route";
+import { registeradminroute } from './route/Admin/admin.route'
 import teacherRoutes from "./modules/auth/Teacher/route/teacher.auth.routes";
 import studentRoutes from './modules/auth/Student/route/student.auth.route'
 import connectDB from "./config/Database";
 import teacherprofileRoute from './modules/profile/Teacher/teacher.profile.route'
-import adminprofileRoute from './modules/profile/Admin/admin.profile.route';
-import adminschoolroute from './modules/school/Admin/admin.school.route'
+
 
 const app: Application = express();
 
@@ -57,14 +56,10 @@ app.get("/", (req: Request, res: Response) => {
 /* ========================
    ROUTES
 ======================== */
-
-app.use("/api/v1/auth/admin", adminRoutes);
-app.use("/api/v1/auth/teacher", teacherRoutes);
-app.use("/api/v1/auth/student", studentRoutes);
+registeradminroute(app); // for admin
+app.use("/api/v1/auth/teacher", teacherRoutes);  // for teacher 
+app.use("/api/v1/auth/student", studentRoutes); // for student
 app.use("/api/v1/teacher/profile", teacherprofileRoute);
-app.use("/api/v1/admin/profile", adminprofileRoute);
-app.use("/api/v1/admin/school", adminschoolroute)
-
 /* ========================
    404 HANDLER
 ======================== */

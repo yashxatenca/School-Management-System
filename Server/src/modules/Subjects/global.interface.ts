@@ -4,7 +4,7 @@ export interface ISubject {
     _id?: Types.ObjectId;
 
     name: string;
-    code: string;
+    code?: string;
 
     schoolId: Types.ObjectId;
 
