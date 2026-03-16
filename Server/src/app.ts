@@ -7,6 +7,8 @@ import teacherRoutes from "./modules/auth/Teacher/route/teacher.auth.routes";
 import studentRoutes from './modules/auth/Student/route/student.auth.route'
 import connectDB from "./config/Database";
 import teacherprofileRoute from './modules/profile/Teacher/teacher.profile.route'
+import { registerteacherroute } from "./route/Teacher/teacher.route";
+import { registerstudentroute } from "./route/Student/student.route";
 
 
 const app: Application = express();
@@ -57,9 +59,8 @@ app.get("/", (req: Request, res: Response) => {
    ROUTES
 ======================== */
 registeradminroute(app); // for admin
-app.use("/api/v1/auth/teacher", teacherRoutes);  // for teacher 
-app.use("/api/v1/auth/student", studentRoutes); // for student
-app.use("/api/v1/teacher/profile", teacherprofileRoute);
+registerteacherroute(app) // for teacher
+registerstudentroute(app) // for student
 /* ========================
    404 HANDLER
 ======================== */
