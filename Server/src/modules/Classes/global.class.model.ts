@@ -49,6 +49,7 @@ const classSchema = new Schema<IClass>(
             min: 0
         },
 
+
         isActive: {
             type: Boolean,
             default: true

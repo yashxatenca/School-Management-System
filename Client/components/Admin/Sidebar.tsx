@@ -46,7 +46,7 @@ const navItems: NavItem[] = [
   },
   { name: "Students", href: "/admin/students", icon: Users },
   { name: "Classes", href: "/admin/classes", icon: BookOpen },
-  { name: "Sections", href: "/admin/sections", icon: School },
+  { name: "Subject", href: "/admin/subject", icon: BookOpen },
   { name: "Settings", href: "/admin/settings", icon: Settings },
   { name: "Profile", href: "/admin/profile", icon: UserCog }
 ];

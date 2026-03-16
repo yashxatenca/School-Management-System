@@ -6,7 +6,8 @@ export class AdminClassController {
     static async createClass(req: Request, res: Response, next: NextFunction) {
         try {
             const payload = req.body;
-            const newClass = await AdminClassService.createClass(payload);
+            const authid = req.user?.id;
+            const newClass = await AdminClassService.createClass(payload, authid);
 
             res.status(201).json({
                 success: true,

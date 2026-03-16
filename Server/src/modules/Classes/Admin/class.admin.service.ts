@@ -2,13 +2,22 @@ import { Types } from 'mongoose';
 import { AdminClassRepo } from './class.admin.repo';
 import { IClass } from '../global.class.interface';
 import ApiErrors = require('../../../core/errors/ApiErrors');
+import { School } from '../../school/admin.school.model'
 
 export class AdminClassService {
-    static async createClass(payload: Partial<IClass>) {
+    static async createClass(payload: Partial<IClass>, authId?: string) {
         if (!payload || Object.keys(payload).length === 0) {
             throw new ApiErrors.ApiError(400, "Payload cannot be empty");
         }
-        return await AdminClassRepo.createClass(payload);
+        console.log(payload, authId)
+
+        const schoolid = await School.findOne({ authId })
+        if (!schoolid) {
+            throw new ApiErrors.ApiError(404, "School not found");
+        }
+        payload.schoolId = schoolid._id;
+        const user = await AdminClassRepo.createClass(payload);
+        return user;
     }
 
     static async findClassById(classId: Types.ObjectId) {

@@ -3,10 +3,8 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import { errorhandler } from "./core/errors/errorHandler";
 import { registeradminroute } from './route/Admin/admin.route'
-import teacherRoutes from "./modules/auth/Teacher/route/teacher.auth.routes";
-import studentRoutes from './modules/auth/Student/route/student.auth.route'
 import connectDB from "./config/Database";
-import teacherprofileRoute from './modules/profile/Teacher/teacher.profile.route'
+
 import { registerteacherroute } from "./route/Teacher/teacher.route";
 import { registerstudentroute } from "./route/Student/student.route";
 

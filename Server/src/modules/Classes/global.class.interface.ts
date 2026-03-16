@@ -13,6 +13,7 @@ export interface IClass extends Document {
     academicYear: string;
 
     strength?: number;
+    principalId?: Types.ObjectId;
 
     isActive: boolean;
 

@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { ClassModel } from './class.model';
+import { ClassModel } from '../global.class.model';
 import { IClass } from '../global.class.interface';
 
 export class AdminClassRepo {
