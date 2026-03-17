@@ -9,12 +9,13 @@ export class AdminClassService {
         if (!payload || Object.keys(payload).length === 0) {
             throw new ApiErrors.ApiError(400, "Payload cannot be empty");
         }
-        console.log(payload, authId)
 
         const schoolid = await School.findOne({ authId })
         if (!schoolid) {
+            console.log("req id is not found")
             throw new ApiErrors.ApiError(404, "School not found");
         }
+
         payload.schoolId = schoolid._id;
         const user = await AdminClassRepo.createClass(payload);
         return user;
@@ -29,6 +30,7 @@ export class AdminClassService {
     }
 
     static async updateClass(classId: Types.ObjectId, payload: Partial<IClass>) {
+        console.log(classId, payload)
         const updatedClass = await AdminClassRepo.updateClass(classId, payload);
         if (!updatedClass) {
             throw new ApiErrors.ApiError(404, "Unable to update: Class not found");

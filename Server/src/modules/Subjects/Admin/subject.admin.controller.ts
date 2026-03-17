@@ -7,13 +7,18 @@ export class SubjectController {
     static async createSubject(req: Request, res: Response, next: NextFunction) {
         try {
             const payload = req.body as ISubject;
-            const subject = await SubjectService.createSubject(payload);
-            res.status(201).json({
-                success: true,
-                message: "Subject created successfully",
-                data: subject
-            });
+            const subject = await SubjectService.createSubject(payload, req.user?.id);
+            if (subject) {
+                return res.status(201).json({
+                    success: true,
+                    message: "Subject created successfully",
+                    data: subject
+                });
+
+            }
+
         } catch (error) {
+            console.log(error)
             next(error);
         }
     }
@@ -41,9 +46,11 @@ export class SubjectController {
 
     static async updateSubject(req: Request, res: Response, next: NextFunction) {
         try {
+
             const id = req.params.id as string;
             const subjectId = new Types.ObjectId(id);
             const payload = req.body as Partial<ISubject>;
+
             const subject = await SubjectService.updateSubject(subjectId, payload);
             if (!subject) {
                 return res.status(404).json({

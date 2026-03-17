@@ -4,7 +4,8 @@ import { Types } from 'mongoose';
 
 export class SubjectRepo {
     static async createSubject(payload: ISubject) {
-        return await SubjectModel.create(payload);
+        const user = await SubjectModel.create(payload);
+        return user;
     }
 
     static async findSubjectById(subjectId: Types.ObjectId) {
@@ -17,7 +18,7 @@ export class SubjectRepo {
     }
 
     static async updateSubject(subjectId: Types.ObjectId, payload: Partial<ISubject>) {
-        return await SubjectModel.findByIdAndUpdate(subjectId, payload, { returnDocument: "after", runValidators: true });
+        return await SubjectModel.findByIdAndUpdate(subjectId, { $set: payload }, { returnDocument: "after", runValidators: true });
     }
 
     static async deleteSubject(subjectId: Types.ObjectId) {

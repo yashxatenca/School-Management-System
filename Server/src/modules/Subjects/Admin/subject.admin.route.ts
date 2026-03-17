@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post('/', GlobalAuthMiddleware(['admin']), SubjectController.createSubject);
 router.get('/:id', GlobalAuthMiddleware(['admin']), SubjectController.findSubjectById);
-router.put('/:id', GlobalAuthMiddleware(['admin']), SubjectController.updateSubject);
+router.patch('/:id', GlobalAuthMiddleware(['admin']), SubjectController.updateSubject);
 router.delete('/:id', GlobalAuthMiddleware(['admin']), SubjectController.deleteSubject);
 router.get('/', GlobalAuthMiddleware(['admin']), SubjectController.getAllSubjects);
 
