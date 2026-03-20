@@ -46,7 +46,6 @@ export class AdminAssignClassController {
             const assignments = await this.service.getAllAssignments();
             res.status(200).json({ success: true, data: assignments });
         } catch (error: any) {
-            console.log(error)
             res.status(500).json({ success: false, message: 'Failed to fetch assignments.' });
         }
     };

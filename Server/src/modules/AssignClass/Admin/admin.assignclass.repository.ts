@@ -53,4 +53,8 @@ export class AdminAssignClassRepository {
     public async delete(id: string) {
         return await ClassAssignmentModel.findByIdAndDelete(id);
     }
+    // Add this method inside AdminAssignClassRepository
+    public async findActiveByTeacher(teacherId: Types.ObjectId) {
+        return await ClassAssignmentModel.findOne({ teacherId, isActive: true }).exec();
+    }
 }

@@ -37,7 +37,7 @@ export const updateAssignmentApi = async ({
 
 // DELETE
 export const deleteAssignmentApi = async (id: string) => {
-    const response = await api.delete(`/api/v1/admin/assign/class/delete/${id}`);
+    const response = await api.delete(`/api/v1/admin/assign/class/${id}`);
     return response.data;
 };
 
