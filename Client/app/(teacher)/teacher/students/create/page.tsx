@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { Loader2, Save, UserPlus, X } from "lucide-react";
 import { toast } from "react-toastify";
-import { createStudent } from "@/lib/Student/Student.teacher.api";
+import { createStudent } from "@/lib/Teacher/Student.teacher.api";
 
 interface StudentFormData {
   name: string;

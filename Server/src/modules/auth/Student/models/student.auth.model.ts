@@ -41,6 +41,14 @@ const StudentAuthSchema = new Schema<StudentAuthDocument>(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Admin",
     },
+    schoolId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "School"
+    },
+    classId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Class"
+    }
   },
   {
     timestamps: true,
@@ -83,7 +91,7 @@ StudentAuthSchema.pre("save", async function () {
   try {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
-   
+
   } catch (error: any) {
     throw error;
   }

@@ -8,6 +8,8 @@ export interface StudentAuthDocument extends Document {
 
   teacherId?: Types.ObjectId;
   principalId?: Types.ObjectId;
+  schoolId?: Types.ObjectId;
+  classId?: Types.ObjectId;
 
   comparePassword(candidatePassword: string): Promise<boolean>;
 }

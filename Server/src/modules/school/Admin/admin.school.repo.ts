@@ -33,4 +33,10 @@ export class SchoolRepo {
         )
 
     }
+
+    static async getschoolbyauthid(id: string) {
+        return await School.findOne({
+            authId: new mongoose.Types.ObjectId(id)
+        })
+    }
 }

@@ -10,6 +10,7 @@ import FullScreenLoader from "../ui/FullScreenLoader";
 import { LogoutUser } from "@/lib/admin_api/User.Api";
 import { useState } from "react";
 import {
+  User,
   LayoutDashboard,
   Users,
   UserCog,
@@ -44,9 +45,18 @@ const navItems: NavItem[] = [
     ],
   },
 
-  { name: "Students", href: "/admin/students", icon: Users },
+  {
+    name: "Students", href: "/admin/students", icon: Users,
+
+    subItems: [{
+      name: "Add Student", href: "/admin/students/add", icon: Plus
+    },
+    {
+      name: "View Students", href: "/admin/students/read", icon: Eye
+    }
+    ]
+  },
   { name: "Classes", href: "/admin/classes", icon: BookOpen },
-  { name: "Subjects", href: "/admin/subject", icon: BookOpen },
 
   // ✅ Assign Section
   {
@@ -58,6 +68,9 @@ const navItems: NavItem[] = [
       { name: "Assign Subject", href: "/admin/assign/subject", icon: BookOpen },
     ],
   },
+
+
+  { name: "Profile", href: "/admin/profile", icon: User },
 
   { name: "Settings", href: "/admin/settings", icon: Settings },
 ];

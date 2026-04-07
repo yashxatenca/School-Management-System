@@ -5,5 +5,6 @@ const router = express.Router();
 
 router.get("/", GlobalAuthMiddleware(["admin"]), AdminSchoolController.GetSchoolDetail);
 router.put("/", GlobalAuthMiddleware(["admin"]), AdminSchoolController.UpdateSchoolProfile);
+router.get("/byauthid", GlobalAuthMiddleware(["admin"]), AdminSchoolController.GetSchoolbyauthid);
 
 export default router;

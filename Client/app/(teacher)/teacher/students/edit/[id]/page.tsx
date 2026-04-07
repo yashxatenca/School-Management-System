@@ -11,7 +11,7 @@ import {
   getStudentById,
   updateStudent,
   deleteStudent,
-} from "@/lib/Student/Student.teacher.api";
+} from "@/lib/Teacher/Student.teacher.api";
 
 interface StudentFormData {
   name: string;

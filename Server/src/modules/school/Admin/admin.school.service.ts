@@ -24,4 +24,14 @@ export class AdminSchoolService {
         }
         return school ? true : false;
     }
+    static async GetSchoolbyauthid(id: string) {
+        if (!id) {
+            throw new ApiErrors("School ID is required", 400)
+        }
+        const school = await SchoolRepo.getschoolbyauthid(id);
+        if (!school) {
+            throw new ApiErrors("School not found", 404)
+        }
+        return school._id.toString();
+    }
 }

@@ -2,20 +2,20 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { 
-  Plus, 
-  Trash2, 
-  Edit, 
-  Loader2, 
+import {
+  Plus,
+  Trash2,
+  Edit,
+  Loader2,
   GraduationCap,
   AlertCircle,
   Search
 } from "lucide-react";
 import { toast } from "react-toastify";
-import { getStudents, deleteStudent } from "@/lib/Student/Student.teacher.api";
+import { getStudents, deleteStudent } from "@/lib/Teacher/Student.teacher.api";
 
 interface Student {
-  _id: string; 
+  _id: string;
   name: string;
   email: string;
   studentId?: string;
@@ -30,8 +30,8 @@ export default function StudentListPage() {
     queryFn: getStudents,
   });
 
-  const students: Student[] = Array.isArray(apiResponse) 
-    ? apiResponse 
+  const students: Student[] = Array.isArray(apiResponse)
+    ? apiResponse
     : (apiResponse?.students || apiResponse?.data || []);
 
   const deleteMutation = useMutation({
@@ -66,7 +66,7 @@ export default function StudentListPage() {
       <div className="flex h-[50vh] w-full items-center justify-center flex-col gap-4 text-red-500">
         <AlertCircle className="h-10 w-10" />
         <p>Failed to load students.</p>
-        <button 
+        <button
           onClick={() => queryClient.invalidateQueries({ queryKey: ["students"] })}
           className="text-sm underline hover:text-red-700"
         >
@@ -78,7 +78,7 @@ export default function StudentListPage() {
 
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-6">
-      
+
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -87,7 +87,7 @@ export default function StudentListPage() {
             Student Directory
           </h1>
           <p className="text-sm text-gray-500 mt-1">
-            Total Students: 
+            Total Students:
             <span className="font-bold text-indigo-600 ml-1">
               {students.length}
             </span>
@@ -95,7 +95,7 @@ export default function StudentListPage() {
         </div>
 
         <button
-          onClick={() => router.push("/teacher/students/create")} 
+          onClick={() => router.push("/teacher/students/create")}
           className="flex items-center gap-2 bg-indigo-600 text-white px-5 py-2.5 rounded-lg hover:bg-indigo-700 transition shadow-sm font-medium active:scale-95"
         >
           <Plus className="h-5 w-5" />
@@ -119,7 +119,7 @@ export default function StudentListPage() {
               {students.length > 0 ? (
                 students.map((student) => (
                   <tr key={student._id} className="hover:bg-gray-50 transition group">
-                    
+
                     {/* Name */}
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
@@ -145,14 +145,14 @@ export default function StudentListPage() {
                     {/* Actions */}
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
-                        <button 
+                        <button
                           onClick={() => router.push(`/teacher/students/edit/${student._id}`)}
                           className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition"
                         >
                           <Edit className="h-4 w-4" />
                         </button>
-                        
-                        <button 
+
+                        <button
                           onClick={() => handleDelete(student._id)}
                           disabled={deleteMutation.isPending}
                           className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition"

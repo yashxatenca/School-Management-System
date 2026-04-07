@@ -18,6 +18,7 @@ export const fetchTeachers = async () => {
   const { data } = await api.get(
     "/api/v1/auth/teacher/read"
   );
+  
   return data;
 };
 

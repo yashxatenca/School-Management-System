@@ -72,3 +72,9 @@ export const getSchoolInfo = async (): Promise<SchoolInfo> => {
     const { data } = await api.get("/api/v1/admin/school");
     return data.school;
 };
+export const getschoolbyauthid = async (): Promise<SchoolInfo> => {
+
+    const { data } = await api.get("/api/v1/admin/school/byauthid");
+
+    return data.school;
+};
