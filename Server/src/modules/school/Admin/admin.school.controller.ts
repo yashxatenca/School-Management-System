@@ -47,7 +47,6 @@ export class AdminSchoolController {
 
     static async GetSchoolbyauthid(req: Request, res: Response) {
         try {
-            console.log('req hitted')
             const id = req.user?.id as string;
             const school = await AdminSchoolService.GetSchoolbyauthid(id);
             res.status(200).json({

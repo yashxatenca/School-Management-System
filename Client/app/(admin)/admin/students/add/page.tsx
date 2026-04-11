@@ -45,8 +45,9 @@ export default function AddStudentPage() {
     const createMutation = useMutation({
         mutationFn: studentService.create,
         onSuccess: () => {
-            toast.success("Student added successfully!"); // <-- Updated to Toast
             setFormData({ name: "", email: "", password: "", teacherId: "", classId: "" });
+            toast.success("Student added successfully!");
+
             queryClient.invalidateQueries({ queryKey: ["students"] });
         },
         onError: (error: any) => {
@@ -97,7 +98,7 @@ export default function AddStudentPage() {
                         value={formData.name}
                         onChange={handleChange}
                         className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="Yashashvi Yadav"
+                        placeholder="Jack"
                     />
                 </div>
 

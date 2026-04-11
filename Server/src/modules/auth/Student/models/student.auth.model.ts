@@ -34,7 +34,7 @@ const StudentAuthSchema = new Schema<StudentAuthDocument>(
 
     teacherId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Teacher",
+      ref: "TeacherAuth",
     },
 
     principalId: {
