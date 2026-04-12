@@ -11,6 +11,7 @@ import { LogoutUser } from "@/lib/admin_api/User.Api";
 import { useState } from "react";
 import {
   User,
+  UserCheck,
   LayoutDashboard,
   Users,
   UserCog,
@@ -71,6 +72,17 @@ const navItems: NavItem[] = [
 
 
   { name: "Profile", href: "/admin/profile", icon: User },
+  {
+    name: "Attendance", href: "#", icon: UserCheck,
+
+    subItems: [{
+      name: "Mark Attendance", href: "/admin/attendance/add", icon: Plus
+    },
+    {
+      name: "View Attendance", href: "/admin/attendance/read", icon: Eye
+    }
+    ]
+  },
 
   { name: "Settings", href: "/admin/settings", icon: Settings },
 ];

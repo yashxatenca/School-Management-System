@@ -8,7 +8,7 @@ const getStudentByIdAPI = async (studentId: string) => {
     return res.data.data;
 };
 
-const getStudentsByClassAPI = async (classId: string) => {
+export const getStudentsByClassAPI = async (classId: string) => {
     if (!classId) return null;
     const res = await api.get(`api/v1/admin/student/class/${classId}`);
     return res.data.data;
