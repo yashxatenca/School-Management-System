@@ -3,102 +3,101 @@ import { Attendance } from "../attendance.model";
 import { StudentAuth } from "../../auth/Student/models/student.auth.model";
 import { ApiError } from "../../../core/errors/ApiErrors";
 
+const formatDate = (date: string | Date) => {
+    if (!date) throw new ApiError(400, "Date is required");
+    const d = new Date(date);
+    if (isNaN(d.getTime())) throw new ApiError(400, "Invalid date format");
+    return d.toISOString().split("T")[0];
+};
+
 export class AttendanceRepo {
 
-    // =========================================================
-    // 1. HELPER METHOD: Find Student by 6-digit ID
-    // =========================================================
-    static async #getstudent(studentId: string) {
-        if (!studentId) {
-            throw new ApiError(400, "Student ID is required");
-        }
+    static async #getStudent(studentId: string) {
+        if (!studentId) throw new ApiError(400, "Student ID is required");
 
-        // 6-digit custom ID se find karna (Make sure field name matches your DB)
-        const student = await StudentAuth.findOne({ studentId_custom: studentId });
+        const student = await StudentAuth.findOne({
+            studentId_custom: studentId
+        });
 
-        if (!student) {
-            throw new ApiError(404, "Student not found");
-        }
+        if (!student) throw new ApiError(404, "Student not found");
+
         return student;
     }
 
-    // =========================================================
-    // 2. GET: Single Student Attendance History (With Date/Range Filters)
-    // =========================================================
     static async getAttendanceByStudentIDRepo(
         studentId: string,
         startDate?: string,
         endDate?: string
     ) {
-        const student = await this.#getstudent(studentId);
+        const student = await this.#getStudent(studentId);
 
         let query: any = {
             "attendance.studentId": student._id
         };
 
-        // Apply Date Filters
         if (startDate && endDate) {
-            query.date = { $gte: startDate, $lte: endDate };
+            query.date = {
+                $gte: formatDate(startDate),
+                $lte: formatDate(endDate)
+            };
         } else if (startDate) {
-            query.date = startDate;
+            query.date = formatDate(startDate);
         }
 
         const history = await Attendance.find(query)
-            .populate({
-                path: "classId",
-                select: "className section"
-            })
-            .sort({ date: -1 });
+            .select("date classId attendance isLocked")
+            .populate({ path: "classId", select: "className section" })
+            .sort({ date: -1 })
+            .lean();
 
-        // Clean response for frontend (Flattening)
-        return history.map(doc => {
-            const studentEntry = doc.attendance.find(
+        return history.map((doc: any) => {
+            const entry = doc.attendance?.find(
                 (a: any) => a.studentId.toString() === student._id.toString()
             );
+
             return {
                 date: doc.date,
                 classInfo: doc.classId,
-                status: studentEntry?.status,
-                remarks: studentEntry?.remarks,
-                markedByModel: studentEntry?.markedByModel,
+                status: entry?.status || null,
+                remarks: entry?.remarks || "",
+                markedByModel: entry?.markedByModel || null,
                 isLocked: doc.isLocked
             };
         });
     }
 
-    // =========================================================
-    // 3. GET: Full Class Attendance (With Date/Range Filters)
-    // =========================================================
     static async getClassAttendanceRepo(
         classId: string,
         date?: string,
         startDate?: string,
         endDate?: string
     ) {
-        if (!classId) {
-            throw new ApiError(400, "Class ID is required");
-        }
+        if (!classId) throw new ApiError(400, "Class ID is required");
 
-        let query: any = { classId: new Types.ObjectId(classId) };
+        let query: any = {
+            classId: new Types.ObjectId(classId)
+        };
 
-        // Apply Date Filters
         if (startDate && endDate) {
-            query.date = { $gte: startDate, $lte: endDate };
+            query.date = {
+                $gte: formatDate(startDate),
+                $lte: formatDate(endDate)
+            };
         } else if (date) {
-            query.date = date;
+            query.date = formatDate(date);
         }
 
         return await Attendance.find(query)
             .populate({
                 path: "attendance.studentId",
-                select: "name studentId_custom rollNumber",
+                select: "name studentId_custom rollNumber"
             })
             .populate({
                 path: "lastUpdatedBy",
-                select: "name",
+                select: "name"
             })
             .sort({ date: -1 })
-            .lean(); // Faster query execution for large data
+            .lean();
     }
 
     // =========================================================
@@ -107,29 +106,38 @@ export class AttendanceRepo {
     static async adminMarkSingleStudentRepo(data: {
         classId: string,
         date: string,
-        studentId: string, // MongoDB _id of the student
+        studentId: string,
         status: "P" | "A" | "L",
         remarks?: string,
         adminId: string
     }) {
         const { classId, date, studentId, status, remarks, adminId } = data;
 
-        const record = await Attendance.findOne({ classId, date });
+        if (!studentId) throw new ApiError(400, "studentId is required");
+
+        const formattedDate = formatDate(date);
+
+        const record = await Attendance.findOne({
+            classId: new Types.ObjectId(classId),
+            date: formattedDate
+        });
+
+        if (record?.isLocked) throw new ApiError(403, "Attendance is locked");
 
         if (record) {
-            // Sheet exists -> Update the specific student in the array
-            const studentIndex = record.attendance.findIndex(
-                (entry) => entry.studentId.toString() === studentId
+            // BUG FIX: Find the specific subdocument inside the array
+            const existingStudent = record.attendance.find(
+                (e: any) => e.studentId.toString() === studentId.toString()
             );
 
-            if (studentIndex > -1) {
-                // Update existing student
-                record.attendance[studentIndex].status = status;
-                record.attendance[studentIndex].remarks = remarks || "";
-                record.attendance[studentIndex].markedBy = new Types.ObjectId(adminId);
-                record.attendance[studentIndex].markedByModel = "Admin";
+            if (existingStudent) {
+                // Update properties directly (Mongoose correctly tracks this as an UPDATE)
+                existingStudent.status = status;
+                existingStudent.remarks = remarks || "";
+                existingStudent.markedBy = new Types.ObjectId(adminId);
+                existingStudent.markedByModel = "Admin";
             } else {
-                // Add new student to the existing sheet
+                // Not found in existing list? Push as new.
                 record.attendance.push({
                     studentId: new Types.ObjectId(studentId),
                     status,
@@ -137,34 +145,33 @@ export class AttendanceRepo {
                     markedBy: new Types.ObjectId(adminId),
                     markedByModel: "Admin",
                     role: "admin"
-                });
+                } as any);
             }
 
-            // Update Metadata
             record.lastUpdatedBy = new Types.ObjectId(adminId);
             record.lastUpdatedByModel = "Admin";
             record.lastUpdatedRole = "admin";
 
             return await record.save();
-        } else {
-            // No sheet exists -> Create a new one with this student
-            return await Attendance.create({
-                classId,
-                date,
-                attendance: [{
-                    studentId,
-                    status,
-                    remarks: remarks || "",
-                    markedBy: adminId,
-                    markedByModel: "Admin",
-                    role: "admin"
-                }],
-                lastUpdatedBy: adminId,
-                lastUpdatedByModel: "Admin",
-                lastUpdatedRole: "admin",
-                isLocked: false
-            });
         }
+
+        // Create completely new sheet if it doesn't exist
+        return await Attendance.create({
+            classId: new Types.ObjectId(classId),
+            date: formattedDate,
+            attendance: [{
+                studentId: new Types.ObjectId(studentId),
+                status,
+                remarks: remarks || "",
+                markedBy: new Types.ObjectId(adminId),
+                markedByModel: "Admin",
+                role: "admin"
+            }],
+            lastUpdatedBy: new Types.ObjectId(adminId),
+            lastUpdatedByModel: "Admin",
+            lastUpdatedRole: "admin",
+            isLocked: false
+        });
     }
 
     // =========================================================
@@ -183,7 +190,66 @@ export class AttendanceRepo {
     }) {
         const { classId, date, attendanceArray, adminId, shouldLock } = data;
 
-        // Map array to add Admin audit details
+        if (!Array.isArray(attendanceArray)) {
+            throw new ApiError(400, "attendanceArray must be an array");
+        }
+
+        attendanceArray.forEach((item, i) => {
+            if (!item.studentId) throw new ApiError(400, `studentId missing at index ${i}`);
+            if (!["P", "A", "L"].includes(item.status)) {
+                throw new ApiError(400, `Invalid status at index ${i}`);
+            }
+        });
+
+        const formattedDate = formatDate(date);
+
+        const existingRecord = await Attendance.findOne({
+            classId: new Types.ObjectId(classId),
+            date: formattedDate
+        });
+
+        if (existingRecord?.isLocked) {
+            throw new ApiError(403, "Attendance is locked");
+        }
+
+        if (existingRecord) {
+            // BUG FIX: Iterate incoming data and update existing subdocuments directly
+            attendanceArray.forEach(incomingItem => {
+                const existingStudent = existingRecord.attendance.find(
+                    (e: any) => e.studentId.toString() === incomingItem.studentId.toString()
+                );
+
+                if (existingStudent) {
+                    // Modifying directly updates the record properly
+                    existingStudent.status = incomingItem.status;
+                    existingStudent.remarks = incomingItem.remarks || "";
+                    existingStudent.markedBy = new Types.ObjectId(adminId);
+                    existingStudent.markedByModel = "Admin";
+                } else {
+                    // Only add if student is genuinely not in the array
+                    existingRecord.attendance.push({
+                        studentId: new Types.ObjectId(incomingItem.studentId),
+                        status: incomingItem.status,
+                        remarks: incomingItem.remarks || "",
+                        markedBy: new Types.ObjectId(adminId),
+                        markedByModel: "Admin",
+                        role: "admin"
+                    } as any);
+                }
+            });
+
+            existingRecord.lastUpdatedBy = new Types.ObjectId(adminId);
+            existingRecord.lastUpdatedByModel = "Admin";
+            existingRecord.lastUpdatedRole = "admin";
+
+            if (shouldLock !== undefined) {
+                existingRecord.isLocked = shouldLock;
+            }
+
+            return await existingRecord.save();
+        }
+
+        // If no sheet exists for the day, create a new one
         const formattedAttendance = attendanceArray.map(item => ({
             studentId: new Types.ObjectId(item.studentId),
             status: item.status,
@@ -193,19 +259,14 @@ export class AttendanceRepo {
             role: "admin" as const
         }));
 
-        // Upsert: Update if exists, Create if not
-        return await Attendance.findOneAndUpdate(
-            { classId: new Types.ObjectId(classId), date },
-            {
-                $set: {
-                    attendance: formattedAttendance,
-                    lastUpdatedBy: new Types.ObjectId(adminId),
-                    lastUpdatedByModel: "Admin",
-                    lastUpdatedRole: "admin",
-                    isLocked: shouldLock || false
-                }
-            },
-            { upsert: true, new: true, runValidators: true }
-        );
+        return await Attendance.create({
+            classId: new Types.ObjectId(classId),
+            date: formattedDate,
+            attendance: formattedAttendance,
+            lastUpdatedBy: new Types.ObjectId(adminId),
+            lastUpdatedByModel: "Admin",
+            lastUpdatedRole: "admin",
+            isLocked: shouldLock || false
+        });
     }
 }

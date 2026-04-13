@@ -78,6 +78,7 @@ export class AttendanceController {
                 data: result
             });
         } catch (error) {
+            console.log(error)
             next(error);
         }
     }

@@ -80,7 +80,7 @@ export default function MarkAttendance() {
             classId,
             date,
             attendanceArray: attendanceArray.map((a) => ({
-                student_Id: a._id, // 🔥 Exact match with your backend schema
+                studentId: a._id, // 🔥 Exact match with your backend schema
                 status: a.status,
                 remarks: a.remarks,
             })),
@@ -108,7 +108,7 @@ export default function MarkAttendance() {
             classId,
             date,
             attendanceArray: [{
-                student_Id: student._id, // 🔥 Exact match with your backend schema
+                studentId: student._id, // 🔥 Exact match with your backend schema
                 status: singleStatus,
                 remarks: singleRemarks,
             }],

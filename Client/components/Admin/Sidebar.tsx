@@ -70,8 +70,6 @@ const navItems: NavItem[] = [
     ],
   },
 
-
-  { name: "Profile", href: "/admin/profile", icon: User },
   {
     name: "Attendance", href: "#", icon: UserCheck,
 
@@ -83,6 +81,8 @@ const navItems: NavItem[] = [
     }
     ]
   },
+
+  { name: "Profile", href: "/admin/profile", icon: User },
 
   { name: "Settings", href: "/admin/settings", icon: Settings },
 ];
