@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-
+import { toast, ToastContainer } from "react-toastify";
 import { useGetClasses } from "@/hooks/useClass";
 import { useGetStudentsByClass } from "@/hooks/useStudent";
 import { useMarkClassAttendance } from "@/hooks/useAttendance";
@@ -73,8 +73,8 @@ export default function MarkAttendance() {
 
     // 🚀 Submit Bulk Class (Matching Mongoose Schema)
     const handleSubmitClass = () => {
-        if (!classId) return alert("Please select a class.");
-        if (attendanceArray.length === 0) return alert("No students to mark.");
+        if (!classId) return toast.error("Please select a class.");
+        if (attendanceArray.length === 0) return toast.error("No students to mark.");
 
         const payload = {
             classId,
@@ -92,8 +92,8 @@ export default function MarkAttendance() {
     // 🚀 Submit Single Student (Matching Mongoose Schema)
     const handleSubmitSingle = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!classId) return alert("Please select a class first.");
-        if (!searchId) return alert("Please enter Student ID / Roll No.");
+        if (!classId) return toast.error("Please select a class first.");
+        if (!searchId) return toast.error("Please enter Student ID / Roll No.");
 
         // Local array mein bacche ko 6-digit displayId se dhundo
         const student = attendanceArray.find(
@@ -101,7 +101,7 @@ export default function MarkAttendance() {
         );
 
         if (!student) {
-            return alert("Student not found in the selected class.");
+            return toast.error("Student not found in the selected class.");
         }
 
         const payload = {
@@ -303,6 +303,7 @@ export default function MarkAttendance() {
                     </form>
                 </div>
             )}
+            <ToastContainer />
         </div>
     );
 }

@@ -9,6 +9,7 @@ import assignclassroute from '../../modules/AssignClass/Admin/admin.assignclass.
 import { assignsubjectroute } from '../../modules/AssignSubject/Admin/admin.assignsubject.routes'
 import adminstudentroute from '../../modules/Student/Admin/admin.student.route'
 import attendanceRoute from '../../modules/Attendance/Admin/admin.attendance.route'
+import homeworkRoute from '../../modules/Homework/Admin/admin.homework.route'
 // fucntion for initializing the routes
 export const registeradminroute = (app: Application) => {
     app.use('/api/v1/admin/subject', subjectRoute);
@@ -21,4 +22,5 @@ export const registeradminroute = (app: Application) => {
     app.use("/api/v1/admin/assign/subject", assignsubjectroute)
     app.use('/api/v1/admin/student', adminstudentroute)
     app.use('/api/v1/admin/attendance', attendanceRoute)
+    app.use('/api/v1/admin/homework', homeworkRoute)
 }   

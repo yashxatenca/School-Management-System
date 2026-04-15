@@ -90,7 +90,7 @@ export class AttendanceRepo {
         return await Attendance.find(query)
             .populate({
                 path: "attendance.studentId",
-                select: "name studentId_custom rollNumber"
+                select: "name studentId"
             })
             .populate({
                 path: "lastUpdatedBy",
