@@ -88,6 +88,13 @@ const navItems: NavItem[] = [
       { name: "View Homework", href: "/admin/homework/read", icon: Eye }
     ]
   },
+  {
+    name: "Exams", href: "#", icon: BookOpen,
+    subItems: [
+      { name: "Create Exam", href: "/admin/exam/add", icon: Plus },
+      { name: "View Exams", href: "/admin/exam/read", icon: Eye }
+    ]
+  },
 
   { name: "Profile", href: "/admin/profile", icon: User },
 
