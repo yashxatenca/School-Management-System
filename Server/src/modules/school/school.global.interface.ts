@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-export interface SchoolInfo {
+export interface ISchoolProfile {
   authId: Types.ObjectId;
   schoolId?: string;
   schoolName?: string;
