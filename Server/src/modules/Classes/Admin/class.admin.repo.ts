@@ -22,6 +22,6 @@ export class AdminClassRepo {
     }
 
     static async getAllClasses() {
-        return await ClassModel.find({}).sort({ createdAt: -1 });
+        return await ClassModel.find({}).sort({ createdAt: -1 }).populate("teacherId", "name");
     }
 }

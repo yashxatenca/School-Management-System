@@ -58,17 +58,7 @@ const navItems: NavItem[] = [
     ]
   },
   { name: "Classes", href: "/admin/classes", icon: BookOpen },
-
-  // ✅ Assign Section
-  {
-    name: "Assign",
-    href: "#",
-    icon: LinkIcon,
-    subItems: [
-      { name: "Assign Class", href: "/admin/assign/class", icon: School },
-      { name: "Assign Subject", href: "/admin/assign/subject", icon: BookOpen },
-    ],
-  },
+  { name: "Subjects", href: "/admin/subject", icon: BookOpen },
 
   {
     name: "Attendance", href: "#", icon: UserCheck,
@@ -93,6 +83,13 @@ const navItems: NavItem[] = [
     subItems: [
       { name: "Create Exam", href: "/admin/exam/add", icon: Plus },
       { name: "View Exams", href: "/admin/exam/read", icon: Eye }
+    ]
+  },
+  {
+    name: "Marks", href: "#", icon: BookOpen,
+    subItems: [
+      { name: "Create Marks", href: "/admin/marks/add", icon: Plus },
+      { name: "View Marks", href: "/admin/marks/read", icon: Eye }
     ]
   },
 

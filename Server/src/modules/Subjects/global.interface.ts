@@ -7,6 +7,8 @@ export interface ISubject {
     code?: string;
 
     schoolId: Types.ObjectId;
+    teacherId?: Types.ObjectId;
+    classId: Types.ObjectId;
 
     description?: string;
 

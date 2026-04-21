@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useGetHomeworks } from "@/hooks/useHomework";
-import { useGetClasses } from "@/hooks/useClass";
+import { useGetHomeworks } from "@/hooks/Admin/useHomework";
+import { useGetClasses } from "@/hooks/Admin/useClass";
 import { BookOpen, Calendar, Users, ArrowRight, Filter, Search } from "lucide-react";
 import { homeworkService } from "@/lib/admin_api/AdminHomeworkService";
 export default function ClassWiseHomework() {

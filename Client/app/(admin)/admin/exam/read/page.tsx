@@ -1,7 +1,7 @@
 'use client'
 import React from 'react';
 import Link from 'next/link';
-import { useExams, useDeleteExam } from '@/hooks/useExam';
+import { useExams, useDeleteExam } from '@/hooks/Admin/useExam';
 // import { useGetClasses } from '@/hooks/useClass'; // Ye use nahi ho raha toh hata sakte hain
 
 export default function ExamListPage() {

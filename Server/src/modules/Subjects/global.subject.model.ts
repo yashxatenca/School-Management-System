@@ -35,7 +35,17 @@ const subjectSchema = new Schema<ISubject>(
             trim: true,
             maxlength: 200,
         },
-
+        classId: {
+            type: Schema.Types.ObjectId,
+            ref: "Class",
+            required: true,
+            index: true,
+        },
+        teacherId: {
+            type: Schema.Types.ObjectId,
+            ref: "TeacherAuth",
+            index: true,
+        },
         isActive: {
             type: Boolean,
             default: true,

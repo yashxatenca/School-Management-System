@@ -26,6 +26,6 @@ export class SubjectRepo {
     }
 
     static async getAllSubjects() {
-        return await SubjectModel.find();
+        return await SubjectModel.find().populate("classId", "name").populate("teacherId", "name");
     }
 }

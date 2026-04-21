@@ -2,9 +2,9 @@
 import { toast, ToastContainer } from "react-toastify";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useCreateHomework } from "@/hooks/useHomework";
-import { useGetClasses } from "@/hooks/useClass"; // Tumhara existing hook
-import { useGetSubjects } from "@/hooks/useSubject";
+import { useCreateHomework } from "@/hooks/Admin/useHomework";
+import { useGetClasses } from "@/hooks/Admin/useClass"; // Tumhara existing hook
+import { useGetSubjects } from "@/hooks/Admin/useSubject";
 
 export default function CreateHomeworkPage() {
     const router = useRouter();

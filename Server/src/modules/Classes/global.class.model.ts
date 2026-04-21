@@ -30,13 +30,6 @@ const classSchema = new Schema<IClass>(
             index: true
         },
 
-        subjects: [
-            {
-                type: Schema.Types.ObjectId,
-                ref: "Subject"
-            }
-        ],
-
         academicYear: {
             type: String,
             required: true,
@@ -47,6 +40,10 @@ const classSchema = new Schema<IClass>(
             type: Number,
             default: 0,
             min: 0
+        },
+        teacherId: {
+            type: Schema.Types.ObjectId,
+            ref: "TeacherAuth"
         },
 
 

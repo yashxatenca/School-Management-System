@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useCreateExam } from '@/hooks/useExam';
+import { useCreateExam } from '@/hooks/Admin/useExam';
 import { toast, ToastContainer } from 'react-toastify';
 
 export default function AddExamPage() {

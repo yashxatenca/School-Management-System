@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from "react";
-import { useGetClasses } from "@/hooks/useClass";
+import { useGetClasses } from "@/hooks/Admin/useClass";
 import { ToastContainer, toast } from "react-toastify";
-import { useGetClassAttendance } from "@/hooks/useAttendance";
+import { useGetClassAttendance } from "@/hooks/Admin/useAttendance";
 import { Calendar, Users, Loader2, CheckCircle, XCircle, AlertCircle, Search } from 'lucide-react';
 
 export default function ViewAttendance() {

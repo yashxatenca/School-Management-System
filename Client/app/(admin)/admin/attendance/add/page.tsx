@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
-import { useGetClasses } from "@/hooks/useClass";
-import { useGetStudentsByClass } from "@/hooks/useStudent";
-import { useMarkClassAttendance } from "@/hooks/useAttendance";
+import { useGetClasses } from "@/hooks/Admin/useClass";
+import { useGetStudentsByClass } from "@/hooks/Admin/useStudent";
+import { useMarkClassAttendance } from "@/hooks/Admin/useAttendance";
 
 export default function MarkAttendance() {
     // Tabs: 'class' (Bulk) | 'single' (Specific Student)

@@ -1,7 +1,7 @@
 import { ExamRepo } from "./admin.exam.repo";
 import { IExam } from "../exam.interface";
 import { ApiError } from "../../../core/errors/ApiErrors";
-
+import { AdminHelperRepo } from "../../Helper/Admin/admin.helper.repo";
 export class ExamService {
     static async createExamService(payload: IExam) {
         if (!payload.name || !payload.examType || !payload.academicYear || !payload.startDate || !payload.endDate) {
@@ -39,4 +39,7 @@ export class ExamService {
         }
         return await ExamRepo.deleteExamRepo(id)
     }
+
+
+
 }

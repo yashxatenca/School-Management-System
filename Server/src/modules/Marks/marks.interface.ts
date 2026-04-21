@@ -3,9 +3,11 @@ import mongoose, { Schema, Document } from 'mongoose';
 export interface IMark extends Document {
     examId: mongoose.Types.ObjectId;
     studentId: mongoose.Types.ObjectId;
-    classId: mongoose.Types.ObjectId; // Useful for fetching all marks for a specific class easily
+    classId: mongoose.Types.ObjectId;
+    teacherId: mongoose.Types.ObjectId;
+    principalId: mongoose.Types.ObjectId;
     subjects: {
-        subjectName: string; // Or subjectId if you have a separate Subject model
+        subjectId: mongoose.Types.ObjectId; // Or subjectId if you have a separate Subject model
         maxMarks: number;
         passingMarks: number;
         obtainedMarks: number;

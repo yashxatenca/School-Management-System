@@ -4,7 +4,7 @@ import cors from "cors";
 import { errorhandler } from "./core/errors/errorHandler";
 import { registeradminroute } from './route/Admin/admin.route'
 import connectDB from "./config/Database";
-
+import { AdminHelperRepo } from "./modules/Helper/Admin/admin.helper.repo";
 import { registerteacherroute } from "./route/Teacher/teacher.route";
 import { registerstudentroute } from "./route/Student/student.route";
 
@@ -67,5 +67,4 @@ registerstudentroute(app) // for student
 ======================== */
 
 app.use(errorhandler);
-
 export default app;

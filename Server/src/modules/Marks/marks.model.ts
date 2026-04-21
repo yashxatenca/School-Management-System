@@ -12,8 +12,17 @@ const MarkSchema: Schema = new Schema({
     },
     studentId: {
         type: Schema.Types.ObjectId,
-        ref: 'Student', // Replace with your actual Student model name
+        ref: 'StudentAuth',
         required: true
+    },
+    teacherId: {
+        type: Schema.Types.ObjectId,
+        ref: 'TeacherAuth',
+        required: true,
+    },
+    principalId: {
+        type: Schema.Types.ObjectId,
+        ref: "Admin",
     },
     classId: {
         type: Schema.Types.ObjectId,
@@ -23,8 +32,9 @@ const MarkSchema: Schema = new Schema({
 
     // Array to hold marks for multiple subjects in this single exam
     subjects: [{
-        subjectName: {
+        subjectId: {
             type: String,
+            ref: "Subject",
             required: true
         },
         maxMarks: {

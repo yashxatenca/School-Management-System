@@ -7,6 +7,7 @@ export interface IClass extends Document {
     section: string; // Example: A
 
     schoolId: Types.ObjectId;
+    teacherId: Types.ObjectId;
 
     subjects: Types.ObjectId[];
 
