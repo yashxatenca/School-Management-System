@@ -28,4 +28,9 @@ export const marksApi = {
     delete: async (id: string): Promise<void> => {
         await api.delete(`${API_URL}/${id}`);
     },
+    getbyClassID: async (id: string) => {
+        const { data } = await api.get(`${API_URL}/mark-class/${id}`)
+        return data;
+
+    }
 };

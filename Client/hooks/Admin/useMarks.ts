@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { IMark } from '@/interface/Marks/marks.interface';
 import { useRouter } from 'next/navigation';
 
-export const useMarks = (markId?: string) => {
+export const useMarks = (markId?: string, classId?: string) => {
     const queryClient = useQueryClient();
     const router = useRouter();
 
@@ -27,7 +27,7 @@ export const useMarks = (markId?: string) => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['marks'] });
             toast.success('Marks added successfully!');
-            router.push('/admin/marks');
+            router.push('/admin/marks/read');
         },
         onError: (error: any) => {
             toast.error(error?.response?.data?.message || 'Failed to add marks');
@@ -60,11 +60,25 @@ export const useMarks = (markId?: string) => {
         },
     });
 
+    const getDetailsByClassId = useQuery({
+
+        queryKey: ['classDetails', classId],
+
+
+        queryFn: async () => {
+            if (!classId) return null;
+            const response = await marksApi.getbyClassID(classId);
+            return response.data ?? null;
+        },
+        enabled: !!classId,
+    });
+
     return {
         marksQuery,
         singleMarkQuery,
         createMutation,
         updateMutation,
         deleteMutation,
+        getDetailsByClassId,
     };
 };

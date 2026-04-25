@@ -53,4 +53,14 @@ export class MarkController {
             res.status(404).json({ success: false, message: error.message });
         }
     };
+
+    getDetailByClassId = async (req: Request, res: Response): Promise<void> => {
+        try {
+
+            const marks = await this.markService.getDetailsByClassId(req.params.id as string);
+            res.status(200).json({ success: true, data: marks });
+        } catch (error: any) {
+            res.status(404).json({ success: false, message: error.message });
+        }
+    };
 }

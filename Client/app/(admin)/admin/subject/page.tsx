@@ -130,7 +130,7 @@ export default function SubjectPage() {
                             <label className="block text-xs text-gray-500 mb-1">Subject Teacher (Optional)</label>
                             <select {...register('teacherId')} className={inputClasses}>
                                 <option value="">No Teacher Assigned</option>
-                                {teachers.teachers.map((t: any) => <option key={t._id} value={t._id}>{t.name}</option>)}
+                                {teachers?.teachers.map((t: any) => <option key={t._id} value={t._id}>{t.name}</option>)}
                             </select>
                         </div>
                         <div>

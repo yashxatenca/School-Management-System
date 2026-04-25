@@ -5,8 +5,6 @@ import adminprofileRoute from '../../modules/profile/Admin/admin.profile.route'
 import adminschoolroute from '../../modules/school/Admin/admin.school.route'
 import adminclassroute from '../../modules/Classes/Admin/class.admin.route';
 import subjectroute from '../../modules/Subjects/Admin/subject.admin.route'
-import assignclassroute from '../../modules/AssignClass/Admin/admin.assignclass.route'
-import { assignsubjectroute } from '../../modules/AssignSubject/Admin/admin.assignsubject.routes'
 import adminstudentroute from '../../modules/Student/Admin/admin.student.route'
 import attendanceRoute from '../../modules/Attendance/Admin/admin.attendance.route'
 import homeworkRoute from '../../modules/Homework/Admin/admin.homework.route'
@@ -20,8 +18,6 @@ export const registeradminroute = (app: Application) => {
     app.use("/api/v1/admin/school", adminschoolroute);
     app.use("/api/v1/admin/class", adminclassroute)
     app.use("/api/v1/admin/subject", subjectroute)
-    app.use("/api/v1/admin/assign/class", assignclassroute)
-    app.use("/api/v1/admin/assign/subject", assignsubjectroute)
     app.use('/api/v1/admin/student', adminstudentroute)
     app.use('/api/v1/admin/attendance', attendanceRoute)
     app.use('/api/v1/admin/homework', homeworkRoute)
