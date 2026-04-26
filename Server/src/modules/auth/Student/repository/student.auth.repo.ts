@@ -11,6 +11,7 @@ export class StudentRepository {
     password: string;
     teacherId?: Types.ObjectId;
     principalId?: Types.ObjectId;
+    classId?: Types.ObjectId;
   }): Promise<StudentAuthDocument> {
 
     const user = await StudentAuth.create(data);

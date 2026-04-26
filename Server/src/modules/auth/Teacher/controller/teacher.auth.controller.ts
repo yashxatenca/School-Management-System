@@ -7,7 +7,7 @@ export class TeacherController {
 
   create = async (req: Request, res: Response) => {
     try {
-      const teacher = await this.service.createTeacher({...req.body, principalId: req.user?.id});
+      const teacher = await this.service.createTeacher({ ...req.body, principalId: req.user?.id });
       res.status(201).json({ success: true, data: teacher });
     } catch (err: any) {
       res.status(400).json({ success: false, message: err.message });
@@ -16,7 +16,7 @@ export class TeacherController {
 
   getAll = async (req: Request, res: Response) => {
     try {
-      if(!req.user?.id){
+      if (!req.user?.id) {
         return res.status(401).json({ success: false, message: "Unauthorized" });
       }
       const teachers = await this.service.getAllTeachers(req.user?.id);
@@ -49,7 +49,7 @@ export class TeacherController {
 
   delete = async (req: Request, res: Response) => {
     try {
-      await this.service.deleteTeacher(req.params.id);
+      await this.service.deleteTeacher(req.params.id as string);
       res.status(200).json({ success: true, message: "Deleted successfully" });
     } catch (err: any) {
       res.status(404).json({ success: false, message: err.message });
@@ -57,10 +57,9 @@ export class TeacherController {
   };
 
   profile = async (req: Request, res: Response) => {
-    console.log(req.user)
     try {
-      const teacher = await this.service.getProfilebyId(req.user?.id);
-  
+      const teacher = await this.service.getProfilebyId(req.user?.id as string);
+
       res.status(200).json({ success: true, teacher: teacher });
     } catch (err: any) {
 
@@ -71,7 +70,7 @@ export class TeacherController {
   login = async (req: Request, res: Response) => {
     try {
       const { email, password } = req.body;
-      const {token, teacher} = await this.service.login(email, password);
+      const { token, teacher } = await this.service.login(email, password);
 
       res.status(200).cookie("token", token).json({
         success: true,
@@ -84,24 +83,24 @@ export class TeacherController {
   };
 
   logout = async (req: Request, res: Response) => {
-  try {
+    try {
 
-    res.clearCookie("token", {
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict"
-    });
+      res.clearCookie("token", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict"
+      });
 
-    res.status(200).json({
-      success: true,
-      message: "Logged out successfully"
-    });
+      res.status(200).json({
+        success: true,
+        message: "Logged out successfully"
+      });
 
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: "Logout failed"
-    });
-  }
-};
+    } catch (error: any) {
+      res.status(500).json({
+        success: false,
+        message: "Logout failed"
+      });
+    }
+  };
 }

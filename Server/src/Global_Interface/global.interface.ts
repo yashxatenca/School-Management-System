@@ -3,4 +3,5 @@ export interface JwtUser {
   email: string;
   role: 'admin' | 'teacher' | 'student';
   studentId?: number;
+  principalId?: string;
 }

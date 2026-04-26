@@ -32,7 +32,6 @@ export class AdminController {
       });
 
     } catch (error) {
-      console.log(error.message)
       next(error); // Global error handler handle karega
     }
   }

@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 import { TeacherRepository } from "../repository/teacher.auth.repository";
 
 export class TeacherService {
@@ -38,7 +39,7 @@ export class TeacherService {
   }
 
   async getProfilebyId(id: string) {
-    if(!id) throw new Error("Unauthorized");
+    if (!id) throw new Error("Unauthorized");
     const teacher = await this.repository.findById(id);
     if (!teacher) throw new Error("Teacher not found");
     return teacher;
@@ -51,7 +52,7 @@ export class TeacherService {
     return deleted;
   }
 
-  async getAllTeachers(principalId:string){
+  async getAllTeachers(principalId: string) {
     return await this.repository.findAll(principalId);
   }
 
@@ -68,10 +69,10 @@ export class TeacherService {
       throw new Error("Invalid credentials");
     }
     const token = this.generateToken(teacher._id.toString(), teacher.principalId)
-    return { token, teacher};
+    return { token, teacher };
   }
 
-  private generateToken(id: string, principalId?: mongoose.Schema.Types.ObjectId) {
+  private generateToken(id: string, principalId?: string) {
     return jwt.sign(
       { id, role: "teacher", principalId },
 

@@ -8,12 +8,11 @@ const router = Router();
 // 🔓 PUBLIC ROUTES
 // ===============================
 
-router.post("/login",(req,res,next)=>{
-  console.log("req is comming")
+router.post("/login", (req, res, next) => {
   next()
 
 }, StudentController.login);
-router.post("/logout", authMiddleware(["student"]),StudentController.logout);
+router.post("/logout", authMiddleware(["student"]), StudentController.logout);
 
 // ===============================
 // 🔐 PROTECTED ROUTES
@@ -27,12 +26,12 @@ router.post("/create", authMiddleware(["teacher"]), StudentController.register);
 router.put("/update/:id", authMiddleware(["teacher"]), StudentController.update);
 
 // Delete student by Mongo _id
-router.delete("/delete/:id",authMiddleware(["teacher"]), StudentController.delete);
+router.delete("/delete/:id", authMiddleware(["teacher"]), StudentController.delete);
 
 // Get all students by teacherId
 router.get(
   "/read",
- authMiddleware(["teacher"]),
+  authMiddleware(["teacher"]),
   StudentController.getByTeacher
 );
 

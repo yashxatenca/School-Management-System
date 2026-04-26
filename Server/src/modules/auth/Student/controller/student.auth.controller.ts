@@ -15,7 +15,7 @@ export class StudentController {
   // ==============================
   static async register(req: Request, res: Response) {
     try {
-      const result = await StudentService.registerStudent({...req.body, teacherId: (req as any).user.id, principalId: (req as any).user.principalId});
+      const result = await StudentService.registerStudent({ ...req.body, teacherId: (req as any).user.id, principalId: (req as any).user.principalId });
 
       return res.status(201).json({
         success: true,
@@ -186,7 +186,7 @@ export class StudentController {
       });
 
     } catch (error: any) {
-      console.log(error)
+
       return res.status(400).json({
         success: false,
         message: error.message || "Failed to fetch students",
@@ -211,7 +211,7 @@ export class StudentController {
         success: true,
         data: student,
       });
-    }    
+    }
     catch (error: any) {
       return res.status(500).json({
         success: false,
@@ -219,5 +219,5 @@ export class StudentController {
       });
     }
 
-}
+  }
 }

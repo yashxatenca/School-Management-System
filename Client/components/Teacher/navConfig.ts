@@ -17,6 +17,7 @@ import {
   MessageSquare,
   Megaphone,
   CalendarOff,
+  EyeIcon,
 } from "lucide-react"
 
 export interface NavItem {
@@ -40,8 +41,8 @@ export const navItems: NavItem[] = [
     subItems: [
       { name: "All Students", href: "/teacher/students/show", icon: Users },
       { name: "Add Student", href: "/teacher/students/create", icon: UserPlus },
-      { name: "Attendance", href: "/teacher/attendance", icon: ClipboardList },
-      { name: "Student Remarks", href: "/teacher/students/remarks", icon: MessageSquare },
+      { name: "Attendance", href: "/teacher/attendance/create", icon: ClipboardList },
+      { name: "View Attendance", href: "/teacher/attendance/read", icon: EyeIcon },
     ],
   },
 

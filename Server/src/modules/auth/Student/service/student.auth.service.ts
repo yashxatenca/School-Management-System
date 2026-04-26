@@ -2,6 +2,8 @@ import jwt from "jsonwebtoken";
 import { Types } from "mongoose";
 import { StudentRepository } from "../repository/student.auth.repo";
 import { StudentAuthDocument } from "../interface/student.auth.interface";
+import { ClassModel } from "../../../Classes/global.class.model";
+import { ApiError } from "../../../../core/errors/ApiErrors";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 const JWT_EXPIRES_IN = "1d";
@@ -16,8 +18,11 @@ export class StudentService {
     teacherId?: Types.ObjectId;
     principalId?: Types.ObjectId;
   }) {
-    const student = await StudentRepository.createStudent(data);
-
+    const classId = await ClassModel.findOne({ teacherId: data.teacherId });
+    if (!classId) {
+      throw new ApiError(402, "Contact Admin to Add the teacher")
+    }
+    const student = await StudentRepository.createStudent({ ...data, classId: classId._id });
     return student;
   }
 
@@ -100,9 +105,9 @@ export class StudentService {
   }
   // get student by id
 
-  static async getStudentById(id:string){
+  static async getStudentById(id: string) {
     const student = await StudentRepository.findById(id);
-    if(!student){
+    if (!student) {
       throw new Error("Student not found");
     }
     return this.removePassword(student);
