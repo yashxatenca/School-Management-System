@@ -5,7 +5,7 @@ import TeacherSidebar from "@/components/Teacher/TeacherSidebar";
 import TeacherHeader from "@/components/Teacher/TeacherHeader";
 import TeacherAuthBootstrap from "@/components/Teacher/TeacherAuthBootstrap";
 import TeacherProtectedRoute from "@/components/Teacher/ProtectedTeacherRoute";
-
+import { ToastContainer } from "react-toastify";
 function TeacherLayoutInner({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -30,7 +30,9 @@ export default function TeacherLayout({ children }: { children: React.ReactNode 
   return (
     <ReduxProvider>
       <TeacherAuthBootstrap />
-      <TeacherLayoutInner>{children}</TeacherLayoutInner>
+      <TeacherLayoutInner>{children}
+        <ToastContainer position="top-right" autoClose={2000} draggable closeOnClick />
+      </TeacherLayoutInner>
     </ReduxProvider>
   );
 }
