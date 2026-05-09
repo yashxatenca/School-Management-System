@@ -27,35 +27,10 @@ SubjectCard.displayName = "SubjectCard";
 // --- Main Component ---
 export default function ClassDetailsPage() {
     const { user } = useSelector((state: RootState) => state.teacherauthstate);
-    const [isLoading, setIsLoading] = useState(true);
-    const [classData, setClassData] = useState<ClassDetails | null>(null);
+    const classData = useSelector((state: RootState) => state.teacherclassstate);
 
-    useEffect(() => {
-        const fetchDetails = async () => {
-            try {
-                setIsLoading(true);
-                // logic for backend fetch goes here
-                // Example structure for your API:
-                const response = {
-                    _id: "loading...",
-                    className: "Class 10",
-                    section: "A",
-                    classTeacher: user?.name || "Loading...",
-                    totalStudents: 0,
-                    subjectTeachers: [],
-                    academicYear: "2026-2027"
-                };
-                setClassData(response);
-            } catch (error) {
-                toast.error("Failed to load class details");
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        fetchDetails();
-    }, [user]);
 
-    if (isLoading) {
+    if (!classData) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50">
                 <div className="flex flex-col items-center gap-2">
@@ -67,7 +42,6 @@ export default function ClassDetailsPage() {
     }
 
     if (!classData) return <div className="p-8 text-center">Class details unavailable.</div>;
-
     return (
         <div className="min-h-screen bg-gray-50 p-4 md:p-8 text-gray-800 font-sans">
             <div className="max-w-5xl mx-auto">
@@ -80,7 +54,7 @@ export default function ClassDetailsPage() {
                     <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">
                         {classData.className}
                         <span className="text-blue-600 mx-2">/</span>
-                        <span className="font-light text-gray-500">Section {classData.section}</span>
+                        <span className="font-light text-gray-500">Section {classData.sectionName}</span>
                     </h1>
                 </header>
 
@@ -106,7 +80,7 @@ export default function ClassDetailsPage() {
                                     <div className="p-3 bg-purple-50 rounded-lg text-purple-600 text-xl">👥</div>
                                     <div>
                                         <p className="text-xs text-gray-500">Total Students</p>
-                                        <p className="font-bold text-gray-900">{classData.totalStudents}</p>
+                                        <p className="font-bold text-gray-900">{classData.totalStudent}</p>
                                     </div>
                                 </div>
 
@@ -114,7 +88,7 @@ export default function ClassDetailsPage() {
                                     <div className="p-3 bg-green-50 rounded-lg text-green-600 text-xl">📅</div>
                                     <div>
                                         <p className="text-xs text-gray-500">Academic Session</p>
-                                        <p className="font-bold text-gray-900">{classData.academicYear}</p>
+                                        <p className="font-bold text-gray-900">{classData.academicSession}</p>
                                     </div>
                                 </div>
                             </div>
@@ -126,13 +100,13 @@ export default function ClassDetailsPage() {
                         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                             <div className="p-6 border-b border-gray-50 flex justify-between items-center">
                                 <h2 className="text-xl font-bold text-gray-900">Subject Teachers</h2>
-                                <span className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-md font-bold">
+                                {/* <span className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-md font-bold">
                                     {classData.subjectTeachers.length} Subjects
-                                </span>
+                                </span> */}
                             </div>
 
                             <div className="p-6">
-                                {classData.subjectTeachers.length > 0 ? (
+                                {/* {classData.subjectTeachers.length > 0 ? (
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <Suspense fallback={<div className="h-20 bg-gray-100 animate-pulse rounded-lg" />}>
                                             {classData.subjectTeachers.map((subj, idx) => (
@@ -144,7 +118,7 @@ export default function ClassDetailsPage() {
                                     <div className="text-center py-12">
                                         <p className="text-gray-400 italic text-sm">No subject data mapped yet.</p>
                                     </div>
-                                )}
+                                )} */}
                             </div>
                         </div>
                     </main>

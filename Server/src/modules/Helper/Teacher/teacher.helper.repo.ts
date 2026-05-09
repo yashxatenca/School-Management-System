@@ -1,6 +1,7 @@
 import { ObjectId } from "mongoose";
 import { StudentAuth } from "../../auth/Student/models/student.auth.model";
 import { ClassModel } from "../../Classes/global.class.model";
+import { ApiError } from "../../../core/errors/ApiErrors";
 
 export class TeacherHelperRepo {
     static async getClassIdwithTeacherId(teacherId: string) {
@@ -25,5 +26,15 @@ export class TeacherHelperRepo {
         } catch (error) {
             throw error;
         }
+    }
+
+    static async getClassAndTotalStudentByTeacherId(Id: string | ObjectId) {
+        const classes = await ClassModel.findOne({ teacherId: Id });
+        if (!classes) {
+            throw new ApiError(402, "Classes Not found")
+        }
+        const studentCount = await StudentAuth.countDocuments({ classId: classes._id });
+
+        return { classes, studentCount }
     }
 }

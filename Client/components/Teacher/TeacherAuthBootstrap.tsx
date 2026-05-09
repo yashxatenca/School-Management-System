@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
 import { api } from "@/lib/api/axios";
 import { setTeacher, logoutTeacher } from "@/app/redux/Slice/teacher.auth.slice";
+import { setClassDetail } from "@/app/redux/Slice/TeacherClass.slice";
 import { useEffect } from "react";
 
 const fetchTeacher = async () => {
@@ -12,6 +13,7 @@ const fetchTeacher = async () => {
 };
 
 export default function TeacherAuthBootstrap() {
+
   const dispatch = useDispatch();
 
   const { data, isSuccess, isError } = useQuery({
@@ -20,13 +22,12 @@ export default function TeacherAuthBootstrap() {
     retry: false,
     refetchOnWindowFocus: false,
   });
-
   useEffect(() => {
     if (isSuccess && data) {
-      dispatch(setTeacher(data));
+      dispatch(setTeacher(data?.teacher));
+      dispatch(setClassDetail({ classes: data?.classData.classes, studentCount: data?.classData.studentCount }))
     }
   }, [isSuccess, data, dispatch]);
-
   useEffect(() => {
     if (isError) {
       dispatch(logoutTeacher());

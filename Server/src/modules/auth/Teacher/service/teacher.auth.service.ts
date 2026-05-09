@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import { TeacherRepository } from "../repository/teacher.auth.repository";
-
+import { TeacherHelperRepo } from "../../../Helper/Teacher/teacher.helper.repo";
 export class TeacherService {
 
   private repository = new TeacherRepository();
@@ -41,8 +41,10 @@ export class TeacherService {
     if (!id) throw new Error("Unauthorized");
     const teacher = await this.repository.findById(id);
     if (!teacher) throw new Error("Teacher not found");
-    return teacher;
+    const classData = await TeacherHelperRepo.getClassAndTotalStudentByTeacherId(teacher._id);
+    return { teacher, classData }
   }
+
 
   // DELETE
   async deleteTeacher(id: string) {
