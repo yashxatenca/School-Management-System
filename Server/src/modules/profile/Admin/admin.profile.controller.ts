@@ -41,7 +41,6 @@ class AdminProfileController {
     async update(req: Request, res: Response) {
         try {
             const result = await service.updateProfile(req.user?.id!, req.body);
-            console.log(result)
 
             res.status(200).json({
                 success: true,

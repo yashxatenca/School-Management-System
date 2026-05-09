@@ -22,8 +22,7 @@ class TeacherProfileService {
     });
   }
 
-  async getProfile(id:string) {
-    console.log("Fetching profile for authId:", id);
+  async getProfile(id: string) {
     const profile = await repository.findByAuthId(
       new Types.ObjectId(id)
     );
@@ -36,7 +35,7 @@ class TeacherProfileService {
   }
 
   async updateProfile(
-    id:string,
+    id: string,
     body: Partial<ITeacherProfile>
   ) {
     return await repository.updateByAuthId(

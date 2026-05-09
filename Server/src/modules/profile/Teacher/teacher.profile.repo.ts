@@ -9,8 +9,7 @@ class TeacherProfileRepository {
   }
 
   async findByAuthId(authId: Types.ObjectId): Promise<ITeacherProfile | null> {
-    let user = await TeacherProfileModel.findOne({authId:authId})
-    console.log(user)
+    let user = await TeacherProfileModel.findOne({ authId: authId })
     return user;
   }
 

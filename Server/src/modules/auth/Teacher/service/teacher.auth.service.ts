@@ -14,7 +14,6 @@ export class TeacherService {
     password: string;
     principalId?: string;
   }) {
-    console.log(data)
 
     const existing = await this.repository.findByEmail(data.email);
     if (existing) {

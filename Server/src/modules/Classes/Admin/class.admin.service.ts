@@ -12,7 +12,6 @@ export class AdminClassService {
 
         const schoolid = await School.findOne({ authId })
         if (!schoolid) {
-            console.log("req id is not found")
             throw new ApiErrors.ApiError(404, "School not found");
         }
 
@@ -30,7 +29,6 @@ export class AdminClassService {
     }
 
     static async updateClass(classId: Types.ObjectId, payload: Partial<IClass>) {
-        console.log(classId, payload)
         const updatedClass = await AdminClassRepo.updateClass(classId, payload);
         if (!updatedClass) {
             throw new ApiErrors.ApiError(404, "Unable to update: Class not found");

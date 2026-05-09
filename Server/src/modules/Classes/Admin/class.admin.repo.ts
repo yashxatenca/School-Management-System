@@ -4,7 +4,6 @@ import { IClass } from '../global.class.interface';
 
 export class AdminClassRepo {
     static async createClass(payload: Partial<IClass>) {
-        console.log(payload)
         return await ClassModel.create(payload);
     }
 

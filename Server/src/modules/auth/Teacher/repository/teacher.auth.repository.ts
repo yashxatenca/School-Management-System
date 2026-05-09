@@ -5,7 +5,6 @@ export class TeacherRepository {
 
   async create(data: Partial<TeacherSchema>) {
     const user = await TeacherAuthModel.create(data);
-    console.log("Created teacher:", user);
     return user;
   }
 
@@ -31,7 +30,7 @@ export class TeacherRepository {
     return await TeacherAuthModel.findByIdAndDelete(id);
   }
 
-  async findAll(id:string){
-    return await TeacherAuthModel.find({principalId:id});
+  async findAll(id: string) {
+    return await TeacherAuthModel.find({ principalId: id });
   }
 }
