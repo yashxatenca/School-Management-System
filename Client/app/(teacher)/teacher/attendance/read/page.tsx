@@ -3,27 +3,19 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 
-// 👇 Ye apka aane wala naya hook hoga jo API call karega
-// import { useLazyGetAttendance } from "@/hooks/Teacher/useTeacherAttendance";
-
 export default function ViewAttendancePage() {
-    // UI States
     const [viewMode, setViewMode] = useState<"single" | "range">("single");
+    const [targetType, setTargetType] = useState<"class" | "student">("class");
 
-    // Date States
     const today = new Date().toISOString().split("T")[0];
     const [singleDate, setSingleDate] = useState<string>(today);
     const [startDate, setStartDate] = useState<string>(today);
     const [endDate, setEndDate] = useState<string>(today);
+    const [studentId, setStudentId] = useState<string>("");
 
-    // 🔥 JAB NAYA HOOK BANEGA TOH AISE USE KARENGEY:
-    // const { fetchAttendance, isLoading, data } = useLazyGetAttendance();
-
-    // Dummy states (Inko hata dena jab hook connect karo)
     const [isLoading, setIsLoading] = useState(false);
     const [attendanceRecords, setAttendanceRecords] = useState<any[]>([]);
 
-    // ✅ BUTTON CLICK HANDLER
     const handleFetchClick = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -31,24 +23,30 @@ export default function ViewAttendancePage() {
             return toast.error("Start date cannot be after End date ❌");
         }
 
-        // Payload banayenge conditions ke hisab se
-        const payload = viewMode === "single"
+        if (targetType === "student" && !studentId.trim()) {
+            return toast.error("Please enter a Student ID ❌");
+        }
+
+        const payload: any = viewMode === "single"
             ? { date: singleDate }
             : { startDate, endDate };
 
-        console.log("🔥 Fetching with payload:", payload);
-        toast.info("Fetching attendance...");
+        if (targetType === "student") {
+            payload.studentId = studentId;
+        }
 
-        // 👉 YAHAN API CALL HOGI:
-        // await fetchAttendance(payload);
+        console.log("Payload:", payload);
 
-        // Dummy loading animation dikhane ke liye (Ishe hata dena baad mein)
-        setIsLoading(true);
-        setTimeout(() => {
-            setIsLoading(false);
-            setAttendanceRecords([]); // Dummy empty data
-            toast.success("Fetched successfully! (Dummy)");
-        }, 1000);
+        // APNI API CALL YAHAN ADD KAREN
+        // setIsLoading(true);
+        // try {
+        //     const data = await fetchAttendance(payload);
+        //     setAttendanceRecords(data || []);
+        // } catch (error) {
+        //     toast.error("Failed to fetch data");
+        // } finally {
+        //     setIsLoading(false);
+        // }
     };
 
     const getStatusBadge = (status: string) => {
@@ -61,77 +59,116 @@ export default function ViewAttendancePage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 p-8 text-gray-800">
-            <div className="max-w-5xl mx-auto bg-white rounded-xl shadow-lg p-8">
-                <h1 className="text-3xl font-bold mb-6 border-b pb-4">
+        <div className="min-h-screen bg-gray-50 p-4 sm:p-8 text-gray-800">
+            <div className="max-w-5xl mx-auto bg-white rounded-xl shadow-lg p-4 sm:p-8">
+                <h1 className="text-2xl sm:text-3xl font-bold mb-6 border-b pb-4">
                     View Class Attendance
                 </h1>
 
-                {/* CONTROLS SECTION */}
                 <div className="mb-8 bg-gray-50 p-4 rounded-lg border">
-                    {/* View Mode Toggle */}
-                    <div className="flex gap-4 mb-4 border-b pb-4">
-                        <button
-                            type="button"
-                            onClick={() => setViewMode("single")}
-                            className={`px-4 py-2 rounded-md transition-colors ${viewMode === "single" ? "bg-blue-600 text-white shadow" : "bg-gray-200 text-gray-700"
-                                }`}
-                        >
-                            Single Date
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setViewMode("range")}
-                            className={`px-4 py-2 rounded-md transition-colors ${viewMode === "range" ? "bg-blue-600 text-white shadow" : "bg-gray-200 text-gray-700"
-                                }`}
-                        >
-                            Date Range
-                        </button>
+
+                    {/* FETCH FOR TOGGLES */}
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4 border-b pb-4">
+                        <span className="font-semibold text-gray-700 min-w-[90px]">Fetch For:</span>
+                        <div className="flex gap-2 w-full sm:w-auto">
+                            <button
+                                type="button"
+                                onClick={() => setTargetType("class")}
+                                className={`flex-1 sm:flex-none px-4 py-2 rounded-md transition-colors text-sm sm:text-base ${targetType === "class" ? "bg-indigo-600 text-white shadow" : "bg-gray-200 text-gray-700"
+                                    }`}
+                            >
+                                Whole Class
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setTargetType("student")}
+                                className={`flex-1 sm:flex-none px-4 py-2 rounded-md transition-colors text-sm sm:text-base ${targetType === "student" ? "bg-indigo-600 text-white shadow" : "bg-gray-200 text-gray-700"
+                                    }`}
+                            >
+                                Particular Student
+                            </button>
+                        </div>
                     </div>
 
-                    {/* FORM WITH BUTTON */}
-                    <form onSubmit={handleFetchClick} className="flex items-end gap-6">
+                    {/* DATE TYPE TOGGLES */}
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4 border-b pb-4">
+                        <span className="font-semibold text-gray-700 min-w-[90px]">Date Type:</span>
+                        <div className="flex gap-2 w-full sm:w-auto">
+                            <button
+                                type="button"
+                                onClick={() => setViewMode("single")}
+                                className={`flex-1 sm:flex-none px-4 py-2 rounded-md transition-colors text-sm sm:text-base ${viewMode === "single" ? "bg-blue-600 text-white shadow" : "bg-gray-200 text-gray-700"
+                                    }`}
+                            >
+                                Single Date
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setViewMode("range")}
+                                className={`flex-1 sm:flex-none px-4 py-2 rounded-md transition-colors text-sm sm:text-base ${viewMode === "range" ? "bg-blue-600 text-white shadow" : "bg-gray-200 text-gray-700"
+                                    }`}
+                            >
+                                Date Range
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* FORM INPUTS */}
+                    <form onSubmit={handleFetchClick} className="flex flex-col sm:flex-row flex-wrap items-end gap-4 sm:gap-6">
+                        {targetType === "student" && (
+                            <div className="w-full sm:flex-1 sm:min-w-[200px] sm:max-w-xs">
+                                <label className="block font-semibold mb-2 text-sm text-gray-600">Student ID / Roll No</label>
+                                <input
+                                    type="text"
+                                    value={studentId}
+                                    onChange={(e) => setStudentId(e.target.value)}
+                                    placeholder="e.g. STU-101"
+                                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                                    required={targetType === "student"}
+                                />
+                            </div>
+                        )}
+
                         {viewMode === "single" ? (
-                            <div className="flex-1 max-w-xs">
+                            <div className="w-full sm:flex-1 sm:min-w-[200px] sm:max-w-xs">
                                 <label className="block font-semibold mb-2 text-sm text-gray-600">Select Date</label>
                                 <input
                                     type="date"
                                     value={singleDate}
                                     onChange={(e) => setSingleDate(e.target.value)}
-                                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                                     required
                                 />
                             </div>
                         ) : (
                             <>
-                                <div className="flex-1 max-w-xs">
+                                <div className="w-full sm:flex-1 sm:min-w-[150px] sm:max-w-xs">
                                     <label className="block font-semibold mb-2 text-sm text-gray-600">Start Date</label>
                                     <input
                                         type="date"
                                         value={startDate}
                                         onChange={(e) => setStartDate(e.target.value)}
-                                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                                         required
                                     />
                                 </div>
-                                <div className="flex-1 max-w-xs">
+                                <div className="w-full sm:flex-1 sm:min-w-[150px] sm:max-w-xs">
                                     <label className="block font-semibold mb-2 text-sm text-gray-600">End Date</label>
                                     <input
                                         type="date"
                                         value={endDate}
                                         onChange={(e) => setEndDate(e.target.value)}
-                                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                                         required
                                     />
                                 </div>
                             </>
                         )}
 
-                        {/* 🔥 MAIN FETCH BUTTON 🔥 */}
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="bg-gray-800 text-black px-6 py-2 rounded-lg hover:bg-gray-900 transition-colors h-[42px] min-w-[140px] flex items-center justify-center font-medium shadow-sm disabled:opacity-50"
+                            className="w-full sm:w-auto bg-gray-800 text-white px-6 py-2 rounded-lg hover:bg-gray-900 transition-colors h-[42px] min-w-[140px] flex items-center justify-center font-medium shadow-sm disabled:opacity-50 mt-2 sm:mt-0"
                         >
                             {isLoading ? "Searching..." : "Get Attendance"}
                         </button>
@@ -139,14 +176,14 @@ export default function ViewAttendancePage() {
                 </div>
 
                 {/* TABLE SECTION */}
-                <div className="overflow-x-auto border rounded-lg">
-                    <table className="w-full text-left">
+                <div className="overflow-x-auto border rounded-lg shadow-sm">
+                    <table className="w-full text-left min-w-[600px]">
                         <thead className="bg-gray-100">
                             <tr>
-                                <th className="p-3 border-b font-semibold">Date</th>
-                                <th className="p-3 border-b font-semibold">Student Name</th>
-                                <th className="p-3 border-b font-semibold text-center">Status</th>
-                                <th className="p-3 border-b font-semibold">Remarks</th>
+                                <th className="p-3 sm:p-4 border-b font-semibold whitespace-nowrap">Date</th>
+                                <th className="p-3 sm:p-4 border-b font-semibold whitespace-nowrap">Student Name</th>
+                                <th className="p-3 sm:p-4 border-b font-semibold text-center whitespace-nowrap">Status</th>
+                                <th className="p-3 sm:p-4 border-b font-semibold whitespace-nowrap">Remarks</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -159,24 +196,24 @@ export default function ViewAttendancePage() {
                                         </div>
                                     </td>
                                 </tr>
-                            ) : attendanceRecords.length === 0 ? (
+                            ) : !attendanceRecords || attendanceRecords.length === 0 ? (
                                 <tr>
-                                    <td colSpan={4} className="p-10 text-center text-gray-500 bg-gray-50">
-                                        <div className="text-lg mb-1">No Data Yet</div>
-                                        <div className="text-sm">Select dates and click "Get Attendance" to view records.</div>
+                                    <td colSpan={4} className="p-8 sm:p-10 text-center text-gray-500 bg-gray-50">
+                                        <div className="text-lg mb-1">No Data Found</div>
+                                        <div className="text-sm">Select filters and click "Get Attendance" to view records.</div>
                                     </td>
                                 </tr>
                             ) : (
-                                attendanceRecords.map((record) => (
-                                    record.attendance.map((student: any) => (
-                                        <tr key={`${record._id}-${student._id}`} className="border-b hover:bg-gray-50">
-                                            <td className="p-3 text-sm text-gray-600">{record.date}</td>
-                                            <td className="p-3 font-medium">{student.studentId?.name || "Unknown"}</td>
-                                            <td className="p-3 text-center">
-                                                {getStatusBadge(student.status)}
+                                attendanceRecords?.map((record, recordIndex) => (
+                                    record?.attendance?.map((student: any, studentIndex: number) => (
+                                        <tr key={`${record?._id || recordIndex}-${student?._id || studentIndex}`} className="border-b hover:bg-gray-50 transition-colors">
+                                            <td className="p-3 sm:p-4 text-sm text-gray-600 whitespace-nowrap">{record?.date || "-"}</td>
+                                            <td className="p-3 sm:p-4 font-medium whitespace-nowrap">{student?.studentId?.name || "Unknown"}</td>
+                                            <td className="p-3 sm:p-4 text-center whitespace-nowrap">
+                                                {getStatusBadge(student?.status)}
                                             </td>
-                                            <td className="p-3 text-sm text-gray-600">
-                                                {student.remarks || "-"}
+                                            <td className="p-3 sm:p-4 text-sm text-gray-600 whitespace-nowrap">
+                                                {student?.remarks || "-"}
                                             </td>
                                         </tr>
                                     ))

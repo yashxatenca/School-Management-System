@@ -63,8 +63,9 @@ export const navItems: NavItem[] = [
     href: "/teacher/coursework",
     icon: FileQuestion,
     subItems: [
-      { name: "Assignments", href: "/teacher/assignments", icon: FileQuestion },
-      { name: "Study Materials", href: "/teacher/materials", icon: Download },
+      { name: "Create Homework", href: "/teacher/homework/create", icon: FileQuestion },
+      { name: "View Homework", href: "/teacher/homework/view", icon: EyeIcon },
+      { name: "Study Materials", href: "/teacher/homework/materials", icon: Download },
     ],
   },
 
