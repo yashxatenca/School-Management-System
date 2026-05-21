@@ -12,7 +12,7 @@ import {
   createAdminProfile,
   updateAdminProfile,
   type AdminProfile,
-} from "@/lib/admin_api/AdminProfile.api";
+} from "@/lib/Admin/AdminProfile.api";
 
 // Adjust these imports based on where you saved the files
 import { Section, Grid, Input, Textarea } from "./_components/ProfileUi";

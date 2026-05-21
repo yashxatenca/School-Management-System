@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
-import { classService } from '@/lib/admin_api/AdminClassService';
+import { classService } from '@/lib/Admin/AdminClassService';
 import { useGetTeachers } from "@/hooks/Admin/useTeacher"
 
 export default function ClassPage() {

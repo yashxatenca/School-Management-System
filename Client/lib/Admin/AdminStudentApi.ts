@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../api/axios';
-import { classService } from '@/lib/admin_api/AdminClassService';
+import { classService } from '@/lib/Admin/AdminClassService';
 
 const getStudentByIdAPI = async (studentId: string) => {
     if (!studentId) return null;

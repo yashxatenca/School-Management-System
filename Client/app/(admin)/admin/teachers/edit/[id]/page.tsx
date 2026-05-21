@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchTeacherById, updateTeacher } from "@/lib/admin_api/TeacherApi";
+import { fetchTeacherById, updateTeacher } from "@/lib/Admin/TeacherApi";
 import { Loader2, Save, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 

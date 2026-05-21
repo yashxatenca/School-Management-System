@@ -7,7 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import { RootState } from "@/app/redux/store";
 import { logoutAdmin } from "@/app/redux/Slice/authSlice";
 import FullScreenLoader from "../ui/FullScreenLoader";
-import { LogoutUser } from "@/lib/admin_api/User.Api";
+import { LogoutUser } from "@/lib/Admin/User.Api";
 import { useState } from "react";
 import {
   User,

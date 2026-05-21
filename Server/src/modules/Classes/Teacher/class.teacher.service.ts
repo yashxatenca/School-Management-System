@@ -50,7 +50,6 @@ export class TeacherClassService {
             throw new ApiErrors.ApiError(404, "Teacher not found");
         }
         const classes = await TeacherClassRepo.getAllClasses(id);
-        console.log(classes);
         return classes;
     }
 }

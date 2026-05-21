@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { createTeacher } from "@/lib/admin_api/TeacherApi";
+import { createTeacher } from "@/lib/Admin/TeacherApi";
 import {
   UserPlus,
   ArrowLeft,

@@ -26,7 +26,7 @@ const HomeworkSchema = new Schema<IHomework>(
             type: Date,
             required: function () { return this.hasDueDate === true; }
         },
-        attachments: [{ type: String }],
+        attachments: [{ type: String, default: "" }],
         isDeleted: { type: Boolean, default: false },
     },
     { timestamps: true }

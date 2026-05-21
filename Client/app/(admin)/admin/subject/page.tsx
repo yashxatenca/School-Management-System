@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { toast, ToastContainer } from 'react-toastify';
-import { subjectService } from '@/lib/admin_api/AdminSubjectService';
+import { subjectService } from '@/lib/Admin/AdminSubjectService';
 
 import { useGetClasses } from '@/hooks/Admin/useClass';
 import { useGetTeachers } from '@/hooks/Admin/useTeacher';
@@ -29,7 +29,6 @@ export default function SubjectPage() {
             name: '',
             code: '',
             description: '',
-            classId: '',
             teacherId: '',
             isActive: true
         }
@@ -86,7 +85,6 @@ export default function SubjectPage() {
         setValue('name', sub.name);
         setValue('code', sub.code);
         setValue('description', sub.description || '');
-        setValue('classId', sub.classId || '');
         setValue('teacherId', sub.teacherId || '');
         setValue('isActive', sub.isActive !== false);
         toast.dark("Editing mode enabled");
@@ -114,13 +112,6 @@ export default function SubjectPage() {
                         <div>
                             <label className="block text-xs text-gray-500 mb-1">Subject Code *</label>
                             <input {...register('code')} placeholder="e.g. MATH101" className={`${inputClasses} uppercase`} required />
-                        </div>
-                        <div>
-                            <label className="block text-xs text-gray-500 mb-1">Assign to Class *</label>
-                            <select {...register('classId')} className={inputClasses} required>
-                                <option value="" disabled>Select Class</option>
-                                {classes?.data?.map((c: any) => <option key={c._id} value={c._id}>{c.name}</option>)}
-                            </select>
                         </div>
                     </div>
 

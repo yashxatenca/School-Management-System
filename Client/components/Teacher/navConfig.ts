@@ -18,6 +18,7 @@ import {
   Megaphone,
   CalendarOff,
   EyeIcon,
+  Edit,
 } from "lucide-react"
 
 export interface NavItem {
@@ -55,6 +56,7 @@ export const navItems: NavItem[] = [
       { name: "Timetable", href: "/teacher/timetable", icon: CalendarDays },
       { name: "Lesson Plan", href: "/teacher/lesson-plan", icon: BookCheck },
       { name: "Live Classes", href: "/teacher/live-classes", icon: Video },
+      { name: "Add Subjects", href: "/teacher/assign-class-subject", icon: BookOpen }
     ],
   },
 
@@ -75,6 +77,7 @@ export const navItems: NavItem[] = [
     icon: GraduationCap,
     subItems: [
       { name: "Marks Entry", href: "/teacher/exams/marks", icon: FileText },
+      { name: "Edit Marks", href: "/teacher/exams/edit-marks", icon: Edit },
       { name: "Results", href: "/teacher/exams/results", icon: GraduationCap },
     ],
   },

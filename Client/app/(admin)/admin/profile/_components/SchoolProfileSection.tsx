@@ -9,7 +9,7 @@ import {
     getSchoolInfo,
     updateSchoolInfo,
     type SchoolInfo,
-} from "@/lib/admin_api/AdminProfile.api";
+} from "@/lib/Admin/AdminProfile.api";
 
 export default function SchoolProfileSection() {
     const queryClient = useQueryClient();

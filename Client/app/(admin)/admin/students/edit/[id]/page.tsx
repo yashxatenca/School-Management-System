@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query'; // IMPORT ADD KIYA HAI
-import { fetchTeachers } from "@/lib/admin_api/TeacherApi";
-import { useGetStudentById, useUpdateStudent, useGetClasses } from '@/lib/admin_api/AdminStudentApi';
+import { fetchTeachers } from "@/lib/Admin/TeacherApi";
+import { useGetStudentById, useUpdateStudent, useGetClasses } from '@/lib/Admin/AdminStudentApi';
 import { toast, ToastContainer } from 'react-toastify';
 
 const EditStudentPage = () => {

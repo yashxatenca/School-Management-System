@@ -6,7 +6,7 @@ import {
     useGetClasses,
     useGetStudentsByClass,
     deleteStudentAPI // IMPORT YOUR DELETE API
-} from '@/lib/admin_api/AdminStudentApi';
+} from '@/lib/Admin/AdminStudentApi';
 import { toast, ToastContainer } from 'react-toastify';
 
 const AdminStudentSearch = () => {

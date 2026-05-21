@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { homeworkService, IHomeworkData } from '@/lib/admin_api/AdminHomeworkService';
+import { homeworkService, IHomeworkData } from '@/lib/Admin/AdminHomeworkService';
 
 // ----------------------------------------------------
 // READ (GET) HOOKS

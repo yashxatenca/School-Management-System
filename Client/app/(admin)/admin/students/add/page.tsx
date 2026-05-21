@@ -3,10 +3,10 @@
 import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify"; // <-- Added Toastify
-import { fetchTeachers } from "@/lib/admin_api/TeacherApi";
-import { classService } from "@/lib/admin_api/AdminClassService";
-import { getschoolbyauthid } from "@/lib/admin_api/AdminProfile.api";
-import { studentService, CreateStudentPayload } from "@/lib/admin_api/AdminStudentApi";
+import { fetchTeachers } from "@/lib/Admin/TeacherApi";
+import { classService } from "@/lib/Admin/AdminClassService";
+import { getschoolbyauthid } from "@/lib/Admin/AdminProfile.api";
+import { studentService, CreateStudentPayload } from "@/lib/Admin/AdminStudentApi";
 
 export default function AddStudentPage() {
     const queryClient = useQueryClient();

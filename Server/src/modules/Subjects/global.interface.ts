@@ -8,7 +8,6 @@ export interface ISubject {
 
     schoolId: Types.ObjectId;
     teacherId?: Types.ObjectId;
-    classId: Types.ObjectId;
 
     description?: string;
 

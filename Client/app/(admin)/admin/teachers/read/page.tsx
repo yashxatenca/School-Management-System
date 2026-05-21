@@ -6,7 +6,7 @@ import {
   fetchTeachers,
   deleteTeacher,
   Teacher,
-} from "@/lib/admin_api/TeacherApi";
+} from "@/lib/Admin/TeacherApi";
 import { Loader2, Users, Edit, Trash2 } from "lucide-react";
 
 export default function TeachersPage() {

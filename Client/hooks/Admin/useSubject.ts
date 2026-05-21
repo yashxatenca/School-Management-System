@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { subjectService } from '@/lib/admin_api/AdminSubjectService'; // Path apne hisaab se adjust kar lena
+import { subjectService } from '@/lib/Admin/AdminSubjectService'; // Path apne hisaab se adjust kar lena
 
 // ----------------------------------------------------
 // READ (GET) HOOKS

@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { marksApi } from '@/lib/admin_api/AdminMarksApi';
+import { marksApi } from '@/lib/Admin/AdminMarksApi';
 import { toast } from 'react-toastify';
 import { IMark } from '@/interface/Marks/marks.interface';
 import { useRouter } from 'next/navigation';

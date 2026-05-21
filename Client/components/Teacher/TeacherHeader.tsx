@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
 import { logoutTeacher } from "@/app/redux/Slice/teacher.auth.slice";
 import { useMutation } from "@tanstack/react-query";
-import { LogoutUser } from "@/lib/admin_api/TeacherApi";
+import { LogoutUser } from "@/lib/Admin/TeacherApi";
 import { useRouter } from "next/navigation";
 
 interface Props {

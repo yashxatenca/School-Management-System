@@ -3,7 +3,9 @@
 import { ToastContainer } from "react-toastify";
 import { useState } from "react";
 import { useGetTeacherAllClass } from "@/hooks/Teacher/useTeacherClass";
-
+import { useGetSubject } from '@/hooks/Teacher/useTeacherSubject';
+import { usecreateHowework } from "@/hooks/Teacher/useTeacherHomework";
+import { toast } from "react-toastify";
 export default function TeacherCreateHomeworkPage() {
 
     const {
@@ -15,7 +17,8 @@ export default function TeacherCreateHomeworkPage() {
 
     // Safe fallback
     const classes = data?.data?.data || [];
-    const subjects = new Array([])
+    const { data: SubjectData, isLoading: SubjectLoading, error: SubjectError } = useGetSubject();
+    const subjects = SubjectData?.data.result || [];
     const [formData, setFormData] = useState({
         title: "",
         description: "",
@@ -25,25 +28,39 @@ export default function TeacherCreateHomeworkPage() {
         dueDate: "",
         driveLink: "",
     });
-
+    const { mutate: createHomework } = usecreateHowework();
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-
-        console.log({
-            ...formData,
-            attachments: formData.driveLink
-                ? [formData.driveLink]
-                : [],
-
-            assignedUser: "TeacherAuth",
-            assignedById: "teacher-id-here",
+        createHomework(formData, {
+            onSuccess: () => {
+                setFormData({
+                    title: "",
+                    description: "",
+                    classId: "",
+                    subjectId: "",
+                    hasDueDate: true,
+                    dueDate: "",
+                    driveLink: "",
+                });
+                toast.success("Homework created successfully");
+            },
+            onError: () => {
+                toast.error("Failed to create homework");
+            }
         });
     };
 
-    if (isLoading) {
+    if (isLoading || SubjectLoading) {
         return (
             <div className="p-5 text-center">
                 Loading Classes...
+            </div>
+        );
+    }
+    if (SubjectError) {
+        return (
+            <div className="p-5 text-center text-red-500">
+                Failed to load subjects
             </div>
         );
     }

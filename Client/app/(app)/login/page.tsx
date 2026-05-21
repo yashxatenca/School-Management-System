@@ -3,7 +3,7 @@
 import { Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { GoogleLogin } from "@react-oauth/google";
-import { loginTeacher } from "@/lib/admin_api/TeacherApi"
+import { loginTeacher } from "@/lib/Admin/TeacherApi"
 import { useDispatch } from "react-redux";
 import { setAdmin } from "@/app/redux/Slice/authSlice";
 import { api } from "@/lib/api/axios";

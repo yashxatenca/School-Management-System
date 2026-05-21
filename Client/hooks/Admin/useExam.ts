@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { examApi } from '@/lib/admin_api/AdminExamApiService';
+import { examApi } from '@/lib/Admin/AdminExamApiService';
 
 // 1. Fetch All Exams
 export const useExams = () => {
