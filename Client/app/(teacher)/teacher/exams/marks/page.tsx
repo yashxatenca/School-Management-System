@@ -18,7 +18,8 @@ import {
 import { useTeacherSubjectAssign } from "@/hooks/Teacher/useTeacherSubjectAssign";
 import { useGetStudent } from "@/hooks/Teacher/useTeacherStudent";
 import { useTeacherExam } from "@/hooks/Teacher/useTeacherExams";
-// import { useSubmitMarksMutation } from "@/hooks/Teacher/useSubmitMarks";
+// Ye naya hook jo humne banaya hai (Apne path ke hisaab se adjust karein)
+import { useCreateMark } from "@/hooks/Teacher/useTeacherMarks";
 
 export default function AddMarksPage() {
   // 🎯 Redux State (Safe extraction to avoid crashes if state is empty)
@@ -44,8 +45,9 @@ export default function AddMarksPage() {
   const { data: studentsData } = useGetStudent();
   const { data: examsData } = useTeacherExam();
 
-  // const submitMutation = useSubmitMarksMutation();
-  const isSubmitting = false;
+  // 🔥 NAYA MUTATION HOOK INITIALIZE KIYA
+  const { mutate: createMarkMutation, isPending: isSubmitting } =
+    useCreateMark();
 
   // 🛡️ BULLETPROOF ARRAY EXTRACTOR
   const extractArray = (apiResponse: any) => {
@@ -160,9 +162,9 @@ export default function AddMarksPage() {
     const payload = {
       examId: selectedExam,
       studentId: selectedStudent,
-      teacherId,
+      teacherId: teacherId as string,
       principalId,
-      classId,
+      classId: classId as string,
       subjects: marksData.map((m) => ({
         subjectId: m.subjectId,
         maxMarks: m.maxMarks,
@@ -183,8 +185,31 @@ export default function AddMarksPage() {
       resultStatus: calculations.resultStatus,
     };
 
-    console.log("Submitting Payload:", payload);
-    toast.success("Marks formulated (Check Console)!");
+    // 🔥 HOOK KO CALL KAREIN
+    createMarkMutation(payload, {
+      onSuccess: () => {
+        toast.success("Marks saved successfully!");
+
+        // Success hone ke baad form reset kar dein taaki naya student select kiya ja sake
+        setSelectedStudent("");
+
+        // Marks fields ko wapas khali kar dein
+        setMarksData((prev) =>
+          prev.map((m) => ({
+            ...m,
+            obtainedMarks: "",
+            remarks: "",
+          })),
+        );
+      },
+      onError: (error: any) => {
+        // Backend se aane wala error message pakde (Jaise duplicate data error)
+        const errorMsg =
+          error.response?.data?.message ||
+          "Failed to save marks. Please try again.";
+        toast.error(errorMsg);
+      },
+    });
   };
 
   // Error Checks
@@ -349,7 +374,6 @@ export default function AddMarksPage() {
 
             {/* 📊 Auto Calculation Section */}
             <div className="space-y-6">
-              {/* Changed bg-slate-900 to bg-gray-900 and all slate to gray */}
               <div className="bg-gray-900 rounded-2xl shadow-lg p-6 text-white sticky top-6 border border-gray-800">
                 <h3 className="text-xl font-bold mb-6 flex items-center gap-2 border-b border-gray-700 pb-4 text-white">
                   <UserCheck className="w-6 h-6 text-blue-400" /> Result Preview

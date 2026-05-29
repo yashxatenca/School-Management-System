@@ -19,17 +19,17 @@ import {
   CalendarOff,
   EyeIcon,
   Edit,
-} from "lucide-react"
+} from "lucide-react";
 
 export interface NavItem {
-  name: string
-  href: string
-  icon: any
+  name: string;
+  href: string;
+  icon: any;
   subItems?: {
-    name: string
-    href: string
-    icon: any
-  }[]
+    name: string;
+    href: string;
+    icon: any;
+  }[];
 }
 
 export const navItems: NavItem[] = [
@@ -42,8 +42,16 @@ export const navItems: NavItem[] = [
     subItems: [
       { name: "All Students", href: "/teacher/students/show", icon: Users },
       { name: "Add Student", href: "/teacher/students/create", icon: UserPlus },
-      { name: "Attendance", href: "/teacher/attendance/create", icon: ClipboardList },
-      { name: "View Attendance", href: "/teacher/attendance/read", icon: EyeIcon },
+      {
+        name: "Attendance",
+        href: "/teacher/attendance/create",
+        icon: ClipboardList,
+      },
+      {
+        name: "View Attendance",
+        href: "/teacher/attendance/read",
+        icon: EyeIcon,
+      },
     ],
   },
 
@@ -56,7 +64,11 @@ export const navItems: NavItem[] = [
       { name: "Timetable", href: "/teacher/timetable", icon: CalendarDays },
       { name: "Lesson Plan", href: "/teacher/lesson-plan", icon: BookCheck },
       { name: "Live Classes", href: "/teacher/live-classes", icon: Video },
-      { name: "Add Subjects", href: "/teacher/assign-class-subject", icon: BookOpen }
+      {
+        name: "Add Subjects",
+        href: "/teacher/assign-class-subject",
+        icon: BookOpen,
+      },
     ],
   },
 
@@ -65,9 +77,17 @@ export const navItems: NavItem[] = [
     href: "/teacher/coursework",
     icon: FileQuestion,
     subItems: [
-      { name: "Create Homework", href: "/teacher/homework/create", icon: FileQuestion },
+      {
+        name: "Create Homework",
+        href: "/teacher/homework/create",
+        icon: FileQuestion,
+      },
       { name: "View Homework", href: "/teacher/homework/view", icon: EyeIcon },
-      { name: "Study Materials", href: "/teacher/homework/materials", icon: Download },
+      {
+        name: "Study Materials",
+        href: "/teacher/homework/materials",
+        icon: Download,
+      },
     ],
   },
 
@@ -98,10 +118,25 @@ export const navItems: NavItem[] = [
     icon: CalendarOff,
     subItems: [
       { name: "Apply Leave", href: "/teacher/leaves/apply", icon: CalendarOff },
-      { name: "My Leaves", href: "/teacher/leaves/history", icon: ClipboardList },
+      {
+        name: "My Leaves",
+        href: "/teacher/leaves/history",
+        icon: ClipboardList,
+      },
     ],
   },
 
   { name: "Profile", href: "/teacher/profile", icon: User },
-  { name: "Settings", href: "/teacher/settings", icon: Settings },
-]
+  {
+    name: "Settings",
+    href: "/teacher/settings",
+    icon: Settings,
+    subItems: [
+      {
+        name: "Do Nothing",
+        href: "#",
+        icon: User,
+      },
+    ],
+  },
+];

@@ -79,7 +79,7 @@ export class TeacherService {
 
       process.env.JWT_SECRET as string,
       {
-        expiresIn: "1d",
+        expiresIn: "7d",
         audience: "school-management",
         issuer: "auth-service"
       }

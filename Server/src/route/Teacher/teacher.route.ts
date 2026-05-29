@@ -8,8 +8,8 @@ import teacherclassroute from "../../modules/Classes/Teacher/class.teacher.route
 import teachersubjectroute from "../../modules/Subjects/Teacher/subject.teacher.route";
 import teacherclasssubjectassignrouter from "../../modules/class-assign/Teacher/class-assign.teacher.route";
 import teacherexamroute from "../../modules/Exam/Teacher/teacher.exam.route";
-import teachermarkroute from "../../modules/Marks/Teacher/teacher,marks.route";
-
+import teachermarkroute from "../../modules/Marks/Teacher/teacher.marks.route";
+import teachernoticeroute from "../../modules/Notice/Teacher/notice.teacher.route";
 // register route function
 export const registerteacherroute = (app: Application) => {
   app.use("/api/v1/auth/teacher", teacherauthroute);
@@ -25,4 +25,5 @@ export const registerteacherroute = (app: Application) => {
   );
   app.use("/api/v1/teacher/exams/", teacherexamroute);
   app.use("/api/v1/teacher/marks/", teachermarkroute);
+  app.use("/api/v1/teacher/notice/", teachernoticeroute);
 };
