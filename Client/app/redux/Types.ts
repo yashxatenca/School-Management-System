@@ -7,14 +7,14 @@ export type AdminUser = {
   googleId?: string;
   photoURL?: string;
   isActive: boolean;
-}
+};
 
 export type TeacherUser = {
   _id: string;
   name: string;
   email: string;
   role: "teacher";
-}
+};
 
 export type StudentUser = {
   _id: string;
@@ -36,5 +36,3 @@ export type StudentUser = {
   motherName?: string;
   address?: string;
 };
-
-

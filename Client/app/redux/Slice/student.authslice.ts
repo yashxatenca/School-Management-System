@@ -1,46 +1,46 @@
-
 import { StudentUser } from "../Types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface StudentAuthUser { // teacher interface
-    user:StudentUser | null;
-    isAuthenticated :boolean;
-    authChecked : boolean;
-
-
-}
- // inital values 
-const initialState :StudentAuthUser = {
-    user:null,
-    isAuthenticated:false,
-    authChecked:false,
-
+interface StudentAuthUser {
+  user: StudentUser | null;
+  isAuthenticated: boolean;
+  authChecked: boolean;
 }
 
-const teacherauthslice  = createSlice({
-    name:"teacher_auth",
-    initialState:initialState,
+// Inital values
+const initialState: StudentAuthUser = {
+  user: null,
+  isAuthenticated: false,
+  authChecked: false, // Shuru mein false rahega jab tak check nahi hota
+};
 
-    reducers:{
-    setStudent:(state, action:PayloadAction<StudentUser>)=>{
-        state.user = action.payload;
-        state.authChecked = true;
-        state.isAuthenticated = true;
+const studentauthslice = createSlice({
+  name: "student_auth", // Naming sahi kar di (pehle teacher_auth tha)
+  initialState: initialState,
+
+  reducers: {
+    setStudent: (state, action: PayloadAction<StudentUser>) => {
+      state.user = action.payload;
+      state.authChecked = true; // Check complete!
+      state.isAuthenticated = true;
     },
 
+    logoutStudent: (state) => {
+      state.user = null;
+      state.isAuthenticated = false;
+      // 🔥 MAIN FIX: Ise TRUE karna hai, kyunki fail hone par bhi check complete ho gaya hai
+      state.authChecked = true;
+    },
 
-    logoutStudent: (state)=>{
-        state.user = null;
-        state.isAuthenticated = false;
-        state.authChecked = false;
+    // 🔥 PICHLA FIX: Agar user pehle se state me ho toh manually true set karne ke liye
+    setAuthChecked: (state) => {
+      state.authChecked = true;
+    },
+  },
+});
 
-    }
+// Naya action (setAuthChecked) bhi export karna zaruri hai
+export const { setStudent, logoutStudent, setAuthChecked } =
+  studentauthslice.actions;
 
-    }
-
-})
-
-export const { setStudent, logoutStudent } = teacherauthslice.actions;
-
-export default teacherauthslice.reducer;
-
+export default studentauthslice.reducer;

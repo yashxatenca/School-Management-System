@@ -1,20 +1,19 @@
-import type {JwtUser} from '../../../../Global_Interface/global.interface';
-import { ApiError } from '../../../../core/errors/ApiErrors';
-import { Token } from '../../../../core/utils/user.token';
-import type { Request, Response, NextFunction } from 'express';
+import type { JwtUser } from "../../../../Global_Interface/global.interface";
+import { ApiError } from "../../../../core/errors/ApiErrors";
+import { Token } from "../../../../core/utils/user.token";
+import type { Request, Response, NextFunction } from "express";
 
 export const authMiddleware = (allowedRoles: string[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-
       const token = req.cookies?.token;
-
+      console.log(token);
       if (!token) {
         throw new ApiError(401, "Authentication required");
       }
 
       const decoded = Token.verifyToken(token);
-
+      console.log(decoded);
       if (!decoded || !allowedRoles.includes(decoded.role)) {
         throw new ApiError(403, "Access denied");
       }
@@ -22,7 +21,6 @@ export const authMiddleware = (allowedRoles: string[]) => {
       req.user = decoded as JwtUser;
 
       next();
-
     } catch (error) {
       next(error);
     }

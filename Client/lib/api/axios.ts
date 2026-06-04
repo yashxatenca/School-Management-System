@@ -8,12 +8,3 @@ export const api = axios.create({
     "Content-Type": "application/json",
   },
 });
-
-// Instance for Student Auth (same backend)
-export const BackendAuthStudentApi = axios.create({
-  baseURL: "http://localhost:8001",
-  withCredentials: true,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});

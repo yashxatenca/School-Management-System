@@ -9,7 +9,6 @@ const JWT_SECRET = process.env.JWT_SECRET as string;
 const JWT_EXPIRES_IN = "1d";
 
 export class StudentService {
-
   // ✅ REGISTER
   static async registerStudent(data: {
     name: string;
@@ -20,9 +19,12 @@ export class StudentService {
   }) {
     const classId = await ClassModel.findOne({ teacherId: data.teacherId });
     if (!classId) {
-      throw new ApiError(402, "Contact Admin to Add the teacher")
+      throw new ApiError(402, "Contact Admin to Add the teacher");
     }
-    const student = await StudentRepository.createStudent({ ...data, classId: classId._id });
+    const student = await StudentRepository.createStudent({
+      ...data,
+      classId: classId._id,
+    });
     return student;
   }
 
@@ -60,10 +62,7 @@ export class StudentService {
   }
 
   // ✅ UPDATE
-  static async updateStudent(
-    id: string,
-    updateData: any
-  ) {
+  static async updateStudent(id: string, updateData: any) {
     const updated = await StudentRepository.updateStudent(id, updateData);
 
     if (!updated) {
@@ -100,7 +99,7 @@ export class StudentService {
         role: "student",
       },
       JWT_SECRET,
-      { expiresIn: JWT_EXPIRES_IN }
+      { expiresIn: JWT_EXPIRES_IN },
     );
   }
   // get student by id

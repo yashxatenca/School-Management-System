@@ -1,40 +1,71 @@
 import { Router } from "express";
 import { StudentController } from "../controller/student.auth.controller";
-import { authMiddleware } from "../middleware/student.auth.middleware";
-
+// import { authMiddleware } from "../middleware/student.auth.middleware";
+import { GlobalAuthMiddleware } from "../../../../middleware/Gloabal.auth.middleware";
 const router = Router();
 
 // ===============================
 // 🔓 PUBLIC ROUTES
 // ===============================
 
-router.post("/login", (req, res, next) => {
-  next()
-
-}, StudentController.login);
-router.post("/logout", authMiddleware(["student"]), StudentController.logout);
+router.post("/login", StudentController.login);
+router.post(
+  "/logout",
+  GlobalAuthMiddleware(["student"]),
+  StudentController.logout,
+);
 
 // ===============================
 // 🔐 PROTECTED ROUTES
 // ===============================
 
 // Get logged-in student profile
-router.get("/profile", authMiddleware(['student']), StudentController.getProfile);
+router.get(
+  "/profile",
+  GlobalAuthMiddleware(["student"]),
+  StudentController.getProfile,
+);
 // create student by teacher
-router.post("/create", authMiddleware(["teacher"]), StudentController.register);
+router.post(
+  "/create",
+  GlobalAuthMiddleware(["teacher"]),
+  StudentController.register,
+);
 // Update student by Mongo _id
-router.put("/update/:id", authMiddleware(["teacher"]), StudentController.update);
+router.put(
+  "/update/:id",
+  GlobalAuthMiddleware(["teacher"]),
+  StudentController.update,
+);
 
 // Delete student by Mongo _id
-router.delete("/delete/:id", authMiddleware(["teacher"]), StudentController.delete);
+router.delete(
+  "/delete/:id",
+  GlobalAuthMiddleware(["teacher"]),
+  StudentController.delete,
+);
 
 // Get all students by teacherId
 router.get(
   "/read",
-  authMiddleware(["teacher"]),
-  StudentController.getByTeacher
+  GlobalAuthMiddleware(["teacher"]),
+  StudentController.getByTeacher,
 );
 
-router.get("/read/:id", authMiddleware(["teacher"]), StudentController.getById);
+router.get(
+  "/user",
+  (req, res, next) => {
+    console.log("req");
+    next();
+  },
+  GlobalAuthMiddleware(["student"]),
+  StudentController.getUser,
+);
+
+router.get(
+  "/read/:id",
+  GlobalAuthMiddleware(["teacher"]),
+  StudentController.getById,
+);
 
 export default router;

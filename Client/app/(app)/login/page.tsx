@@ -3,12 +3,13 @@
 import { Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { GoogleLogin } from "@react-oauth/google";
-import { loginTeacher } from "@/lib/Admin/TeacherApi"
+import { loginTeacher } from "@/lib/Admin/TeacherApi";
 import { useDispatch } from "react-redux";
 import { setAdmin } from "@/app/redux/Slice/authSlice";
 import { api } from "@/lib/api/axios";
 import { setTeacher } from "@/app/redux/Slice/teacher.auth.slice";
 import { setStudent } from "@/app/redux/Slice/student.authslice";
+import { convertServerPatchToFullTree } from "next/dist/client/components/segment-cache/navigation";
 
 type Role = "student" | "teacher" | "principal";
 
@@ -32,7 +33,6 @@ function LoginContent() {
 
         const res = await loginTeacher(email, password);
 
-
         if (res.success) {
           router.push("/teacher/dashboard");
         }
@@ -43,15 +43,13 @@ function LoginContent() {
         const studentId = form.get("studentId");
         const password = form.get("password");
 
-        const res = await api.post(
-          "/api/v1/auth/student/login",
-          { studentId, password }
-        );
+        const res = await api.post("/api/v1/auth/student/login", {
+          studentId,
+          password,
+        });
         if (res.data.success) {
-          dispatch(setStudent(res.data.student));
+          dispatch(setStudent(res.data.data));
           router.push("/student/dashboard");
-
-
         }
       }
     } catch (error: any) {
@@ -90,7 +88,6 @@ function LoginContent() {
           </div>
         ) : (
           <form onSubmit={handleLogin} className="space-y-4">
-
             {/* TEACHER INPUT */}
             {role === "teacher" && (
               <input
@@ -112,7 +109,10 @@ function LoginContent() {
                 maxLength={6}
                 pattern="\d{6}"
                 onInput={(e) =>
-                  (e.currentTarget.value = e.currentTarget.value.replace(/\D/g, ""))
+                  (e.currentTarget.value = e.currentTarget.value.replace(
+                    /\D/g,
+                    "",
+                  ))
                 }
                 className="w-full border px-4 py-2 rounded focus:ring-2 focus:ring-indigo-500"
               />
@@ -138,7 +138,13 @@ function LoginContent() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-gray-100">Loading...</div>}>
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+          Loading...
+        </div>
+      }
+    >
       <LoginContent />
     </Suspense>
   );

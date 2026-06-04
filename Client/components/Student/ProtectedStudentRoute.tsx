@@ -14,16 +14,15 @@ export default function ProtectedStudentRoute({
   const router = useRouter();
 
   const { isAuthenticated, user, authChecked } = useSelector(
-    (state: RootState) => state.studentauthstate
+    (state: RootState) => state.studentauthstate,
   );
-
   useEffect(() => {
     // 🚫 Don't run anything until auth check completes
     if (!authChecked) return;
 
     // 🔐 Not logged in → go to login
     if (!isAuthenticated) {
-      router.replace("/student/login");
+      router.replace("/login?role=student");
       return;
     }
 

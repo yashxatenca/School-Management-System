@@ -9,20 +9,22 @@ const COOKIE_OPTIONS = {
 };
 
 export class StudentController {
-
   // ==============================
   // ✅ REGISTER
   // ==============================
   static async register(req: Request, res: Response) {
     try {
-      const result = await StudentService.registerStudent({ ...req.body, teacherId: (req as any).user.id, principalId: (req as any).user.principalId });
+      const result = await StudentService.registerStudent({
+        ...req.body,
+        teacherId: (req as any).user.id,
+        principalId: (req as any).user.principalId,
+      });
 
       return res.status(201).json({
         success: true,
         message: "Student registered successfully",
         data: result.student,
       });
-
     } catch (error: any) {
       return res.status(400).json({
         success: false,
@@ -54,7 +56,6 @@ export class StudentController {
         message: "Login successful",
         data: result.student,
       });
-
     } catch (error: any) {
       return res.status(401).json({
         success: false,
@@ -95,7 +96,6 @@ export class StudentController {
         success: true,
         data: student,
       });
-
     } catch (error: any) {
       return res.status(404).json({
         success: false,
@@ -125,7 +125,6 @@ export class StudentController {
         message: "Student updated successfully",
         data: updated,
       });
-
     } catch (error: any) {
       return res.status(400).json({
         success: false,
@@ -154,7 +153,6 @@ export class StudentController {
         success: true,
         message: result.message,
       });
-
     } catch (error: any) {
       return res.status(404).json({
         success: false,
@@ -168,7 +166,6 @@ export class StudentController {
   // ==============================
   static async getByTeacher(req: Request, res: Response) {
     try {
-
       const teacherId = req.user?.id;
 
       if (!teacherId) {
@@ -184,9 +181,7 @@ export class StudentController {
         success: true,
         data: students,
       });
-
     } catch (error: any) {
-
       return res.status(400).json({
         success: false,
         message: error.message || "Failed to fetch students",
@@ -194,7 +189,7 @@ export class StudentController {
     }
   }
 
-  // get by student _id 
+  // get by student _id
 
   static getById = async (req: Request, res: Response) => {
     try {
@@ -211,13 +206,34 @@ export class StudentController {
         success: true,
         data: student,
       });
-    }
-    catch (error: any) {
+    } catch (error: any) {
       return res.status(500).json({
         success: false,
         message: error.message || "Internal server error",
       });
     }
+  };
+  static getUser = async (req: Request, res: Response) => {
+    try {
+      console.log(req.user);
+      const id = req.user.id;
+      if (!id) {
+        return res.status(400).json({
+          success: false,
+          message: "Student ID is required",
+        });
+      }
 
-  }
+      const student = await StudentService.getStudentById(id);
+      return res.status(200).json({
+        success: true,
+        data: student,
+      });
+    } catch (error: any) {
+      return res.status(500).json({
+        success: false,
+        message: error.message || "Internal server error",
+      });
+    }
+  };
 }
