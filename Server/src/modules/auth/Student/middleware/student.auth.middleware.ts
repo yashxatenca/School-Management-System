@@ -7,13 +7,13 @@ export const authMiddleware = (allowedRoles: string[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const token = req.cookies?.token;
-      console.log(token);
+     
       if (!token) {
         throw new ApiError(401, "Authentication required");
       }
 
       const decoded = Token.verifyToken(token);
-      console.log(decoded);
+
       if (!decoded || !allowedRoles.includes(decoded.role)) {
         throw new ApiError(403, "Access denied");
       }

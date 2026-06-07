@@ -19,7 +19,7 @@ export type TeacherUser = {
 export type StudentUser = {
   _id: string;
   studentId: string;
-  fullName: string;
+  name: string;
   email: string;
   gender: "male" | "female" | "other";
   rollNumber: number;

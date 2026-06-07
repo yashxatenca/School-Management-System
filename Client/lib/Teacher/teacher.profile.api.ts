@@ -1,4 +1,4 @@
-import { api }  from "@/lib/api/axios";
+import { api } from "@/api/axios";
 
 export const getTeacherProfile = async () => {
   const { data } = await api.get("/api/v1/teacher/profile");

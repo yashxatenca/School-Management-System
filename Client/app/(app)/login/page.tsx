@@ -6,7 +6,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import { loginTeacher } from "@/lib/Admin/TeacherApi";
 import { useDispatch } from "react-redux";
 import { setAdmin } from "@/app/redux/Slice/authSlice";
-import { api } from "@/lib/api/axios";
+import { api } from "@/api/axios";
 import { setTeacher } from "@/app/redux/Slice/teacher.auth.slice";
 import { setStudent } from "@/app/redux/Slice/student.authslice";
 import { convertServerPatchToFullTree } from "next/dist/client/components/segment-cache/navigation";

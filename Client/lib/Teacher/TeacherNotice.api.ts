@@ -1,4 +1,4 @@
-import { api } from "../api/axios";
+import { api } from "../../api/axios";
 
 // ➕ CREATE
 export const createNotice = async (noticeData: any) => {

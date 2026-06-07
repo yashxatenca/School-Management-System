@@ -54,10 +54,6 @@ router.get(
 
 router.get(
   "/user",
-  (req, res, next) => {
-    console.log("req");
-    next();
-  },
   GlobalAuthMiddleware(["student"]),
   StudentController.getUser,
 );

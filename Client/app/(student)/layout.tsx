@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux"; // ✅ useSelector import kiya
-import { api } from "@/lib/api/axios";
+import { api } from "@/api/axios";
 import { setStudent, logoutStudent } from "@/app/redux/Slice/student.authslice";
 import { useEffect, useState } from "react";
 import ReduxProvider from "@/app/redux/provider";

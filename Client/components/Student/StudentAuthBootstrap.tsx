@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux";
-import { api } from "@/lib/api/axios";
+import { api } from "@/api/axios";
 import { setStudent, logoutStudent } from "@/app/redux/Slice/student.authslice";
 import { useEffect } from "react";
 // Agar TypeScript use kar rahe ho toh RootState import kar lena

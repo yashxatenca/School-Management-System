@@ -215,7 +215,6 @@ export class StudentController {
   };
   static getUser = async (req: Request, res: Response) => {
     try {
-      console.log(req.user);
       const id = req.user.id;
       if (!id) {
         return res.status(400).json({

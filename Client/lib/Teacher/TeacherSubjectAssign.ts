@@ -1,4 +1,4 @@
-import { api } from "../api/axios";
+import { api } from "../../api/axios";
 export async function createAssignSubject(data: any) {
   return await api.post("/api/v1/teacher/assign-class-subject/assign", data);
 }

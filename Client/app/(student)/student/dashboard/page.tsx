@@ -119,12 +119,16 @@ export default function StudentDashboard() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-500">Welcome back, {user?.fullName}!</p>
+          <p className="text-gray-500">Welcome back, {user?.name}!</p>
         </div>
         <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg border shadow-sm">
           <Calendar className="h-4 w-4 text-gray-500" />
           <span className="text-sm font-medium text-gray-700">
-            October 24, 2025
+            {new Date().toLocaleDateString("en-IN", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}
           </span>
         </div>
       </div>

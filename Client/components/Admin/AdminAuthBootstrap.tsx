@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
-import{ api } from "@/lib/api/axios";
+import { api } from "@/api/axios";
 import { setAdmin, logoutAdmin } from "@/app/redux/Slice/authSlice";
 import { useEffect } from "react";
 

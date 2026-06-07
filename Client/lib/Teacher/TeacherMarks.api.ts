@@ -1,4 +1,4 @@
-import { api } from "../api/axios"; // Apna axios instance import karein
+import { api } from "../../api/axios"; // Apna axios instance import karein
 
 // TypeScript interface (Optional but recommended for React + TS)
 export interface CreateMarkPayload {
