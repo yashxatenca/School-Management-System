@@ -9,58 +9,8 @@ import { logoutStudent } from "@/app/redux/Slice/student.authslice";
 import FullScreenLoader from "@/components/ui/FullScreenLoader";
 import { logout } from "@/lib/Student/Student.auth.api";
 import { useState } from "react";
-import {
-  LayoutDashboard,
-  ClipboardList,
-  CalendarDays,
-  FileQuestion,
-  GraduationCap,
-  Download,
-  MessageSquare,
-  User,
-  Settings,
-  LogOut,
-  ChevronDown,
-  ChevronRight,
-  BookOpen,
-} from "lucide-react";
-
-interface NavItem {
-  name: string;
-  href: string;
-  icon: any;
-  subItems?: { name: string; href: string; icon: any }[];
-}
-
-const navItems: NavItem[] = [
-  { name: "Dashboard", href: "/student/dashboard", icon: LayoutDashboard },
-
-  {
-    name: "Academics",
-    href: "/student/academics",
-    icon: BookOpen,
-    subItems: [
-      { name: "Attendance", href: "/student/attendance", icon: ClipboardList },
-      { name: "Timetable", href: "/student/timetable", icon: CalendarDays },
-      { name: "Assignments", href: "/student/assignments", icon: FileQuestion },
-      { name: "Results", href: "/student/results", icon: GraduationCap },
-      { name: "Study Materials", href: "/student/materials", icon: Download },
-    ],
-  },
-
-  {
-    name: "Communication",
-    href: "/student/communication",
-    icon: MessageSquare,
-    subItems: [
-      { name: "Messages", href: "/student/messages", icon: MessageSquare },
-      { name: "Notices", href: "/student/notices", icon: ClipboardList },
-    ],
-  },
-
-  { name: "Profile", href: "/student/profile", icon: User },
-  { name: "Settings", href: "/student/settings", icon: Settings },
-];
+import { GraduationCap, ChevronRight, LogOut, ChevronDown } from "lucide-react";
+import { navItems } from "./NavItem";
 
 export default function StudentSidebar({
   open,
@@ -105,10 +55,7 @@ export default function StudentSidebar({
       >
         {/* Logo */}
         <div className="p-6 border-b">
-          <Link
-            href="/student/dashboard"
-            className="flex items-center gap-3"
-          >
+          <Link href="/student/dashboard" className="flex items-center gap-3">
             <GraduationCap className="h-8 w-8 text-indigo-600" />
             <span className="text-xl font-bold text-gray-900">
               Student Portal
@@ -136,9 +83,10 @@ export default function StudentSidebar({
                       }
                     }}
                     className={`flex items-center justify-between px-4 py-3 rounded-lg transition font-medium cursor-pointer
-                      ${isItemActive
-                        ? "bg-indigo-100 text-indigo-700"
-                        : "text-gray-700 hover:bg-indigo-50 hover:text-indigo-700"
+                      ${
+                        isItemActive
+                          ? "bg-indigo-100 text-indigo-700"
+                          : "text-gray-700 hover:bg-indigo-50 hover:text-indigo-700"
                       }`}
                   >
                     <div className="flex items-center gap-3">
@@ -162,9 +110,10 @@ export default function StudentSidebar({
                             href={sub.href}
                             onClick={() => setOpen(false)}
                             className={`flex items-center gap-3 px-4 py-2 text-sm rounded-lg transition
-                              ${isActive(sub.href)
-                                ? "bg-indigo-50 text-indigo-700 font-semibold"
-                                : "text-gray-600 hover:bg-indigo-50 hover:text-indigo-700"
+                              ${
+                                isActive(sub.href)
+                                  ? "bg-indigo-50 text-indigo-700 font-semibold"
+                                  : "text-gray-600 hover:bg-indigo-50 hover:text-indigo-700"
                               }`}
                           >
                             <sub.icon className="h-4 w-4" />
