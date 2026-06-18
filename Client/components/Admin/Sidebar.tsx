@@ -47,55 +47,75 @@ const navItems: NavItem[] = [
   },
 
   {
-    name: "Students", href: "/admin/students", icon: Users,
+    name: "Students",
+    href: "/admin/students",
+    icon: Users,
 
-    subItems: [{
-      name: "Add Student", href: "/admin/students/add", icon: Plus
-    },
-    {
-      name: "View Students", href: "/admin/students/read", icon: Eye
-    }
-    ]
+    subItems: [
+      {
+        name: "Add Student",
+        href: "/admin/students/add",
+        icon: Plus,
+      },
+      {
+        name: "View Students",
+        href: "/admin/students/read",
+        icon: Eye,
+      },
+    ],
   },
   { name: "Classes", href: "/admin/classes", icon: BookOpen },
   { name: "Subjects", href: "/admin/subject", icon: BookOpen },
 
   {
-    name: "Attendance", href: "#", icon: UserCheck,
+    name: "Attendance",
+    href: "#",
+    icon: UserCheck,
 
-    subItems: [{
-      name: "Mark Attendance", href: "/admin/attendance/add", icon: Plus
-    },
-    {
-      name: "View Attendance", href: "/admin/attendance/read", icon: Eye
-    }
-    ]
+    subItems: [
+      {
+        name: "Mark Attendance",
+        href: "/admin/attendance/add",
+        icon: Plus,
+      },
+      {
+        name: "View Attendance",
+        href: "/admin/attendance/read",
+        icon: Eye,
+      },
+    ],
   },
   {
-    name: "Homework", href: "#", icon: BookOpen,
+    name: "Homework",
+    href: "#",
+    icon: BookOpen,
     subItems: [
       { name: "Create Homework", href: "/admin/homework/create", icon: Plus },
-      { name: "View Homework", href: "/admin/homework/read", icon: Eye }
-    ]
+      { name: "View Homework", href: "/admin/homework/read", icon: Eye },
+    ],
   },
   {
-    name: "Exams", href: "#", icon: BookOpen,
+    name: "Exams",
+    href: "#",
+    icon: BookOpen,
     subItems: [
       { name: "Create Exam", href: "/admin/exam/add", icon: Plus },
-      { name: "View Exams", href: "/admin/exam/read", icon: Eye }
-    ]
+      { name: "View Exams", href: "/admin/exam/read", icon: Eye },
+    ],
   },
   {
-    name: "Marks", href: "#", icon: BookOpen,
+    name: "Marks",
+    href: "#",
+    icon: BookOpen,
     subItems: [
       { name: "Create Marks", href: "/admin/marks/add", icon: Plus },
-      { name: "View Marks", href: "/admin/marks/read", icon: Eye }
-    ]
+      { name: "View Marks", href: "/admin/marks/read", icon: Eye },
+    ],
   },
 
   { name: "Profile", href: "/admin/profile", icon: User },
 
-  { name: "Settings", href: "/admin/settings", icon: Settings },
+  // { name: "Settings", href: "/admin/settings", icon: Settings },
 ];
 
 export default function Sidebar({
@@ -168,10 +188,11 @@ export default function Sidebar({
                     }
                   }}
                   className={`flex items-center justify-between px-3 py-2.5 rounded-lg cursor-pointer transition
-                  ${isActive(item.href)
+                  ${
+                    isActive(item.href)
                       ? "bg-indigo-100 text-indigo-700"
                       : "text-gray-700 hover:bg-indigo-50"
-                    }`}
+                  }`}
                 >
                   <div className="flex items-center gap-3">
                     <item.icon className="h-5 w-5" />
@@ -199,10 +220,11 @@ export default function Sidebar({
                           href={sub.href}
                           onClick={() => setOpen(false)}
                           className={`flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition
-                          ${isActive(sub.href)
+                          ${
+                            isActive(sub.href)
                               ? "bg-indigo-50 text-indigo-700 font-medium"
                               : "text-gray-600 hover:bg-indigo-50 hover:text-indigo-700"
-                            }`}
+                          }`}
                         >
                           <sub.icon className="h-4 w-4" />
                           {sub.name}
@@ -224,9 +246,7 @@ export default function Sidebar({
               className="h-9 w-9 rounded-full"
             />
             <div>
-              <p className="text-sm font-semibold">
-                {user?.name || "Admin"}
-              </p>
+              <p className="text-sm font-semibold">{user?.name || "Admin"}</p>
               <p className="text-xs text-gray-500">
                 {user?.role || "Principal"}
               </p>
