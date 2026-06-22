@@ -65,7 +65,7 @@ export default function AdminHeader({ setOpen, isOpen }: AdminHeaderProps) {
 
         <div className="flex items-center gap-3">
           <Image
-            src={user.photoURL || "/default-avatar.png"}
+            src={user.photoURL || "/avatar.png"}
             alt={user.name || "Principal"}
             width={40}
             height={40}

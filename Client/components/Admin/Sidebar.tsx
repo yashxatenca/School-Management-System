@@ -1,122 +1,23 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
+
 import { RootState } from "@/app/redux/store";
 import { logoutAdmin } from "@/app/redux/Slice/authSlice";
 import FullScreenLoader from "../ui/FullScreenLoader";
 import { LogoutUser } from "@/lib/Admin/User.Api";
-import { useState } from "react";
-import {
-  User,
-  UserCheck,
-  LayoutDashboard,
-  Users,
-  UserCog,
-  Eye,
-  BookOpen,
-  Settings,
-  LogOut,
-  GraduationCap,
-  School,
-  Plus,
-  ChevronRight,
-  Link as LinkIcon,
-} from "lucide-react";
 
-interface NavItem {
-  name: string;
-  href: string;
-  icon: any;
-  subItems?: { name: string; href: string; icon: any }[];
-}
+// ✅ Import the navItems data from your new file
+// (Path update kar lena jahan bhi aapne navItems.ts save ki hai)
+import { AdminUrl as navItems } from "./AdminUrl";
 
-const navItems: NavItem[] = [
-  { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
-
-  {
-    name: "Teachers",
-    href: "/admin/teachers",
-    icon: UserCog,
-    subItems: [
-      { name: "Create Teacher", href: "/admin/teachers/create", icon: Plus },
-      { name: "View Teachers", href: "/admin/teachers/read", icon: Eye },
-    ],
-  },
-
-  {
-    name: "Students",
-    href: "/admin/students",
-    icon: Users,
-
-    subItems: [
-      {
-        name: "Add Student",
-        href: "/admin/students/add",
-        icon: Plus,
-      },
-      {
-        name: "View Students",
-        href: "/admin/students/read",
-        icon: Eye,
-      },
-    ],
-  },
-  { name: "Classes", href: "/admin/classes", icon: BookOpen },
-  { name: "Subjects", href: "/admin/subject", icon: BookOpen },
-
-  {
-    name: "Attendance",
-    href: "#",
-    icon: UserCheck,
-
-    subItems: [
-      {
-        name: "Mark Attendance",
-        href: "/admin/attendance/add",
-        icon: Plus,
-      },
-      {
-        name: "View Attendance",
-        href: "/admin/attendance/read",
-        icon: Eye,
-      },
-    ],
-  },
-  {
-    name: "Homework",
-    href: "#",
-    icon: BookOpen,
-    subItems: [
-      { name: "Create Homework", href: "/admin/homework/create", icon: Plus },
-      { name: "View Homework", href: "/admin/homework/read", icon: Eye },
-    ],
-  },
-  {
-    name: "Exams",
-    href: "#",
-    icon: BookOpen,
-    subItems: [
-      { name: "Create Exam", href: "/admin/exam/add", icon: Plus },
-      { name: "View Exams", href: "/admin/exam/read", icon: Eye },
-    ],
-  },
-  {
-    name: "Marks",
-    href: "#",
-    icon: BookOpen,
-    subItems: [
-      { name: "Create Marks", href: "/admin/marks/add", icon: Plus },
-      { name: "View Marks", href: "/admin/marks/read", icon: Eye },
-    ],
-  },
-
-  { name: "Profile", href: "/admin/profile", icon: User },
-
-  // { name: "Settings", href: "/admin/settings", icon: Settings },
-];
+// Sirf wo icons import kiye hain jo Sidebar UI mein use ho rahe hain
+import { LogOut, GraduationCap, ChevronRight } from "lucide-react";
 
 export default function Sidebar({
   open,
@@ -159,7 +60,7 @@ export default function Sidebar({
       <aside
         className={`fixed left-0 top-0 h-full w-72 bg-white border-r z-30 transform transition-transform duration-300
         ${open ? "translate-x-0" : "-translate-x-full"}
-        lg:translate-x-0 lg:static`}
+        lg:translate-x-0 lg:static flex flex-col`}
       >
         {/* Logo */}
         <div className="p-5 border-b">
@@ -169,8 +70,8 @@ export default function Sidebar({
           </Link>
         </div>
 
-        {/* Navigation */}
-        <nav className="p-3 space-y-1 overflow-y-auto">
+        {/* Navigation (Flex-1 taaki scrollable area sirf menu items tak rahe) */}
+        <nav className="p-3 space-y-1 overflow-y-auto flex-1">
           {navItems.map((item) => {
             const hasSub = !!item.subItems;
             const isOpen = openMenu === item.name;
@@ -238,12 +139,15 @@ export default function Sidebar({
           })}
         </nav>
 
-        {/* Profile */}
-        <div className="p-4 border-t bg-gray-50">
+        {/* Profile (Bottom par fix rahega) */}
+        <div className="p-4 border-t bg-gray-50 mt-auto">
           <div className="flex items-center gap-3 mb-3">
-            <img
+            <Image
               src={user?.photoURL || "/avatar.png"}
-              className="h-9 w-9 rounded-full"
+              alt="Profile Picture"
+              width={36}
+              height={36}
+              className="h-9 w-9 rounded-full object-cover"
             />
             <div>
               <p className="text-sm font-semibold">{user?.name || "Admin"}</p>

@@ -4,6 +4,7 @@ import { useState } from "react";
 import AdminHeader from "@/components/Admin/AdminHeader";
 import Sidebar from "@/components/Admin/Sidebar";
 import ReduxProvider from "../redux/provider";
+import AdminAuthBootstrap from "@/components/Admin/AdminAuthBootstrap"; // 👈 ISE IMPORT KAREIN (path apne hisaab se adjust kar lena)
 
 function AdminLayoutInner({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -15,14 +16,14 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
 
       {/* Main flex container */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar – fixed on mobile (drawer), static & full-height on desktop */}
+        {/* Sidebar */}
         <aside
           className={`
             fixed inset-y-0 left-0 z-30 w-72 transform transition-transform duration-300 ease-in-out
             lg:relative lg:translate-x-0 lg:z-auto lg:flex lg:flex-col lg:h-screen
-            ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+            ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
             bg-white border-r border-gray-200
-            lg:border-r lg:shadow-none           /* ← no shadow on desktop */
+            lg:border-r lg:shadow-none
           `}
         >
           <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
@@ -36,12 +37,8 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
           />
         )}
 
-        {/* Main content area – takes remaining space, no extra gap */}
-        <main className="
-          flex-1 min-w-0 overflow-y-auto
-          lg:ml-0                      /* ← we control offset via sidebar positioning */
-          pt-16 lg:pt-0                /* header height compensation */
-        ">
+        {/* Main content area */}
+        <main className="flex-1 min-w-0 overflow-y-auto lg:ml-0 pt-16 lg:pt-0">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
             {children}
           </div>
@@ -51,9 +48,15 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <ReduxProvider>
+      {/* 👇 YAHAN ADD KAREIN taaki app load hote hi API call ho */}
+      <AdminAuthBootstrap />
       <AdminLayoutInner>{children}</AdminLayoutInner>
     </ReduxProvider>
   );

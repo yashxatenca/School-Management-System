@@ -1,20 +1,17 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
-
 import { Loader2, ShieldCheck, AlertCircle } from "lucide-react";
 
+// Import Custom Hooks
 import {
-  getAdminProfile,
-  createAdminProfile,
-  updateAdminProfile,
-  type AdminProfile,
-} from "@/lib/Admin/AdminProfile.api";
+  useAdminProfileQuery,
+  useAdminProfileMutation,
+} from "@/hooks/Admin/useAdminProfile";
 
-// Adjust these imports based on where you saved the files
+// Import UI Components
 import { Section, Grid, Input, Textarea } from "./_components/ProfileUi";
 import SchoolProfileSection from "./_components/SchoolProfileSection";
 
@@ -24,42 +21,32 @@ const formatDate = (date?: string) => {
 };
 
 export default function AdminProfilePage() {
-  const queryClient = useQueryClient();
   const { user } = useSelector((state: RootState) => state.authstate);
 
   const [editPersonal, setEditPersonal] = useState(false);
-  const [adminForm, setAdminForm] = useState<Partial<AdminProfile>>({});
+  const [adminForm, setAdminForm] = useState<any>({});
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["adminProfile"],
-    queryFn: getAdminProfile,
-    staleTime: 1000 * 60 * 5,
-  });
-
+  // Use Custom Hook for Fetching
+  const { data, isLoading, isError } = useAdminProfileQuery();
   const profileExists = data !== null && data !== undefined;
 
-  const adminMutation = useMutation({
-    mutationFn: (payload: Partial<AdminProfile>) =>
-      profileExists ? updateAdminProfile(payload) : createAdminProfile(payload),
-    onSuccess: (updated) => {
-      queryClient.setQueryData(["adminProfile"], (old: any) => ({
-        ...(old ?? {}),
-        admin: updated,
-      }));
-      setEditPersonal(false);
-    },
-  });
+  // Use Custom Hook for Mutation
+  const { mutate: saveProfile, isPending: isSaving } = useAdminProfileMutation(
+    profileExists,
+    () => setEditPersonal(false), // Callback to close edit mode on success
+  );
 
+  // Safe Prefill: Only prefill if NOT currently editing (prevents overwriting user input)
   useEffect(() => {
-    if (data) {
+    if (data && !editPersonal) {
       setAdminForm({
         ...data,
         dateOfBirth: formatDate(data.dateOfBirth),
         joiningDate: formatDate(data.joiningDate),
       });
     }
-  }, [data]);
-
+  }, [data, editPersonal]);
+  console.log(user);
   if (isLoading) {
     return (
       <div className="min-h-screen flex justify-center items-center">
@@ -80,30 +67,32 @@ export default function AdminProfilePage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 p-6">
       <div className="max-w-6xl mx-auto space-y-12">
+        {/* Basic Info (Read Only) */}
         <Section
           title="Basic Information"
           icon={<ShieldCheck size={24} className="text-indigo-600" />}
           editable={false}
         >
           <Grid>
-            <Input label="Name" value={user?.name} disabled />
-            <Input label="Email" value={user?.email} disabled />
-            <Input label="Role" value={user?.role} disabled />
+            <Input label="Name" value={user?.name || ""} disabled />
+            <Input label="Email" value={user?.email || ""} disabled />
+            <Input label="Role" value={user?.role || ""} disabled />
           </Grid>
         </Section>
 
+        {/* Professional Info */}
         <Section
           title="Professional Information"
           icon={<ShieldCheck size={24} className="text-indigo-600" />}
           edit={editPersonal}
           setEdit={setEditPersonal}
-          onSave={() => adminMutation.mutate(adminForm)}
-          loading={adminMutation.isPending}
+          onSave={() => saveProfile(adminForm)}
+          loading={isSaving}
         >
           <Grid>
             <Input
               label="Phone"
-              value={adminForm.phone}
+              value={adminForm.phone || ""} // Fallback to avoid uncontrolled input warning
               disabled={!editPersonal}
               onChange={(e: any) =>
                 setAdminForm({ ...adminForm, phone: e.target.value })
@@ -111,7 +100,7 @@ export default function AdminProfilePage() {
             />
             <Input
               label="Designation"
-              value={adminForm.designation}
+              value={adminForm.designation || ""}
               disabled={!editPersonal}
               onChange={(e: any) =>
                 setAdminForm({ ...adminForm, designation: e.target.value })
@@ -119,7 +108,7 @@ export default function AdminProfilePage() {
             />
             <Input
               label="Gender"
-              value={adminForm.gender}
+              value={adminForm.gender || ""}
               disabled={!editPersonal}
               onChange={(e: any) =>
                 setAdminForm({ ...adminForm, gender: e.target.value })
@@ -128,7 +117,7 @@ export default function AdminProfilePage() {
             <Input
               type="date"
               label="DOB"
-              value={adminForm.dateOfBirth}
+              value={adminForm.dateOfBirth || ""}
               disabled={!editPersonal}
               onChange={(e: any) =>
                 setAdminForm({ ...adminForm, dateOfBirth: e.target.value })
@@ -137,7 +126,7 @@ export default function AdminProfilePage() {
             <Input
               type="date"
               label="Joining Date"
-              value={adminForm.joiningDate}
+              value={adminForm.joiningDate || ""}
               disabled={!editPersonal}
               onChange={(e: any) =>
                 setAdminForm({ ...adminForm, joiningDate: e.target.value })
@@ -145,7 +134,7 @@ export default function AdminProfilePage() {
             />
             <Input
               label="Qualification"
-              value={adminForm.qualification}
+              value={adminForm.qualification || ""}
               disabled={!editPersonal}
               onChange={(e: any) =>
                 setAdminForm({ ...adminForm, qualification: e.target.value })
@@ -154,7 +143,7 @@ export default function AdminProfilePage() {
             <Input
               type="number"
               label="Experience (Years)"
-              value={adminForm.experienceYears}
+              value={adminForm.experienceYears || ""}
               disabled={!editPersonal}
               onChange={(e: any) =>
                 setAdminForm({
@@ -166,7 +155,7 @@ export default function AdminProfilePage() {
           </Grid>
           <Textarea
             label="Bio"
-            value={adminForm.bio}
+            value={adminForm.bio || ""}
             disabled={!editPersonal}
             onChange={(e: any) =>
               setAdminForm({ ...adminForm, bio: e.target.value })
@@ -174,11 +163,8 @@ export default function AdminProfilePage() {
           />
         </Section>
 
-        {/* Render the separated School Component */}
-        <SchoolProfileSection
-          schoolData={data?.school}
-          profileExists={profileExists}
-        />
+        {/* School Profile Section (Independent Component) */}
+        <SchoolProfileSection />
       </div>
     </div>
   );
