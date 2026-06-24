@@ -1,3 +1,7 @@
+"use client";
+
+import { useGetTotalDashboard } from "@/hooks/Admin/useAdminDashboard";
+
 function StatCard({
   title,
   value,
@@ -20,28 +24,51 @@ function StatCard({
 }
 
 export default function StatsGrid() {
+  const { data, isLoading } = useGetTotalDashboard();
+
+  const dashboard = data?.data?.TotalDashboard;
+
   const stats = [
     {
-      id: 1,
-      title: "Total Teachers",
-      value: 24,
+      title: "Teachers",
+      value: dashboard?.totalTeachers ?? 0,
       colorClass: "border-blue-500",
     },
     {
-      id: 2,
-      title: "Total Students",
-      value: 620,
+      title: "Students",
+      value: dashboard?.totalStudents ?? 0,
       colorClass: "border-green-500",
     },
-    { id: 3, title: "Classes", value: 18, colorClass: "border-purple-500" },
-    { id: 4, title: "Sections", value: 45, colorClass: "border-yellow-500" },
+    {
+      title: "Classes",
+      value: dashboard?.totalClasses ?? 0,
+      colorClass: "border-yellow-500",
+    },
+    {
+      title: "Sections",
+      value: dashboard?.totalSections ?? 0,
+      colorClass: "border-purple-500",
+    },
   ];
+
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[1, 2, 3, 4].map((item) => (
+          <div
+            key={item}
+            className="h-28 bg-gray-100 rounded-xl animate-pulse"
+          />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       {stats.map((stat) => (
         <StatCard
-          key={stat.id}
+          key={stat.title}
           title={stat.title}
           value={stat.value}
           colorClass={stat.colorClass}

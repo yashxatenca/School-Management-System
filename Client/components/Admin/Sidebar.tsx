@@ -12,11 +12,8 @@ import { logoutAdmin } from "@/app/redux/Slice/authSlice";
 import FullScreenLoader from "../ui/FullScreenLoader";
 import { LogoutUser } from "@/lib/Admin/User.Api";
 
-// ✅ Import the navItems data from your new file
-// (Path update kar lena jahan bhi aapne navItems.ts save ki hai)
 import { AdminUrl as navItems } from "./AdminUrl";
 
-// Sirf wo icons import kiye hain jo Sidebar UI mein use ho rahe hain
 import { LogOut, GraduationCap, ChevronRight } from "lucide-react";
 
 export default function Sidebar({
@@ -39,6 +36,10 @@ export default function Sidebar({
       dispatch(logoutAdmin());
       router.replace("/");
     },
+    onError: () => {
+      dispatch(logoutAdmin());
+      router.replace("/");
+    },
   });
 
   const isActive = (href: string) =>
@@ -48,7 +49,6 @@ export default function Sidebar({
     <>
       {logoutMutation.isPending && <FullScreenLoader />}
 
-      {/* Overlay for mobile */}
       {open && (
         <div
           className="fixed inset-0 bg-black/40 z-20 lg:hidden"
@@ -56,13 +56,11 @@ export default function Sidebar({
         />
       )}
 
-      {/* Sidebar */}
       <aside
         className={`fixed left-0 top-0 h-full w-72 bg-white border-r z-30 transform transition-transform duration-300
         ${open ? "translate-x-0" : "-translate-x-full"}
         lg:translate-x-0 lg:static flex flex-col`}
       >
-        {/* Logo */}
         <div className="p-5 border-b">
           <Link href="/admin/dashboard" className="flex items-center gap-2">
             <GraduationCap className="h-7 w-7 text-indigo-600" />
@@ -70,7 +68,6 @@ export default function Sidebar({
           </Link>
         </div>
 
-        {/* Navigation (Flex-1 taaki scrollable area sirf menu items tak rahe) */}
         <nav className="p-3 space-y-1 overflow-y-auto flex-1">
           {navItems.map((item) => {
             const hasSub = !!item.subItems;
@@ -78,7 +75,6 @@ export default function Sidebar({
 
             return (
               <div key={item.name}>
-                {/* Main Item */}
                 <div
                   onClick={() => {
                     if (hasSub) {
@@ -108,7 +104,6 @@ export default function Sidebar({
                   )}
                 </div>
 
-                {/* Submenu (Accordion) */}
                 {hasSub && (
                   <div
                     className={`overflow-hidden transition-all duration-300 ease-in-out
@@ -139,7 +134,6 @@ export default function Sidebar({
           })}
         </nav>
 
-        {/* Profile (Bottom par fix rahega) */}
         <div className="p-4 border-t bg-gray-50 mt-auto">
           <div className="flex items-center gap-3 mb-3">
             <Image
@@ -157,7 +151,6 @@ export default function Sidebar({
             </div>
           </div>
 
-          {/* Logout */}
           <button
             onClick={() => logoutMutation.mutate()}
             className="flex items-center gap-2 text-red-600 text-sm hover:bg-red-50 w-full px-3 py-2 rounded-lg transition"

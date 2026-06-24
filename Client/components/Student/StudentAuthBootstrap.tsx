@@ -27,7 +27,6 @@ export default function StudentAuthBootstrap({ children }) {
   const { user: currentStudent, authChecked } = useSelector(
     (state: RootState) => state.studentauthstate,
   );
-  console.log(currentStudent);
 
   const { data, isSuccess, isError, isLoading } = useQuery({
     queryKey: ["student-auth"],

@@ -53,9 +53,6 @@ export default function StudentProfilePage() {
       address: formData.address,
     };
 
-    console.log("🚀 FIND BY ID:", targetStudentId);
-    console.log("📦 DATA TO UPDATE:", updatePayload);
-
     setTimeout(() => {
       setIsSaving(false);
       toast.success("Profile updated successfully!");

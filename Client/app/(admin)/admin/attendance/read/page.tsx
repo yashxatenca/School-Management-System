@@ -150,7 +150,7 @@ export default function ViewAttendance() {
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                                            {console.log(attendanceList)}
+                                        
                                             {
                                                 attendanceList.map((record: any) => {
                                                     const student = record.studentId || {};

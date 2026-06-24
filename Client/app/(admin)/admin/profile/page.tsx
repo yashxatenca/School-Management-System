@@ -46,7 +46,6 @@ export default function AdminProfilePage() {
       });
     }
   }, [data, editPersonal]);
-  console.log(user);
   if (isLoading) {
     return (
       <div className="min-h-screen flex justify-center items-center">

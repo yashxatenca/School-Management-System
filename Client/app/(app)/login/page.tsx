@@ -1,76 +1,46 @@
 "use client";
 
-import { Suspense } from "react";
+import { useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { GoogleLogin } from "@react-oauth/google";
-import { loginTeacher } from "@/lib/Admin/TeacherApi";
-import { useDispatch } from "react-redux";
-import { setAdmin } from "@/app/redux/Slice/authSlice";
-import { api } from "@/api/axios";
-import { setTeacher } from "@/app/redux/Slice/teacher.auth.slice";
-import { setStudent } from "@/app/redux/Slice/student.authslice";
-import { convertServerPatchToFullTree } from "next/dist/client/components/segment-cache/navigation";
+
+import StudentLogin from "./_components/StudentLoginForm";
+import TeacherLogin from "./_components/TeacherLoginForm";
+import PrincipalLogin from "./_components/PrincipalLoginForm";
 
 type Role = "student" | "teacher" | "principal";
 
 function LoginContent() {
   const searchParams = useSearchParams();
-  const role = (searchParams.get("role") as Role) || "student";
-
   const router = useRouter();
-  const dispatch = useDispatch();
 
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const role = searchParams.get("role");
 
-    const form = new FormData(e.currentTarget);
+  useEffect(() => {
+    const validRoles = ["student", "teacher", "principal"];
+    if (!validRoles.includes(role as string)) {
+      router.replace("/");
+    }
+  }, [role, router]);
 
-    try {
-      // ================= TEACHER LOGIN =================
-      if (role === "teacher") {
-        const email = form.get("email") as string | null;
-        const password = form.get("password") as string | null;
-
-        const res = await loginTeacher(email, password);
-
-        if (res.success) {
-          router.push("/teacher/dashboard");
-        }
-      }
-
-      // ================= STUDENT LOGIN =================
-      else if (role === "student") {
-        const studentId = form.get("studentId");
-        const password = form.get("password");
-
-        const res = await api.post("/api/v1/auth/student/login", {
-          studentId,
-          password,
-        });
-        if (res.data.success) {
-          dispatch(setStudent(res.data.data));
-          router.push("/student/dashboard");
-        }
-      }
-    } catch (error: any) {
-      alert(error.response?.data?.message || "Login failed");
+  const renderLoginModule = () => {
+    switch (role) {
+      case "teacher":
+        return <TeacherLogin />;
+      case "principal":
+        return <PrincipalLogin />;
+      case "admin":
+        return <PrincipalLogin />;
+      case "student":
+        return <StudentLogin />;
+      default:
+        return null;
     }
   };
 
-  // ================= PRINCIPAL GOOGLE LOGIN =================
-  const handleGoogleLogin = async (token: string) => {
-    try {
-      const res = await api.post("/api/v1/auth/admin/login", { token });
-
-      if (res.data?.success) {
-        dispatch(setAdmin(res.data.user));
-      }
-
-      router.push("/admin/dashboard");
-    } catch (error: any) {
-      alert(error.response?.data?.message || "Google login failed");
-    }
-  };
+  const validRoles = ["student", "teacher", "principal"];
+  if (!validRoles.includes(role as string)) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
@@ -78,59 +48,7 @@ function LoginContent() {
         <h1 className="text-2xl font-bold text-center mb-6 capitalize">
           {role} Login
         </h1>
-
-        {role === "principal" ? (
-          <div className="flex justify-center">
-            <GoogleLogin
-              onSuccess={(res) => handleGoogleLogin(res.credential!)}
-              onError={() => alert("Google Login Failed")}
-            />
-          </div>
-        ) : (
-          <form onSubmit={handleLogin} className="space-y-4">
-            {/* TEACHER INPUT */}
-            {role === "teacher" && (
-              <input
-                name="email"
-                type="email"
-                placeholder="Teacher Email"
-                required
-                className="w-full border px-4 py-2 rounded focus:ring-2 focus:ring-indigo-500"
-              />
-            )}
-
-            {/* STUDENT INPUT */}
-            {role === "student" && (
-              <input
-                name="studentId"
-                type="text"
-                placeholder="Enter 6 Digit Student ID"
-                required
-                maxLength={6}
-                pattern="\d{6}"
-                onInput={(e) =>
-                  (e.currentTarget.value = e.currentTarget.value.replace(
-                    /\D/g,
-                    "",
-                  ))
-                }
-                className="w-full border px-4 py-2 rounded focus:ring-2 focus:ring-indigo-500"
-              />
-            )}
-
-            <input
-              name="password"
-              type="password"
-              placeholder="Password"
-              required
-              className="w-full border px-4 py-2 rounded focus:ring-2 focus:ring-indigo-500"
-            />
-
-            <button className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700">
-              Login
-            </button>
-          </form>
-        )}
+        {renderLoginModule()}
       </div>
     </div>
   );

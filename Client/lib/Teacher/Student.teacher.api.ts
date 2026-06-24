@@ -4,7 +4,7 @@ import { api } from "../../api/axios";
 // CREATE: Add a new student
 export const createStudent = async (studentData: any) => {
   const { data } = await api.post("/api/v1/auth/student/create", studentData);
-  console.log("Created student:", data);
+
   return data;
 };
 

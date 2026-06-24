@@ -20,7 +20,7 @@ export class AdminClassRepo {
         return await ClassModel.findByIdAndDelete(classId);
     }
 
-    static async getAllClasses() {
-        return await ClassModel.find({}).sort({ createdAt: -1 }).populate("teacherId", "name");
+    static async getAllClasses(id:string) {
+        return await ClassModel.find({createdBy:id}).sort({ createdAt: -1 }).populate("teacherId", "name");
     }
 }

@@ -11,37 +11,38 @@ export default function ProtectedRoute({
   role,
 }: {
   children: React.ReactNode;
-  role: "admin" | "teacher" | "student";
+  role: "admin";
 }) {
   const router = useRouter();
 
   const { isAuthenticated, user, authChecked } = useSelector(
-    (state: RootState) => state.authstate
+    (state: RootState) => state.authstate,
   );
 
   useEffect(() => {
     if (!authChecked) return;
 
     if (!isAuthenticated) {
-      router.replace(`/login?role=${role}`);
+      // 🛠️ FIX: Change this from `/login?role=${role}` to `/`
+      // This ensures that unauthenticated users (including those who just logged out)
+      // are always sent directly to the home page.
+      router.replace("/");
       return;
     }
 
     if (user?.role !== role) {
-      router.replace("/unauthorized");
+      // Optional: You can change this to "/" as well if you don't have an unauthorized page
+      router.replace("/");
     }
   }, [authChecked, isAuthenticated, user?.role, role, router]);
 
-  // 🔄 LOADER ONLY DURING AUTH CHECK
   if (!authChecked) {
     return <FullScreenLoader />;
   }
 
-  // ⛔ Block rendering if unauthorized
   if (!isAuthenticated || user?.role !== role) {
     return null;
   }
 
-  // ✅ Authorized
   return <>{children}</>;
 }
