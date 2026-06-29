@@ -46,19 +46,19 @@ export const AdminUrl: NavItem[] = [
     href: "#",
     icon: UserCheck,
     subItems: [
-      { name: "Mark Attendance", href: "/admin/attendance/add", icon: Plus },
+      //{ name: "Mark Attendance", href: "/admin/attendance/add", icon: Plus },
       { name: "View Attendance", href: "/admin/attendance/read", icon: Eye },
     ],
   },
-  {
-    name: "Homework",
-    href: "#",
-    icon: BookOpen,
-    subItems: [
-      { name: "Create Homework", href: "/admin/homework/create", icon: Plus },
-      { name: "View Homework", href: "/admin/homework/read", icon: Eye },
-    ],
-  },
+  // {
+  //   name: "Homework",
+  //   href: "#",
+  //   icon: BookOpen,
+  //   subItems: [
+  //    // { name: "Create Homework", href: "/admin/homework/create", icon: Plus },
+  //     { name: "View Homework", href: "/admin/homework/read", icon: Eye },
+  //   ],
+  // },
   {
     name: "Exams",
     href: "#",
@@ -73,7 +73,7 @@ export const AdminUrl: NavItem[] = [
     href: "#",
     icon: BookOpen,
     subItems: [
-      { name: "Create Marks", href: "/admin/marks/add", icon: Plus },
+      // { name: "Create Marks", href: "/admin/marks/add", icon: Plus },
       { name: "View Marks", href: "/admin/marks/read", icon: Eye },
     ],
   },
