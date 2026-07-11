@@ -5,8 +5,13 @@ import {
   Users,
   UserCog,
   Eye,
+  CalendarClock,
   BookOpen,
   Plus,
+  FolderOpen,
+  GraduationCap,
+  Library,
+  Presentation,
 } from "lucide-react";
 
 export interface NavItem {
@@ -75,6 +80,50 @@ export const AdminUrl: NavItem[] = [
     subItems: [
       // { name: "Create Marks", href: "/admin/marks/add", icon: Plus },
       { name: "View Marks", href: "/admin/marks/read", icon: Eye },
+    ],
+  },
+  {
+    name: "Essentails",
+    href: "#",
+    icon: FolderOpen,
+    subItems: [
+      {
+        name: "Student Data",
+        href: "/admin/essentials/students",
+        icon: Users,
+      },
+      {
+        name: "Teacher Data",
+        href: "/admin/essentials/teachers",
+        icon: GraduationCap,
+      },
+      {
+        name: "Class Data",
+        href: "/admin/essentials/classes",
+        icon: Presentation,
+      },
+      {
+        name: "Subject Data",
+        href: "/admin/essentials/subjects",
+        icon: Library,
+      },
+    ],
+  },
+  {
+    name: "Timetable",
+    href: "/admin/timetable",
+    icon: CalendarClock,
+    subItems: [
+      {
+        name: "Student Timetable",
+        href: "/admin/timetable/student",
+        icon: Users,
+      },
+      {
+        name: "Teacher Timetable",
+        href: "/admin/timetable/teacher",
+        icon: GraduationCap,
+      },
     ],
   },
 

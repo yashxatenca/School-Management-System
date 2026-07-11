@@ -24,6 +24,7 @@ export class AdminStudentController {
     try {
       const id = req.params.studentId as string;
       const user = await AdminStudentService.getStudentByStudentIdService(id);
+     
       if (user) {
         return res.status(200).json({
           message: "found successfull",
