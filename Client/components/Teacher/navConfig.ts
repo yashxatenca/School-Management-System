@@ -61,13 +61,29 @@ export const navItems: NavItem[] = [
     icon: BookOpen,
     subItems: [
       { name: "Classes & Sections", href: "/teacher/classes", icon: School },
-      { name: "Timetable", href: "/teacher/timetable", icon: CalendarDays },
       { name: "Lesson Plan", href: "/teacher/lesson-plan", icon: BookCheck },
       { name: "Live Classes", href: "/teacher/live-classes", icon: Video },
       {
         name: "Add Subjects",
         href: "/teacher/assign-class-subject",
         icon: BookOpen,
+      },
+    ],
+  },
+  {
+    name: "Time Table",
+    href: "/teacher/timetable",
+    icon: CalendarDays,
+    subItems: [
+      {
+        name: "My Timetable",
+        href: "/teacher/timetable/my",
+        icon: CalendarDays,
+      },
+      {
+        name: "Class Timetable",
+        href: "/teacher/timetable/class",
+        icon: School,
       },
     ],
   },

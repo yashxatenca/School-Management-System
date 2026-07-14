@@ -11,6 +11,8 @@ import homeworkRoute from "../../modules/Homework/Admin/admin.homework.route";
 import examRoute from "../../modules/Exam/Admin/admin.exam.route";
 import marksRoute from "../../modules/Marks/Admin/admin.marks.route";
 import AdminDashboardRoute from "../../modules/Dashboard/Admin/admin.dashboard.route";
+import adminstudenttimetableroute from "../../modules/Timetable/Student/Admin/timetable.admin.route";
+import adminteachertimetableroute from "../../modules/Timetable/Teacher/Admin/teacher.timetable.admin.route";
 // fucntion for initializing the routes
 export const registeradminroute = (app: Application) => {
   app.use("/api/v1/admin/subject", subjectRoute);
@@ -25,4 +27,6 @@ export const registeradminroute = (app: Application) => {
   app.use("/api/v1/admin/exam", examRoute);
   app.use("/api/v1/admin/marks", marksRoute);
   app.use("/api/v1/admin/dashboard", AdminDashboardRoute);
+  app.use("/api/v1/admin/timetable/student", adminstudenttimetableroute);
+  app.use("/api/v1/admin/timetable/teacher", adminteachertimetableroute);
 };

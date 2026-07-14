@@ -19,6 +19,7 @@ export default function ViewAttendancePage() {
   const handleFetchClick = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validation
     if (viewMode === "range" && startDate > endDate) {
       return toast.error("Start date cannot be after End date ❌");
     }
@@ -27,11 +28,46 @@ export default function ViewAttendancePage() {
       return toast.error("Please enter a Student ID ❌");
     }
 
-    const payload: any =
-      viewMode === "single" ? { date: singleDate } : { startDate, endDate };
+    setIsLoading(true);
 
-    if (targetType === "student") {
-      payload.studentId = studentId;
+    try {
+      // 1. Build Query Parameters for the API request
+      const params = new URLSearchParams();
+
+      if (viewMode === "single") {
+        params.append("date", singleDate);
+      } else {
+        params.append("startDate", startDate);
+        params.append("endDate", endDate);
+      }
+
+      if (targetType === "student") {
+        params.append("studentId", studentId);
+      }
+
+      // 2. Make the API Call (Adjust the endpoint path to match your backend)
+      const response = await fetch(`/api/attendance?${params.toString()}`);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to fetch attendance data.");
+      }
+
+      // 3. Update state with the returned data
+      // (Assuming your API returns an array or an object containing the array. Adjust 'data.records' as needed)
+      const records = Array.isArray(data) ? data : data.records || [];
+      setAttendanceRecords(records);
+
+      if (records.length === 0) {
+        toast.info("No attendance records found for these dates.");
+      } else {
+        toast.success("Attendance fetched successfully!");
+      }
+    } catch (error: any) {
+      console.error("Fetch error:", error);
+      toast.error(error.message || "An error occurred while fetching.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -80,7 +116,7 @@ export default function ViewAttendancePage() {
                 className={`flex-1 sm:flex-none px-4 py-2 rounded-md transition-colors text-sm sm:text-base ${
                   targetType === "class"
                     ? "bg-indigo-600 text-white shadow"
-                    : "bg-gray-200 text-gray-700"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                 }`}
               >
                 Whole Class
@@ -91,7 +127,7 @@ export default function ViewAttendancePage() {
                 className={`flex-1 sm:flex-none px-4 py-2 rounded-md transition-colors text-sm sm:text-base ${
                   targetType === "student"
                     ? "bg-indigo-600 text-white shadow"
-                    : "bg-gray-200 text-gray-700"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                 }`}
               >
                 Particular Student
@@ -111,7 +147,7 @@ export default function ViewAttendancePage() {
                 className={`flex-1 sm:flex-none px-4 py-2 rounded-md transition-colors text-sm sm:text-base ${
                   viewMode === "single"
                     ? "bg-blue-600 text-white shadow"
-                    : "bg-gray-200 text-gray-700"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                 }`}
               >
                 Single Date
@@ -122,7 +158,7 @@ export default function ViewAttendancePage() {
                 className={`flex-1 sm:flex-none px-4 py-2 rounded-md transition-colors text-sm sm:text-base ${
                   viewMode === "range"
                     ? "bg-blue-600 text-white shadow"
-                    : "bg-gray-200 text-gray-700"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                 }`}
               >
                 Date Range
@@ -196,7 +232,7 @@ export default function ViewAttendancePage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full sm:w-auto bg-gray-800 text-white px-6 py-2 rounded-lg hover:bg-gray-900 transition-colors h-[42px] min-w-[140px] flex items-center justify-center font-medium shadow-sm disabled:opacity-50 mt-2 sm:mt-0"
+              className="w-full sm:w-auto bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors h-[42px] min-w-[140px] flex items-center justify-center font-bold shadow-md disabled:opacity-50 mt-4 sm:mt-0"
             >
               {isLoading ? "Searching..." : "Get Attendance"}
             </button>

@@ -6,48 +6,20 @@ import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { saveAs } from "file-saver";
-
-// IMPORT YOUR CUSTOM HOOK HERE
-// import { useFetchSubjects } from '@/hooks/useFetchSubjects';
+import { useGetSubjects } from "@/hooks/Admin/useSubject";
 
 export default function SubjectsEssentials() {
   const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { ref, inView } = useInView({ threshold: 0.1 });
 
-  // 1. ATTACH YOUR CUSTOM HOOK HERE
-  /*
-  const { subjects, loadMore, hasMore, isLoading } = useFetchSubjects();
-  */
+  const { data, isLoading: hookLoading } = useGetSubjects();
 
-  // DUMMY DATA SETUP
-  const isLoading = false;
-  const hasMore = true;
-  const subjects = [
-    {
-      id: 1,
-      name: "Advanced Mathematics",
-      code: "MTH-401",
-      teacher: "Ravi Kumar",
-      type: "Theory",
-    },
-    {
-      id: 2,
-      name: "Physics Lab",
-      code: "PHY-402P",
-      teacher: "Sneha Desai",
-      type: "Practical",
-    },
-    {
-      id: 3,
-      name: "Computer Science",
-      code: "CS-403",
-      teacher: "Vikram Singh",
-      type: "Theory/Lab",
-    },
-  ];
+  const subjects = data?.data || data || [];
+  const isLoading = hookLoading || false;
+  const hasMore = false;
 
-
+  const loadMore = () => {};
 
   useEffect(() => {
     if (inView && hasMore && !isLoading) loadMore();
@@ -66,8 +38,20 @@ export default function SubjectsEssentials() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const getTeacherName = (teacher: any) => {
+    if (!teacher) return "Unassigned";
+    return typeof teacher === "object" ? teacher.name || "Unknown" : teacher;
+  };
+
   const exportToExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(subjects);
+    const exportData = subjects.map((s: any) => ({
+      "Subject Code": s.code,
+      "Subject Name": s.name,
+      "Assigned Teacher": getTeacherName(s.teacherId),
+      Status: s.isActive ? "Active" : "Inactive",
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Subjects");
     XLSX.writeFile(workbook, `Subjects_List.xlsx`);
@@ -80,9 +64,14 @@ export default function SubjectsEssentials() {
       "Subject Code",
       "Subject Name",
       "Assigned Teacher",
-      "Type",
+      "Status",
     ];
-    const tableRows = subjects.map((s) => [s.code, s.name, s.teacher, s.type]);
+    const tableRows = subjects.map((s: any) => [
+      s.code,
+      s.name,
+      getTeacherName(s.teacherId),
+      s.isActive ? "Active" : "Inactive",
+    ]);
 
     doc.text(`Subject Data`, 14, 15);
     autoTable(doc, { head: [tableColumn], body: tableRows, startY: 20 });
@@ -95,9 +84,11 @@ export default function SubjectsEssentials() {
       "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Subject Data</title></head><body>";
     let sourceHTML =
       header +
-      `<h2>Subject List</h2><table border='1' style='border-collapse:collapse; width:100%; text-align:left;'><tr><th>Subject Code</th><th>Subject Name</th><th>Assigned Teacher</th><th>Type</th></tr>`;
-    subjects.forEach((s) => {
-      sourceHTML += `<tr><td>${s.code}</td><td>${s.name}</td><td>${s.teacher}</td><td>${s.type}</td></tr>`;
+      `<h2>Subject List</h2><table border='1' style='border-collapse:collapse; width:100%; text-align:left;'><tr><th>Subject Code</th><th>Subject Name</th><th>Assigned Teacher</th><th>Status</th></tr>`;
+    subjects.forEach((s: any) => {
+      sourceHTML += `<tr><td>${s.code}</td><td>${s.name}</td><td>${getTeacherName(
+        s.teacherId,
+      )}</td><td>${s.isActive ? "Active" : "Inactive"}</td></tr>`;
     });
     sourceHTML += "</table></body></html>";
 
@@ -122,7 +113,9 @@ export default function SubjectsEssentials() {
           >
             Download Data
             <svg
-              className={`w-4 h-4 transition-transform ${isExportMenuOpen ? "rotate-180" : ""}`}
+              className={`w-4 h-4 transition-transform ${
+                isExportMenuOpen ? "rotate-180" : ""
+              }`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -168,25 +161,55 @@ export default function SubjectsEssentials() {
                 <th className="p-4 font-semibold">Code</th>
                 <th className="p-4 font-semibold">Subject Name</th>
                 <th className="p-4 font-semibold">Assigned Teacher</th>
-                <th className="p-4 font-semibold">Type</th>
+                <th className="p-4 font-semibold">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {subjects.map((sub) => (
-                <tr key={sub.id} className="hover:bg-gray-50 transition-colors">
+              {subjects.map((sub: any) => (
+                <tr
+                  key={sub._id}
+                  className="hover:bg-gray-50 transition-colors"
+                >
                   <td className="p-4 text-gray-800 font-medium">{sub.code}</td>
                   <td className="p-4 text-gray-800">{sub.name}</td>
-                  <td className="p-4 text-gray-600">{sub.teacher}</td>
-                  <td className="p-4 text-gray-600">{sub.type}</td>
+                  <td className="p-4 text-gray-600">
+                    {sub.teacherId ? (
+                      <span className="text-gray-800">
+                        {typeof sub.teacherId === "object"
+                          ? sub.teacherId.name
+                          : sub.teacherId}
+                      </span>
+                    ) : (
+                      <span className="text-gray-400 italic">Unassigned</span>
+                    )}
+                  </td>
+                  <td className="p-4 text-gray-600">
+                    <span
+                      className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
+                        sub.isActive
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700"
+                      }`}
+                    >
+                      {sub.isActive ? "Active" : "Inactive"}
+                    </span>
+                  </td>
                 </tr>
               ))}
+              {subjects.length === 0 && !isLoading && (
+                <tr>
+                  <td colSpan={4} className="p-8 text-center text-gray-500">
+                    No subjects found.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
       </div>
 
       <div ref={ref} className="w-full flex justify-center p-4">
-        {isLoading && <span className="text-gray-500">Loading more...</span>}
+        {isLoading && <span className="text-gray-500">Loading data...</span>}
       </div>
     </div>
   );
