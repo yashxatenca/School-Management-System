@@ -1,16 +1,13 @@
 import repository from "./teacher.profile.repo";
 import { ITeacherProfile } from "./teacher.profile.interface";
 import { Types } from "mongoose";
-class TeacherProfileService {
 
+class TeacherProfileService {
   async createProfile(
     id: string,
-    body: Partial<ITeacherProfile>
+    body: Partial<ITeacherProfile>,
   ): Promise<ITeacherProfile> {
-
-    const existing = await repository.findByAuthId(
-      new Types.ObjectId(id)
-    );
+    const existing = await repository.findByAuthId(new Types.ObjectId(id));
 
     if (existing) {
       throw new Error("Profile already exists");
@@ -23,25 +20,15 @@ class TeacherProfileService {
   }
 
   async getProfile(id: string) {
-    const profile = await repository.findByAuthId(
-      new Types.ObjectId(id)
-    );
+    const profile = await repository.findByAuthId(new Types.ObjectId(id));
 
-    if (!profile) {
-      throw new Error("Profile not found");
-    }
-
+    // Yahan se "throw new Error" hata diya hai
+    // Ab agar data nahi milega toh seedha 'null' return hoga frontend ko
     return profile;
   }
 
-  async updateProfile(
-    id: string,
-    body: Partial<ITeacherProfile>
-  ) {
-    return await repository.updateByAuthId(
-      new Types.ObjectId(id),
-      body
-    );
+  async updateProfile(id: string, body: Partial<ITeacherProfile>) {
+    return await repository.updateByAuthId(new Types.ObjectId(id), body);
   }
 }
 

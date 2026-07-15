@@ -2,16 +2,17 @@ import { Request, Response } from "express";
 import service from "./teacher.profile.service";
 
 class TeacherProfileController {
-
   async create(req: Request, res: Response) {
     try {
-      const result = await service.createProfile(req.user?.id, req.body);
+      const result = await service.createProfile(
+        req.user?.id as string,
+        req.body,
+      );
 
       res.status(201).json({
         success: true,
         data: result,
       });
-
     } catch (error: any) {
       res.status(400).json({
         success: false,
@@ -24,11 +25,11 @@ class TeacherProfileController {
     try {
       const result = await service.getProfile(req.user?.id!);
 
+      // Pehli baar me result 'null' aayega, par status 200 hi rahega
       res.status(200).json({
         success: true,
         data: result,
       });
-
     } catch (error: any) {
       res.status(404).json({
         success: false,
@@ -45,7 +46,6 @@ class TeacherProfileController {
         success: true,
         data: result,
       });
-
     } catch (error: any) {
       res.status(400).json({
         success: false,

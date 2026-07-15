@@ -61,8 +61,8 @@ export const navItems: NavItem[] = [
     icon: BookOpen,
     subItems: [
       { name: "Classes & Sections", href: "/teacher/classes", icon: School },
-      { name: "Lesson Plan", href: "/teacher/lesson-plan", icon: BookCheck },
-      { name: "Live Classes", href: "/teacher/live-classes", icon: Video },
+      //{ name: "Lesson Plan", href: "/teacher/lesson-plan", icon: BookCheck },
+      // { name: "Live Classes", href: "/teacher/live-classes", icon: Video },
       {
         name: "Add Subjects",
         href: "/teacher/assign-class-subject",
@@ -99,11 +99,11 @@ export const navItems: NavItem[] = [
         icon: FileQuestion,
       },
       { name: "View Homework", href: "/teacher/homework/view", icon: EyeIcon },
-      {
-        name: "Study Materials",
-        href: "/teacher/homework/materials",
-        icon: Download,
-      },
+      // {
+      //   name: "Study Materials",
+      //   href: "/teacher/homework/materials",
+      //   icon: Download,
+      // },
     ],
   },
 
@@ -124,7 +124,6 @@ export const navItems: NavItem[] = [
     icon: Megaphone,
     subItems: [
       { name: "Notice Board", href: "/teacher/notices", icon: Megaphone },
-      { name: "Messages", href: "/teacher/messages", icon: MessageSquare },
     ],
   },
 

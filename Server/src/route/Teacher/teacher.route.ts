@@ -11,6 +11,9 @@ import teacherexamroute from "../../modules/Exam/Teacher/teacher.exam.route";
 import teachermarkroute from "../../modules/Marks/Teacher/teacher.marks.route";
 import teachernoticeroute from "../../modules/Notice/Teacher/notice.teacher.route";
 import { TeacherTimetableRoutes } from "../../modules/Timetable/Teacher/Teacher/teacher.timetable.route";
+import TeacherStudentResult from "../../modules/Result/Teacher/teacher.result.route";
+import TeacherLeaveRoute from "../../modules/Leave/Teacher/leave.route";
+import TeacherProfileRoute from "../../modules/profile/Teacher/teacher.profile.route";
 // register route function
 export const registerteacherroute = (app: Application) => {
   app.use("/api/v1/auth/teacher", teacherauthroute);
@@ -28,4 +31,7 @@ export const registerteacherroute = (app: Application) => {
   app.use("/api/v1/teacher/marks/", teachermarkroute);
   app.use("/api/v1/teacher/notice/", teachernoticeroute);
   app.use("/api/v1/teacher/timetable/", TeacherTimetableRoutes);
+  app.use("/api/v1/teacher/result/", TeacherStudentResult);
+  app.use("/api/v1/teacher/leave/", TeacherLeaveRoute);
+  app.use("/api/v1/teachre/profile", TeacherProfileRoute);
 };

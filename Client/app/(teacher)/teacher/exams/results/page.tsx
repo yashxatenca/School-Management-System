@@ -1,274 +1,212 @@
 "use client";
 
-import React from "react";
-import { Printer, Award, Calendar, User } from "lucide-react";
+import React, { useState } from "react";
+import { useStudentResult } from "./_components/useResult";
+import { ReportCard } from "./_components/ReportCard";
+import {
+  AlertCircle,
+  Search,
+  BookOpen,
+  GraduationCap,
+  ChevronDown,
+} from "lucide-react";
 
-export default function StudentResultPage() {
-  // 📝 Dummy Data (Aap ise apne API se replace kar sakte hain)
-  const resultData = {
-    schoolName: "Delhi Public School",
-    schoolAddress: "Sector 45, Gurugram, Haryana",
-    examName: "Half Yearly Examination 2025-2026",
+import { useTeacherExam } from "@/hooks/Teacher/useTeacherExams";
+import { useGetStudent } from "@/hooks/Teacher/useTeacherStudent";
+
+// Updated Data Formatter matching your API Response
+const formatResultData = (rawData: any) => {
+  // Axios response structure handle karne ke liye
+  const resultData = rawData?.data?.data || rawData?.data || rawData;
+
+  if (!resultData || !resultData.student) return null;
+
+  return {
+    schoolName: resultData.schoolName || "N/A",
+    schoolAddress: resultData.schoolAddress || "N/A",
+    examName: resultData.examName || "Term Examination",
     student: {
-      name: "Aarav Sharma",
-      rollNo: "104",
-      class: "10th - A",
-      dob: "15-Aug-2010",
+      name: resultData.student?.name || "N/A",
+      studentId: resultData.student?.studentId || "N/A",
+      class: resultData.student?.class || "N/A",
     },
-    subjects: [
-      {
-        name: "Mathematics",
-        max: 100,
-        passing: 33,
-        obtained: 85,
-        grade: "A",
-        remarks: "Excellent",
-      },
-      {
-        name: "Science",
-        max: 100,
-        passing: 33,
-        obtained: 78,
-        grade: "B",
-        remarks: "Good effort",
-      },
-      {
-        name: "English",
-        max: 100,
-        passing: 33,
-        obtained: 92,
-        grade: "A+",
-        remarks: "Outstanding",
-      },
-      {
-        name: "Social Science",
-        max: 100,
-        passing: 33,
-        obtained: 65,
-        grade: "C",
-        remarks: "Can do better",
-      },
-      {
-        name: "Hindi",
-        max: 100,
-        passing: 33,
-        obtained: 88,
-        grade: "A",
-        remarks: "Very Good",
-      },
-    ],
+    subjects:
+      resultData.subjects?.map((sub: any) => ({
+        name: sub?.name?.name || sub?.name || "Subject Name",
+        max: sub?.max || 100,
+        passing: sub?.passing || 33,
+        obtained: sub?.obtained || 0,
+        grade: sub?.grade || "-",
+        remarks: sub?.remarks || "-",
+      })) || [],
     summary: {
-      totalMax: 500,
-      totalObtained: 408,
-      percentage: "81.60",
-      overallGrade: "A",
-      resultStatus: "Pass",
+      totalMax: resultData.summary?.totalMax || 0,
+      totalObtained: resultData.summary?.totalObtained || 0,
+      percentage: resultData.summary?.percentage || 0,
+      overallGrade: resultData.summary?.overallGrade || "-",
+      resultStatus: resultData.summary?.resultStatus || "Pending",
     },
+  };
+};
+
+export default function ResultsPage() {
+  const [selectedExamId, setSelectedExamId] = useState("");
+  const [selectedStudentId, setSelectedStudentId] = useState("");
+  const [shouldFetch, setShouldFetch] = useState(false);
+
+  const { data: exams, isLoading: isLoadingExams } = useTeacherExam();
+  const { data: students, isLoading: isLoadingStudents } = useGetStudent();
+
+  const {
+    data: rawData,
+    isFetching,
+    isError,
+    error,
+    refetch,
+  } = useStudentResult(selectedExamId, selectedStudentId, shouldFetch);
+
+  const handleExamChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedExamId(e.target.value);
+    setSelectedStudentId("");
+    setShouldFetch(false);
   };
 
-  const handlePrint = () => {
-    window.print();
+  const handleStudentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedStudentId(e.target.value);
+    setShouldFetch(false);
   };
+
+  const handleFetchResult = () => {
+    if (!selectedExamId || !selectedStudentId) return;
+
+    if (shouldFetch) {
+      refetch();
+    } else {
+      setShouldFetch(true);
+    }
+  };
+
+  const formattedData = rawData ? formatResultData(rawData) : null;
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4 md:p-8 font-sans">
-      {/* 🚀 MAGIC PRINT CSS: Yeh baaki pure page ko hide kar dega print karte waqt */}
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-          @media print {
-            body * {
-              visibility: hidden;
-            }
-            #printable-result, #printable-result * {
-              visibility: visible;
-            }
-            #printable-result {
-              position: absolute;
-              left: 0;
-              top: 0;
-              width: 100%;
-              margin: 0;
-              padding: 0;
-              box-shadow: none;
-              border: none;
-            }
-            /* Hide the action buttons specifically */
-            .no-print {
-              display: none !important;
-            }
-          }
-        `,
-        }}
-      />
-
-      {/* 🎛️ ACTION BUTTONS (Yeh print mein automatically hide ho jayenge .no-print class se) */}
-      <div className="max-w-4xl mx-auto mb-6 flex justify-end gap-4 no-print">
-        <button
-          onClick={handlePrint}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl font-bold shadow-sm transition-all"
-        >
-          <Printer className="w-5 h-5" /> Print Result
-        </button>
-      </div>
-
-      {/* 📄 REPORT CARD A4 PAPER FORMAT (Ispe id="printable-result" lagaya hai) */}
-      <div
-        id="printable-result"
-        className="max-w-4xl mx-auto bg-white border border-gray-300 shadow-lg p-8 md:p-12"
-      >
-        {/* Header Section */}
-        <div className="text-center border-b-2 border-gray-800 pb-6 mb-6">
-          <div className="w-16 h-16 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center mx-auto mb-3">
-            <Award className="w-8 h-8" />
-          </div>
-          <h1 className="text-3xl font-black text-gray-900 uppercase tracking-widest">
-            {resultData.schoolName}
-          </h1>
-          <p className="text-gray-600 mt-1 font-medium">
-            {resultData.schoolAddress}
+    <div className="min-h-screen bg-gray-50/50 p-4 md:p-8 flex flex-col gap-8 font-sans">
+      <div className="max-w-4xl mx-auto w-full space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Student Results</h1>
+          <p className="text-gray-500 text-sm mt-1">
+            Select an exam and student to view the academic report.
           </p>
-          <div className="mt-4 inline-block bg-gray-900 text-white px-6 py-1.5 rounded-full text-sm font-bold uppercase tracking-wider">
-            {resultData.examName} - Academic Report
-          </div>
         </div>
 
-        {/* Student Information */}
-        <div className="grid grid-cols-2 gap-4 mb-8 text-gray-800">
-          <div className="space-y-2">
-            <p className="flex items-center gap-2">
-              <User className="w-4 h-4 text-gray-500" />{" "}
-              <span className="font-semibold w-24">Student Name</span> :{" "}
-              {resultData.student.name}
-            </p>
-            <p className="flex items-center gap-2">
-              <span className="w-4 h-4"></span>{" "}
-              <span className="font-semibold w-24">Roll Number</span> :{" "}
-              {resultData.student.rollNo}
-            </p>
-          </div>
-          <div className="space-y-2">
-            <p className="flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-gray-500" />{" "}
-              <span className="font-semibold w-24">Class/Sec</span> :{" "}
-              {resultData.student.class}
-            </p>
-            <p className="flex items-center gap-2">
-              <span className="w-4 h-4"></span>{" "}
-              <span className="font-semibold w-24">D.O.B</span> :{" "}
-              {resultData.student.dob}
-            </p>
-          </div>
-        </div>
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
+            <div className="md:col-span-4 space-y-2">
+              <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                <BookOpen className="w-4 h-4 text-blue-600" />
+                1. Select Exam
+              </label>
+              <div className="relative">
+                <select
+                  value={selectedExamId}
+                  onChange={handleExamChange}
+                  disabled={isLoadingExams}
+                  className="w-full appearance-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-3 pr-10 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  <option value="">
+                    {isLoadingExams ? "Loading Exams..." : "-- Choose Exam --"}
+                  </option>
+                  {/* Fixed key prop here from exam.id to exam._id */}
+                  {exams?.data?.result?.map((exam: any) => (
+                    <option key={exam._id} value={exam._id}>
+                      {exam.name}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-3 top-3.5 w-4 h-4 text-gray-500 pointer-events-none" />
+              </div>
+            </div>
 
-        {/* Marks Table */}
-        <div className="mb-8 overflow-x-auto">
-          <table className="w-full text-left border-collapse border border-gray-300">
-            <thead>
-              <tr className="bg-gray-100 text-gray-800 uppercase text-sm tracking-wider">
-                <th className="border border-gray-300 px-4 py-3 font-bold">
-                  Subject
-                </th>
-                <th className="border border-gray-300 px-4 py-3 font-bold text-center">
-                  Max Marks
-                </th>
-                <th className="border border-gray-300 px-4 py-3 font-bold text-center">
-                  Passing
-                </th>
-                <th className="border border-gray-300 px-4 py-3 font-bold text-center">
-                  Obtained
-                </th>
-                <th className="border border-gray-300 px-4 py-3 font-bold text-center">
-                  Grade
-                </th>
-                <th className="border border-gray-300 px-4 py-3 font-bold">
-                  Remarks
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {resultData.subjects.map((sub, idx) => (
-                <tr key={idx} className="text-gray-700">
-                  <td className="border border-gray-300 px-4 py-3 font-semibold">
-                    {sub.name}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-3 text-center">
-                    {sub.max}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-3 text-center text-gray-500">
-                    {sub.passing}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-3 text-center font-bold text-gray-900">
-                    {sub.obtained}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-3 text-center font-bold">
-                    {sub.grade}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-3 text-sm italic">
-                    {sub.remarks || "-"}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Summary Section */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-gray-50 p-6 border border-gray-300 rounded-lg mb-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 w-full text-center">
-            <div>
-              <p className="text-gray-500 text-sm font-semibold uppercase mb-1">
-                Total Marks
-              </p>
-              <p className="text-2xl font-bold text-gray-900">
-                {resultData.summary.totalObtained}{" "}
-                <span className="text-base text-gray-500 font-medium">
-                  / {resultData.summary.totalMax}
-                </span>
-              </p>
-            </div>
-            <div>
-              <p className="text-gray-500 text-sm font-semibold uppercase mb-1">
-                Percentage
-              </p>
-              <p className="text-2xl font-bold text-gray-900">
-                {resultData.summary.percentage}%
-              </p>
-            </div>
-            <div>
-              <p className="text-gray-500 text-sm font-semibold uppercase mb-1">
-                Overall Grade
-              </p>
-              <p className="text-2xl font-black text-amber-500 drop-shadow-sm">
-                {resultData.summary.overallGrade}
-              </p>
-            </div>
-            <div>
-              <p className="text-gray-500 text-sm font-semibold uppercase mb-1">
-                Result
-              </p>
-              <p
-                className={`text-xl font-black uppercase tracking-wider mt-1 ${resultData.summary.resultStatus === "Pass" ? "text-green-600" : "text-red-600"}`}
+            <div className="md:col-span-4 space-y-2">
+              <label
+                className={`text-sm font-semibold flex items-center gap-2 ${!selectedExamId ? "text-gray-400" : "text-gray-700"}`}
               >
-                {resultData.summary.resultStatus}
-              </p>
+                <GraduationCap
+                  className={`w-4 h-4 ${!selectedExamId ? "text-gray-400" : "text-blue-600"}`}
+                />
+                2. Select Student
+              </label>
+              <div className="relative">
+                <select
+                  value={selectedStudentId}
+                  onChange={handleStudentChange}
+                  disabled={!selectedExamId || isLoadingStudents}
+                  className="w-full appearance-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-3 pr-10 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  <option value="">
+                    {isLoadingStudents
+                      ? "Loading Students..."
+                      : "-- Choose Student --"}
+                  </option>
+                  {/* Fixed key prop here from student.id to student._id */}
+                  {students?.data?.map((student: any) => (
+                    <option key={student._id} value={student._id}>
+                      {student.name} ({student.studentId})
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-3 top-3.5 w-4 h-4 text-gray-500 pointer-events-none" />
+              </div>
             </div>
-          </div>
-        </div>
 
-        {/* Signatures Section */}
-        <div className="flex justify-between items-end mt-16 pt-8 border-t border-gray-200 text-gray-800">
-          <div className="text-center">
-            <div className="w-40 border-b border-gray-800 mb-2"></div>
-            <p className="font-semibold text-sm">Class Teacher Signature</p>
-          </div>
-
-          <div className="text-center">
-            <div className="w-40 border-b border-gray-800 mb-2"></div>
-            <p className="font-semibold text-sm">Principal Signature</p>
+            <div className="md:col-span-4">
+              <button
+                onClick={handleFetchResult}
+                disabled={!selectedExamId || !selectedStudentId || isFetching}
+                className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed text-white px-6 py-3 rounded-xl font-bold shadow-sm transition-all"
+              >
+                {isFetching ? (
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  <Search className="w-5 h-5" />
+                )}
+                {isFetching ? "Fetching..." : "View Result"}
+              </button>
+            </div>
           </div>
         </div>
       </div>
+
+      {isError && (
+        <div className="max-w-4xl mx-auto w-full bg-red-50 p-6 rounded-2xl border border-red-200 text-center text-red-600 animate-in fade-in slide-in-from-bottom-4">
+          <AlertCircle className="w-8 h-8 mx-auto mb-2" />
+          <p className="font-bold">Error loading result</p>
+          <p className="text-sm mt-1">
+            {error?.message ||
+              "Something went wrong while fetching the records."}
+          </p>
+        </div>
+      )}
+
+      {!isFetching && !isError && shouldFetch && !formattedData && (
+        <div className="max-w-4xl mx-auto w-full bg-white p-12 rounded-2xl shadow-sm text-center border border-gray-200 animate-in fade-in slide-in-from-bottom-4">
+          <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+            <AlertCircle className="w-8 h-8 text-gray-400" />
+          </div>
+          <h2 className="text-xl font-bold text-gray-800 mb-2">
+            No Result Found
+          </h2>
+          <p className="text-gray-500 text-sm">
+            Marks have not been published for this student in the selected
+            examination yet.
+          </p>
+        </div>
+      )}
+
+      {!isFetching && !isError && shouldFetch && formattedData && (
+        <div className="max-w-4xl mx-auto w-full mt-4">
+          <ReportCard data={formattedData} />
+        </div>
+      )}
     </div>
   );
 }
