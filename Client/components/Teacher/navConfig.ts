@@ -143,15 +143,8 @@ export const navItems: NavItem[] = [
 
   { name: "Profile", href: "/teacher/profile", icon: User },
   {
-    name: "Settings",
-    href: "/teacher/settings",
-    icon: Settings,
-    subItems: [
-      {
-        name: "Do Nothing",
-        href: "#",
-        icon: User,
-      },
-    ],
+    name: "Student Data",
+    href: "/teacher/student-data",
+    icon: User,
   },
 ];

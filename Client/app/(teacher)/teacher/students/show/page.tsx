@@ -9,7 +9,8 @@ import {
   Loader2,
   GraduationCap,
   AlertCircle,
-  Search
+  Search,
+  User, // <-- Added User icon for the profile button
 } from "lucide-react";
 import { toast } from "react-toastify";
 import { getStudents, deleteStudent } from "@/lib/Teacher/Student.teacher.api";
@@ -25,14 +26,18 @@ export default function StudentListPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const { data: apiResponse, isLoading, isError } = useQuery({
+  const {
+    data: apiResponse,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["students"],
     queryFn: getStudents,
   });
 
   const students: Student[] = Array.isArray(apiResponse)
     ? apiResponse
-    : (apiResponse?.students || apiResponse?.data || []);
+    : apiResponse?.students || apiResponse?.data || [];
 
   const deleteMutation = useMutation({
     mutationFn: (studentId: string) => deleteStudent(studentId),
@@ -67,7 +72,9 @@ export default function StudentListPage() {
         <AlertCircle className="h-10 w-10" />
         <p>Failed to load students.</p>
         <button
-          onClick={() => queryClient.invalidateQueries({ queryKey: ["students"] })}
+          onClick={() =>
+            queryClient.invalidateQueries({ queryKey: ["students"] })
+          }
           className="text-sm underline hover:text-red-700"
         >
           Try Again
@@ -78,7 +85,6 @@ export default function StudentListPage() {
 
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-6">
-
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -118,8 +124,10 @@ export default function StudentListPage() {
             <tbody className="divide-y divide-gray-100">
               {students.length > 0 ? (
                 students.map((student) => (
-                  <tr key={student._id} className="hover:bg-gray-50 transition group">
-
+                  <tr
+                    key={student._id}
+                    className="hover:bg-gray-50 transition group"
+                  >
                     {/* Name */}
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
@@ -133,9 +141,7 @@ export default function StudentListPage() {
                     </td>
 
                     {/* Email */}
-                    <td className="px-6 py-4 text-gray-500">
-                      {student.email}
-                    </td>
+                    <td className="px-6 py-4 text-gray-500">{student.email}</td>
 
                     {/* Student ID */}
                     <td className="px-6 py-4 text-gray-700 font-mono">
@@ -145,17 +151,36 @@ export default function StudentListPage() {
                     {/* Actions */}
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
+                        {/* Profile Button */}
                         <button
-                          onClick={() => router.push(`/teacher/students/edit/${student._id}`)}
+                          onClick={() =>
+                            router.push(
+                              `/teacher/students/profile/${student._id}`,
+                            )
+                          }
+                          className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition"
+                          title="View Profile"
+                        >
+                          <User className="h-4 w-4" />
+                        </button>
+
+                        {/* Edit Button */}
+                        <button
+                          onClick={() =>
+                            router.push(`/teacher/students/edit/${student._id}`)
+                          }
                           className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition"
+                          title="Edit Student"
                         >
                           <Edit className="h-4 w-4" />
                         </button>
 
+                        {/* Delete Button */}
                         <button
                           onClick={() => handleDelete(student._id)}
                           disabled={deleteMutation.isPending}
                           className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
+                          title="Delete Student"
                         >
                           {deleteMutation.isPending ? (
                             <Loader2 className="h-4 w-4 animate-spin" />
@@ -169,11 +194,18 @@ export default function StudentListPage() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={4} className="px-6 py-16 text-center text-gray-400">
+                  <td
+                    colSpan={4}
+                    className="px-6 py-16 text-center text-gray-400"
+                  >
                     <div className="flex flex-col items-center gap-3">
                       <Search className="h-6 w-6 text-gray-300" />
-                      <p className="font-medium text-gray-600">No students yet</p>
-                      <p className="text-sm">Click "Add Student" to create your first record.</p>
+                      <p className="font-medium text-gray-600">
+                        No students yet
+                      </p>
+                      <p className="text-sm">
+                        Click "Add Student" to create your first record.
+                      </p>
                     </div>
                   </td>
                 </tr>

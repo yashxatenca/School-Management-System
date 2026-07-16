@@ -6,7 +6,6 @@ import adminschoolroute from "../../modules/school/Admin/admin.school.route";
 import adminclassroute from "../../modules/Classes/Admin/class.admin.route";
 import subjectroute from "../../modules/Subjects/Admin/subject.admin.route";
 import adminstudentroute from "../../modules/Student/Admin/admin.student.route";
-import attendanceRoute from "../../modules/Attendance/Admin/admin.attendance.route";
 import homeworkRoute from "../../modules/Homework/Admin/admin.homework.route";
 import examRoute from "../../modules/Exam/Admin/admin.exam.route";
 import marksRoute from "../../modules/Marks/Admin/admin.marks.route";
@@ -22,7 +21,6 @@ export const registeradminroute = (app: Application) => {
   app.use("/api/v1/admin/class", adminclassroute);
   app.use("/api/v1/admin/subject", subjectroute);
   app.use("/api/v1/admin/student", adminstudentroute);
-  app.use("/api/v1/admin/attendance", attendanceRoute);
   app.use("/api/v1/admin/homework", homeworkRoute);
   app.use("/api/v1/admin/exam", examRoute);
   app.use("/api/v1/admin/marks", marksRoute);
