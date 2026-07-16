@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux"; // ✅ useSelector import kiya
 import { api } from "@/api/axios";
 import { setStudent, logoutStudent } from "@/app/redux/Slice/student.authslice";
+import { setStudentClassDetail } from "../redux/Slice/StudentClass.slice";
 import { useEffect, useState } from "react";
 import ReduxProvider from "@/app/redux/provider";
 import StudentSidebar from "@/components/Student/StudentSidebar";
@@ -44,6 +45,7 @@ function StudentLayoutInner({ children }: { children: React.ReactNode }) {
     if (data) {
       // ✅ data.data ko theek karke sirf data kar diya
       dispatch(setStudent(data));
+      dispatch(setStudentClassDetail(data.classId));
     } else if (data === null && !isLoading && !authChecked) {
       // ✅ Agar user null hai aur loading khatam ho chuki hai, tabhi logout karo
       dispatch(logoutStudent());

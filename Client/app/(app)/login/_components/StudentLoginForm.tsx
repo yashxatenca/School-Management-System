@@ -1,6 +1,7 @@
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setStudent } from "@/app/redux/Slice/student.authslice";
+import { setStudentClassDetail } from "@/app/redux/Slice/StudentClass.slice";
 import { api } from "@/api/axios";
 
 export default function StudentLogin() {
@@ -20,6 +21,7 @@ export default function StudentLogin() {
       });
       if (res.data.success) {
         dispatch(setStudent(res.data.data));
+        dispatch(setStudentClassDetail(res.data.data.classId));
         router.push("/student/dashboard");
       }
     } catch (error: any) {
