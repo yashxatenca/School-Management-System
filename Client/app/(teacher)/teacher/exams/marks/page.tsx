@@ -29,7 +29,7 @@ export default function AddMarksPage() {
   );
 
   const teacherId = user?._id;
-  const principalId = user?.principalId;
+  const principalId = (user as any)?.principalId;
 
   // 🎛️ UI States
   const [isGradingStarted, setIsGradingStarted] = useState(false);

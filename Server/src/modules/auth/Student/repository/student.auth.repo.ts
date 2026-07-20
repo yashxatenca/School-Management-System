@@ -44,7 +44,9 @@ export class StudentRepository {
   ): Promise<StudentAuthDocument[]> {
     return await StudentAuth.find({
       teacherId: new Types.ObjectId(teacherId),
-    }).select("-password");
+    })
+      .select("-password")
+      .populate("classId");
   }
 
   // ✅ FIND STUDENT by studentId (FOR LOGIN)

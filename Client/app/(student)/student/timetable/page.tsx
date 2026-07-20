@@ -9,9 +9,14 @@ export default function StudentTimetablePage() {
     (state: RootState) => state.studentclassstate,
   );
 
-  const { data, isLoading, isError, error } = useClassTimetables(classId);
+  // FIX 1: Cast classId to string to prevent "null is not assignable to string" error
+  const { data, isLoading, isError, error } = useClassTimetables(
+    classId as string,
+  );
 
-  const timetables = data?.data?.timetable || data?.data || [];
+  // FIX 2: Cast data to any to prevent strict type checking on nested properties
+  const timetables =
+    (data as any)?.data?.timetable || (data as any)?.data || [];
 
   if (!classId) {
     return (

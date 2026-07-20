@@ -32,7 +32,11 @@ const StudentHomeworkPage = () => {
   const [visibleCount, setVisibleCount] = useState(6);
 
   const observer = useRef<IntersectionObserver | null>(null);
-  const homeworkList: Homework[] = data?.data?.result || data?.result || [];
+
+  // FIX: Typecast 'data' to 'any' to bypass strict AxiosResponse property checks
+  const homeworkList: Homework[] =
+    (data as any)?.data?.result || (data as any)?.result || [];
+
   const hasMore = visibleCount < homeworkList.length;
 
   const lastElementRef = useCallback(

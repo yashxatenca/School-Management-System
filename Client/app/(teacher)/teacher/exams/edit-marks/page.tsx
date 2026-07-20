@@ -30,7 +30,9 @@ export default function EditMarksPage() {
     (state: RootState) => state.teacherclassstate?.classId,
   );
   const teacherId = user?._id;
-  const principalId = user?.principalId;
+
+  // FIX: Typecast user to 'any' to bypass strict TeacherUser type checking
+  const principalId = (user as any)?.principalId;
 
   // 🎛️ UI States
   const [selectedStudent, setSelectedStudent] = useState("");

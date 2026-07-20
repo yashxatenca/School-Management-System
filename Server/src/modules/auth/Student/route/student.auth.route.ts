@@ -2,6 +2,7 @@ import { Router } from "express";
 import { StudentController } from "../controller/student.auth.controller";
 // import { authMiddleware } from "../middleware/student.auth.middleware";
 import { GlobalAuthMiddleware } from "../../../../middleware/Gloabal.auth.middleware";
+import { ApiError } from "../../../../core/errors/ApiErrors";
 const router = Router();
 
 // ===============================
@@ -63,5 +64,18 @@ router.get(
   GlobalAuthMiddleware(["teacher"]),
   StudentController.getById,
 );
+
+router.get("/logout", GlobalAuthMiddleware(["student"]), (req, res) => {
+  try {
+    if (!req.user) throw new ApiError(401, "Unauthorized");
+
+    res
+      .clearCookie("token")
+      .status(200)
+      .json({ message: "Logout Successfull", success: true });
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong", success: false });
+  }
+});
 
 export default router;

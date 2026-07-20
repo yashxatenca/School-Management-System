@@ -1,4 +1,3 @@
-// src/app/student/profile/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -46,9 +45,12 @@ export default function StudentProfilePage() {
     formState: { errors },
   } = useForm<StudentProfileData>();
 
-  // Safely extract data handling any nesting level from the API response
+  // FIX: Cast profiledata to 'any' to bypass strict type checking for nested .data properties
   const profile =
-    profiledata?.data?.data || profiledata?.data || profiledata || null;
+    (profiledata as any)?.data?.data ||
+    (profiledata as any)?.data ||
+    profiledata ||
+    null;
 
   // Jab data server se aaye, form ko reset/populate kar dein
   useEffect(() => {

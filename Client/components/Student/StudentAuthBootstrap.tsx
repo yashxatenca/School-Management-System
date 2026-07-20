@@ -1,18 +1,22 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useQuery } from "@tanstack/react-query";
 import { api } from "@/api/axios";
 import { setStudent, logoutStudent } from "@/app/redux/Slice/student.authslice";
-import { useEffect } from "react";
-// Agar TypeScript use kar rahe ho toh RootState import kar lena
 import { RootState } from "@/app/redux/store";
+
+// 1. Interface add kiya props ke liye
+interface StudentAuthBootstrapProps {
+  children: React.ReactNode;
+}
 
 const fetchStudent = async () => {
   try {
     const res = await api.get("/api/v1/student/auth/user");
     if (res.data?.success) {
-      return res.data.student; // Make sure backend se ye 'student' object hi bhej raha hai
+      return res.data.student;
     }
     return null;
   } catch (error) {
@@ -20,15 +24,17 @@ const fetchStudent = async () => {
   }
 };
 
-export default function StudentAuthBootstrap({ children }) {
+// 2. Destructuring mein ab proper interface ka use ho raha hai
+export default function StudentAuthBootstrap({
+  children,
+}: StudentAuthBootstrapProps) {
   const dispatch = useDispatch();
 
-  // 🔥 YAHAN CHANGE KIYA HAI: Aapke naye slice structure ke hisaab se state update ki
-  const { user: currentStudent, authChecked } = useSelector(
+  const { authChecked } = useSelector(
     (state: RootState) => state.studentauthstate,
   );
 
-  const { data, isSuccess, isError, isLoading } = useQuery({
+  const { data, isSuccess, isError } = useQuery({
     queryKey: ["student-auth"],
     queryFn: fetchStudent,
     retry: false,
@@ -38,20 +44,15 @@ export default function StudentAuthBootstrap({ children }) {
 
   useEffect(() => {
     if (isSuccess && data) {
-      // API se data mil gaya, Redux mein set kar do
       dispatch(setStudent(data));
     }
   }, [isSuccess, data, dispatch]);
 
   useEffect(() => {
     if (isError) {
-      // API fail ho gayi (token nahi hai ya expire ho gaya)
       dispatch(logoutStudent());
     }
   }, [isError, dispatch]);
-
-  // Is component ko ab loading state khud handle karne ki zaroorat nahi hai,
-  // kyunki wo aapka `ProtectedStudentRoute` handle kar raha hai `authChecked` ke through.
 
   return <>{children}</>;
 }

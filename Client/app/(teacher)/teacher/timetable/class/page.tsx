@@ -8,7 +8,7 @@ const TeacherClassTimetable = () => {
     (state: RootState) => state.teacherclassstate,
   );
   const { data, isLoading, isError } = useClassTimetable(classId as string);
-  const extractDriveId = (url) => {
+  const extractDriveId = (url: any) => {
     try {
       const match = url?.match(/\/d\/(.+?)\//);
       return match ? match[1] : null;

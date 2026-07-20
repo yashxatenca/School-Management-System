@@ -15,6 +15,19 @@ import {
 import { Section, Grid, Input, Textarea } from "./_components/ProfileUi";
 import SchoolProfileSection from "./_components/SchoolProfileSection";
 
+// TypeScript Interface
+interface AdminProfileData {
+  phone?: string;
+  designation?: string;
+  gender?: string;
+  dateOfBirth?: string;
+  joiningDate?: string;
+  qualification?: string;
+  experienceYears?: number | string;
+  bio?: string;
+  [key: string]: any;
+}
+
 const formatDate = (date?: string) => {
   if (!date) return "";
   return new Date(date).toISOString().split("T")[0];
@@ -24,28 +37,39 @@ export default function AdminProfilePage() {
   const { user } = useSelector((state: RootState) => state.authstate);
 
   const [editPersonal, setEditPersonal] = useState(false);
-  const [adminForm, setAdminForm] = useState<any>({});
+  const [adminForm, setAdminForm] = useState<AdminProfileData>({});
 
-  // Use Custom Hook for Fetching
   const { data, isLoading, isError } = useAdminProfileQuery();
   const profileExists = data !== null && data !== undefined;
 
-  // Use Custom Hook for Mutation
   const { mutate: saveProfile, isPending: isSaving } = useAdminProfileMutation(
     profileExists,
-    () => setEditPersonal(false), // Callback to close edit mode on success
+    () => setEditPersonal(false),
   );
 
-  // Safe Prefill: Only prefill if NOT currently editing (prevents overwriting user input)
+  // FIX: Helper to handle save
+  const handleSave = () => {
+    // ExperienceYears ko explicit number mein convert karke bhejein taaki build pass ho
+    const payload = {
+      ...adminForm,
+      experienceYears: adminForm.experienceYears
+        ? Number(adminForm.experienceYears)
+        : 0,
+    };
+    saveProfile(payload);
+  };
+
   useEffect(() => {
     if (data && !editPersonal) {
+      const profileData = data as any;
       setAdminForm({
-        ...data,
-        dateOfBirth: formatDate(data.dateOfBirth),
-        joiningDate: formatDate(data.joiningDate),
+        ...profileData,
+        dateOfBirth: formatDate(profileData.dateOfBirth),
+        joiningDate: formatDate(profileData.joiningDate),
       });
     }
   }, [data, editPersonal]);
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex justify-center items-center">
@@ -66,7 +90,6 @@ export default function AdminProfilePage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 p-6">
       <div className="max-w-6xl mx-auto space-y-12">
-        {/* Basic Info (Read Only) */}
         <Section
           title="Basic Information"
           icon={<ShieldCheck size={24} className="text-indigo-600" />}
@@ -79,21 +102,21 @@ export default function AdminProfilePage() {
           </Grid>
         </Section>
 
-        {/* Professional Info */}
         <Section
           title="Professional Information"
           icon={<ShieldCheck size={24} className="text-indigo-600" />}
           edit={editPersonal}
           setEdit={setEditPersonal}
-          onSave={() => saveProfile(adminForm)}
+          // FIX: Call the wrapper function instead of direct saveProfile
+          onSave={handleSave}
           loading={isSaving}
         >
           <Grid>
             <Input
               label="Phone"
-              value={adminForm.phone || ""} // Fallback to avoid uncontrolled input warning
+              value={adminForm.phone || ""}
               disabled={!editPersonal}
-              onChange={(e: any) =>
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setAdminForm({ ...adminForm, phone: e.target.value })
               }
             />
@@ -101,7 +124,7 @@ export default function AdminProfilePage() {
               label="Designation"
               value={adminForm.designation || ""}
               disabled={!editPersonal}
-              onChange={(e: any) =>
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setAdminForm({ ...adminForm, designation: e.target.value })
               }
             />
@@ -109,7 +132,7 @@ export default function AdminProfilePage() {
               label="Gender"
               value={adminForm.gender || ""}
               disabled={!editPersonal}
-              onChange={(e: any) =>
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setAdminForm({ ...adminForm, gender: e.target.value })
               }
             />
@@ -118,7 +141,7 @@ export default function AdminProfilePage() {
               label="DOB"
               value={adminForm.dateOfBirth || ""}
               disabled={!editPersonal}
-              onChange={(e: any) =>
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setAdminForm({ ...adminForm, dateOfBirth: e.target.value })
               }
             />
@@ -127,7 +150,7 @@ export default function AdminProfilePage() {
               label="Joining Date"
               value={adminForm.joiningDate || ""}
               disabled={!editPersonal}
-              onChange={(e: any) =>
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setAdminForm({ ...adminForm, joiningDate: e.target.value })
               }
             />
@@ -135,7 +158,7 @@ export default function AdminProfilePage() {
               label="Qualification"
               value={adminForm.qualification || ""}
               disabled={!editPersonal}
-              onChange={(e: any) =>
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setAdminForm({ ...adminForm, qualification: e.target.value })
               }
             />
@@ -144,10 +167,10 @@ export default function AdminProfilePage() {
               label="Experience (Years)"
               value={adminForm.experienceYears || ""}
               disabled={!editPersonal}
-              onChange={(e: any) =>
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setAdminForm({
                   ...adminForm,
-                  experienceYears: Number(e.target.value),
+                  experienceYears: e.target.value, // Keep string in state, convert on save
                 })
               }
             />
@@ -156,13 +179,12 @@ export default function AdminProfilePage() {
             label="Bio"
             value={adminForm.bio || ""}
             disabled={!editPersonal}
-            onChange={(e: any) =>
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
               setAdminForm({ ...adminForm, bio: e.target.value })
             }
           />
         </Section>
 
-        {/* School Profile Section (Independent Component) */}
         <SchoolProfileSection />
       </div>
     </div>

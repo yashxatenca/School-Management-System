@@ -1,12 +1,21 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useInView } from "react-intersection-observer";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { saveAs } from "file-saver";
 import { useGetSubjects } from "@/hooks/Admin/useSubject";
+
+// 1. Added TypeScript Interface
+interface SubjectItem {
+  _id: string;
+  code: string;
+  name: string;
+  teacherId?: { name?: string } | string | null;
+  isActive: boolean;
+}
 
 export default function SubjectsEssentials() {
   const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
@@ -15,15 +24,31 @@ export default function SubjectsEssentials() {
 
   const { data, isLoading: hookLoading } = useGetSubjects();
 
-  const subjects = data?.data || data || [];
+  // Typecasted subjects
+  const subjects: SubjectItem[] = data?.data || data || [];
   const isLoading = hookLoading || false;
-  const hasMore = false;
 
-  const loadMore = () => {};
+  // 2. Added Dummy States for Pagination
+  const [hasMore, setHasMore] = useState(false);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
+
+  // 3. Made loadMore asynchronous to prevent cascading renders
+  const loadMore = useCallback(() => {
+    if (!hasMore || isFetchingMore) return;
+    setTimeout(() => {
+      setIsFetchingMore(true);
+    }, 0);
+    setTimeout(() => {
+      setIsFetchingMore(false);
+      setHasMore(false);
+    }, 1000);
+  }, [hasMore, isFetchingMore]);
 
   useEffect(() => {
-    if (inView && hasMore && !isLoading) loadMore();
-  }, [inView, hasMore, isLoading]);
+    if (inView && hasMore && !isLoading) {
+      loadMore();
+    }
+  }, [inView, hasMore, isLoading, loadMore]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -38,13 +63,13 @@ export default function SubjectsEssentials() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const getTeacherName = (teacher: any) => {
+  const getTeacherName = (teacher: SubjectItem["teacherId"]) => {
     if (!teacher) return "Unassigned";
     return typeof teacher === "object" ? teacher.name || "Unknown" : teacher;
   };
 
   const exportToExcel = () => {
-    const exportData = subjects.map((s: any) => ({
+    const exportData = subjects.map((s) => ({
       "Subject Code": s.code,
       "Subject Name": s.name,
       "Assigned Teacher": getTeacherName(s.teacherId),
@@ -66,7 +91,7 @@ export default function SubjectsEssentials() {
       "Assigned Teacher",
       "Status",
     ];
-    const tableRows = subjects.map((s: any) => [
+    const tableRows = subjects.map((s) => [
       s.code,
       s.name,
       getTeacherName(s.teacherId),
@@ -85,7 +110,7 @@ export default function SubjectsEssentials() {
     let sourceHTML =
       header +
       `<h2>Subject List</h2><table border='1' style='border-collapse:collapse; width:100%; text-align:left;'><tr><th>Subject Code</th><th>Subject Name</th><th>Assigned Teacher</th><th>Status</th></tr>`;
-    subjects.forEach((s: any) => {
+    subjects.forEach((s) => {
       sourceHTML += `<tr><td>${s.code}</td><td>${s.name}</td><td>${getTeacherName(
         s.teacherId,
       )}</td><td>${s.isActive ? "Active" : "Inactive"}</td></tr>`;
@@ -165,7 +190,7 @@ export default function SubjectsEssentials() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {subjects.map((sub: any) => (
+              {subjects.map((sub) => (
                 <tr
                   key={sub._id}
                   className="hover:bg-gray-50 transition-colors"
@@ -210,6 +235,9 @@ export default function SubjectsEssentials() {
 
       <div ref={ref} className="w-full flex justify-center p-4">
         {isLoading && <span className="text-gray-500">Loading data...</span>}
+        {isFetchingMore && (
+          <span className="text-gray-500">Loading more subjects...</span>
+        )}
       </div>
     </div>
   );

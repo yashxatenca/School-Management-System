@@ -9,7 +9,7 @@ import {
   useSchoolInfoQuery,
   useSchoolInfoMutation,
 } from "@/hooks/Admin/useAdminProfile";
-import { type SchoolInfo } from "@/lib/Admin/AdminProfile.api";
+import { type SchoolInfo } from "@/interface/Global/school.interface";
 
 export default function SchoolProfileSection() {
   const [editSchool, setEditSchool] = useState(false);

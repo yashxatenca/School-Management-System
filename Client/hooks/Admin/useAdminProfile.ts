@@ -6,10 +6,9 @@ import {
   updateAdminProfile,
   getSchoolInfo,
   updateSchoolInfo,
-  AdminProfile,
-  SchoolInfo,
 } from "@/lib/Admin/AdminProfile.api";
-
+import { AdminProfile } from "@/interface/Admin/admin.profile.interface";
+import { SchoolInfo } from "@/interface/Global/school.interface";
 // --- Admin Hooks ---
 export const useAdminProfileQuery = () => {
   return useQuery({

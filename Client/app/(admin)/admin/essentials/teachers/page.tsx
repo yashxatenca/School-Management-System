@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useInView } from "react-intersection-observer";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
@@ -8,26 +8,48 @@ import autoTable from "jspdf-autotable";
 import { saveAs } from "file-saver";
 import { useGetTeachers } from "@/hooks/Admin/useTeacher";
 
+// 1. Added TypeScript Interface
+interface TeacherItem {
+  _id: string;
+  teacher_id: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
 export default function TeachersEssentials() {
   const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { ref, inView } = useInView({ threshold: 0.1 });
 
-  const { data: teacher } = useGetTeachers();
+  const { data: teacher, isLoading: hookLoading } = useGetTeachers();
 
-  // DUMMY DATA SETUP
-  const isLoading = false;
-  const hasMore = true;
-  // Added optional chaining (?.) to prevent crashes if teacher is initially undefined
-  const teachers = teacher?.teachers || [];
+  // Typecasted teachers
+  const teachers: TeacherItem[] = teacher?.teachers || [];
+  const isLoading = hookLoading || false;
 
+  // 2. Setup Safe Local Pagination States
+  const [hasMore, setHasMore] = useState(false);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
+
+  // 3. Defined loadMore (It was missing completely in your code)
+  const loadMore = useCallback(() => {
+    if (!hasMore || isFetchingMore) return;
+    setTimeout(() => {
+      setIsFetchingMore(true);
+    }, 0);
+    setTimeout(() => {
+      setIsFetchingMore(false);
+      setHasMore(false);
+    }, 1000);
+  }, [hasMore, isFetchingMore]);
 
   // LAZY LOADING LOGIC
   useEffect(() => {
     if (inView && hasMore && !isLoading) {
       loadMore();
     }
-  }, [inView, hasMore, isLoading]);
+  }, [inView, hasMore, isLoading, loadMore]);
 
   // Close dropdown if clicked outside
   useEffect(() => {
@@ -45,7 +67,15 @@ export default function TeachersEssentials() {
 
   // EXPORT FUNCTIONS
   const exportToExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(teachers);
+    if (teachers.length === 0) return;
+    const exportData = teachers.map((t) => ({
+      "Teacher ID": t.teacher_id,
+      Name: t.name,
+      Email: t.email,
+      Role: t.role,
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Teachers");
     XLSX.writeFile(workbook, `Teachers_List.xlsx`);
@@ -53,11 +83,10 @@ export default function TeachersEssentials() {
   };
 
   const exportToPDF = () => {
+    if (teachers.length === 0) return;
     const doc = new jsPDF();
-    // Updated Headers
     const tableColumn = ["Teacher ID", "Name", "Email", "Role"];
-    // Updated properties based on API response
-    const tableRows = teachers.map((t: any) => [
+    const tableRows = teachers.map((t) => [
       t.teacher_id,
       t.name,
       t.email,
@@ -71,6 +100,7 @@ export default function TeachersEssentials() {
   };
 
   const exportToWord = () => {
+    if (teachers.length === 0) return;
     const header =
       "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Teacher Data</title></head><body>";
     const footer = "</body></html>";
@@ -78,8 +108,7 @@ export default function TeachersEssentials() {
       header +
       `<h2>Teacher List</h2><table border='1' style='border-collapse:collapse; width:100%; text-align:left;'><tr><th>Teacher ID</th><th>Name</th><th>Email</th><th>Role</th></tr>`;
 
-    teachers.forEach((t: any) => {
-      // Updated properties
+    teachers.forEach((t) => {
       sourceHTML += `<tr><td>${t.teacher_id}</td><td>${t.name}</td><td>${t.email}</td><td>${t.role}</td></tr>`;
     });
     sourceHTML += "</table>" + footer;
@@ -156,30 +185,38 @@ export default function TeachersEssentials() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {teachers.map((teacher: any) => (
+              {teachers.map((teacher) => (
                 <tr
-                  key={teacher._id} // Changed from teacher.id to teacher._id
+                  key={teacher._id}
                   className="hover:bg-gray-50 transition-colors"
                 >
                   <td className="p-4 text-gray-800 font-medium">
-                    {teacher.teacher_id} {/* Replaced empId */}
+                    {teacher.teacher_id}
                   </td>
                   <td className="p-4 text-gray-800">{teacher.name}</td>
-                  <td className="p-4 text-gray-600">{teacher.email}</td>{" "}
-                  {/* Replaced department */}
+                  <td className="p-4 text-gray-600">{teacher.email}</td>
                   <td className="p-4 text-gray-600 capitalize">
                     {teacher.role}
-                  </td>{" "}
-                  {/* Replaced contact */}
+                  </td>
                 </tr>
               ))}
+              {teachers.length === 0 && !isLoading && (
+                <tr>
+                  <td colSpan={4} className="p-8 text-center text-gray-500">
+                    No teachers found.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
       </div>
 
       <div ref={ref} className="w-full flex justify-center p-4">
-        {isLoading && <span className="text-gray-500">Loading more...</span>}
+        {isLoading && <span className="text-gray-500">Loading data...</span>}
+        {isFetchingMore && (
+          <span className="text-gray-500">Loading more teachers...</span>
+        )}
       </div>
     </div>
   );

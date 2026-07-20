@@ -4,7 +4,7 @@ import { useTeacherTimetable } from "@/hooks/Teacher/useTeacherTimetable";
 const TeacherTimetable = () => {
   const { data, isLoading, isError } = useTeacherTimetable();
 
-  const extractDriveId = (url) => {
+  const extractDriveId = (url: any) => {
     try {
       const match = url?.match(/\/d\/(.+?)\//);
       return match ? match[1] : null;

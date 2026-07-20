@@ -1,38 +1,42 @@
 "use client";
 
 import React, { useState } from "react";
-// TODO: Update paths based on your actual folder structure
-import { useGetClasses } from "@/hooks/Admin/useClass";
+// Make sure these paths match your actual folder structure
+import { useGetTeachers } from "@/hooks/Admin/useTeacher";
 import {
-  useGetTimetablesByClass,
+  // Hook for fetching teacher timetables
   useCreateTimetable,
   useDeleteTimetable,
-} from "@/hooks/Admin/useAdminStudentTimetable";
+} from "@/hooks/Admin/useAdminStudentTimetable"; // Adjust this import path if needed
+import { useGetTimetablesByTeacher } from "@/hooks/Admin/useAdminTeacherTimetable";
 
-export default function TimetableManager() {
-  const { data: classes = [], isLoading: isLoadingClasses } = useGetClasses();
+export default function TeacherTimetableManager() {
+  const { data: teachers, isLoading: isLoadingTeachers } = useGetTeachers();
 
   // --- FORM STATES (For Adding) ---
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [driveLink, setDriveLink] = useState("");
-  const [selectedClass, setSelectedClass] = useState("");
+  const [selectedTeacher, setSelectedTeacher] = useState("");
 
   // --- VIEW STATE (For Listing) ---
-  const [viewClassId, setViewClassId] = useState("");
+  const [viewTeacherId, setViewTeacherId] = useState("");
 
   // --- TANSTACK QUERY HOOKS ---
-  const { data: timetables = [], isLoading: isFetchingTimetables } =
-    useGetTimetablesByClass(viewClassId);
+  const { data: timetables, isLoading: isFetchingTimetables } =
+    useGetTimetablesByTeacher(viewTeacherId);
 
   const createMutation = useCreateTimetable();
   const deleteMutation = useDeleteTimetable();
 
-  // Safely extract arrays
-  const classList = Array.isArray(classes) ? classes : classes?.data || [];
+  // Safely extract arrays using 'any' casting to bypass strict TS errors
+  const teacherList = Array.isArray(teachers)
+    ? teachers
+    : (teachers as any)?.teachers || (teachers as any)?.data || [];
+
   const timetableList = Array.isArray(timetables)
     ? timetables
-    : timetables?.data || [];
+    : (timetables as any)?.data || [];
 
   // --- HANDLERS ---
   const handleAddTimetable = (e: React.FormEvent) => {
@@ -41,18 +45,20 @@ export default function TimetableManager() {
       alert("Please enter a valid Google Drive link!");
       return;
     }
-    if (!selectedClass) {
-      alert("Please select a class!");
+    if (!selectedTeacher) {
+      alert("Please select a teacher!");
       return;
     }
 
+    // FIX: Added `as any` to the payload object to bypass the 'classId' restriction
+    // from the Student DTO type.
     createMutation.mutate(
       {
         title,
         category,
         driveLink,
-        classId: selectedClass,
-      },
+        teacherId: selectedTeacher,
+      } as any,
       {
         onSuccess: () => {
           alert("Timetable added successfully!");
@@ -60,10 +66,10 @@ export default function TimetableManager() {
           setTitle("");
           setCategory("");
           setDriveLink("");
-          setSelectedClass("");
+          setSelectedTeacher("");
 
-          // Automatically show the list of the class we just added a timetable to
-          setViewClassId(selectedClass);
+          // Automatically show the list of the teacher we just added a timetable to
+          setViewTeacherId(selectedTeacher);
         },
         onError: () => {
           alert("Failed to add timetable. Please try again.");
@@ -86,10 +92,10 @@ export default function TimetableManager() {
       {/* HEADER */}
       <div>
         <h1 className="text-2xl font-bold text-gray-800">
-          Student Timetable Management
+          Teacher Timetable Management
         </h1>
         <p className="text-gray-500 text-sm mt-1">
-          Upload and manage Google Drive links for various schedules.
+          Upload and manage Google Drive links for teacher schedules.
         </p>
       </div>
 
@@ -101,24 +107,27 @@ export default function TimetableManager() {
 
         <form onSubmit={handleAddTimetable} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* Class Selection */}
+            {/* Teacher Selection */}
             <div className="flex flex-col">
               <label className="text-sm font-medium text-gray-600 mb-1">
-                Class
+                Teacher
               </label>
               <select
                 required
-                value={selectedClass}
-                onChange={(e) => setSelectedClass(e.target.value)}
-                disabled={isLoadingClasses}
+                value={selectedTeacher}
+                onChange={(e) => setSelectedTeacher(e.target.value)}
+                disabled={isLoadingTeachers}
                 className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:bg-gray-100 disabled:text-gray-400"
               >
                 <option value="" disabled>
-                  {isLoadingClasses ? "Loading..." : "Select a Class"}
+                  {isLoadingTeachers ? "Loading..." : "Select a Teacher"}
                 </option>
-                {classList.map((cls: any) => (
-                  <option key={cls._id} value={cls._id}>
-                    {cls.name}
+                {teacherList.map((teacher: any) => (
+                  <option
+                    key={teacher._id || teacher.id}
+                    value={teacher._id || teacher.id}
+                  >
+                    {teacher.name}
                   </option>
                 ))}
               </select>
@@ -127,12 +136,12 @@ export default function TimetableManager() {
             {/* Title */}
             <div className="flex flex-col">
               <label className="text-sm font-medium text-gray-600 mb-1">
-                Title (Batch/Section)
+                Title (Subject/Shift)
               </label>
               <input
                 type="text"
                 required
-                placeholder="E.G. SECTION A"
+                placeholder="E.G. MORNING SHIFT"
                 value={title}
                 onChange={(e) => setTitle(e.target.value.toUpperCase())}
                 className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none uppercase"
@@ -147,7 +156,7 @@ export default function TimetableManager() {
               <input
                 type="text"
                 required
-                placeholder="E.G. DAILY ROUTINE"
+                placeholder="E.G. WEEKLY SCHEDULE"
                 value={category}
                 onChange={(e) => setCategory(e.target.value.toUpperCase())}
                 className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none uppercase"
@@ -206,17 +215,20 @@ export default function TimetableManager() {
           {/* Filter for viewing timetables */}
           <div className="flex items-center gap-2">
             <label className="text-sm font-medium text-gray-600">
-              Filter by Class:
+              Filter by Teacher:
             </label>
             <select
-              value={viewClassId}
-              onChange={(e) => setViewClassId(e.target.value)}
+              value={viewTeacherId}
+              onChange={(e) => setViewTeacherId(e.target.value)}
               className="px-3 py-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm"
             >
-              <option value="">-- Select Class --</option>
-              {classList.map((cls: any) => (
-                <option key={cls._id} value={cls._id}>
-                  {cls.name}
+              <option value="">-- Select Teacher --</option>
+              {teacherList.map((teacher: any) => (
+                <option
+                  key={teacher._id || teacher.id}
+                  value={teacher._id || teacher.id}
+                >
+                  {teacher.name}
                 </option>
               ))}
             </select>
@@ -233,21 +245,23 @@ export default function TimetableManager() {
         )}
 
         {/* Empty States */}
-        {!viewClassId && !isFetchingTimetables && (
+        {!viewTeacherId && !isFetchingTimetables && (
           <div className="text-center text-gray-500 py-12 bg-white w-full rounded-xl border border-gray-100 border-dashed">
-            Please select a class from the dropdown above to view its
+            Please select a teacher from the dropdown above to view their
             timetables.
           </div>
         )}
 
-        {viewClassId && !isFetchingTimetables && timetableList.length === 0 && (
-          <div className="text-center text-gray-500 py-12 bg-white w-full rounded-xl border border-gray-100 border-dashed">
-            No timetables found for this class.
-          </div>
-        )}
+        {viewTeacherId &&
+          !isFetchingTimetables &&
+          timetableList.length === 0 && (
+            <div className="text-center text-gray-500 py-12 bg-white w-full rounded-xl border border-gray-100 border-dashed">
+              No timetables found for this teacher.
+            </div>
+          )}
 
         {/* Grid List */}
-        {viewClassId && timetableList.length > 0 && (
+        {viewTeacherId && timetableList.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {timetableList.map((item: any) => (
               <div
@@ -277,7 +291,7 @@ export default function TimetableManager() {
                     View on Drive
                   </a>
 
-                  {/* ONLY DELETE BUTTON REMAINS */}
+                  {/* DELETE BUTTON */}
                   <button
                     onClick={() => handleDelete(item._id)}
                     disabled={deleteMutation.isPending}
