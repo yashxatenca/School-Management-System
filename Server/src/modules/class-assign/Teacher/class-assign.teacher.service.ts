@@ -11,7 +11,7 @@ export class ClassAssignTeacherService {
         "Class ID, Subject ID, and Class Teacher ID are required",
       );
     }
-    return await ClassAssignTeacherRepo.create(data);
+    return await ClassAssignTeacherRepo.create(data as any, principalId);
   }
 
   static async getAllAssignments(filter: any = {}) {

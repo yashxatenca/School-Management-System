@@ -28,7 +28,7 @@ export class TeacherHelperRepo {
         }
     }
 
-    static async getClassAndTotalStudentByTeacherId(Id: string | ObjectId) {
+    static async getClassAndTotalStudentByTeacherId(Id: string) {
         const classes = await ClassModel.findOne({ teacherId: Id });
         if (!classes) {
             throw new ApiError(402, "Classes Not found")

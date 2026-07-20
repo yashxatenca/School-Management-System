@@ -3,11 +3,10 @@ import { AdminAuthService } from "../service/admin.auth.service";
 import { ApiError } from "../../../../core/errors/ApiErrors";
 
 export class AdminController {
-
   static async adminlogin(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const googletoken = req.body.token;
@@ -30,7 +29,6 @@ export class AdminController {
         success: true,
         user,
       });
-
     } catch (error) {
       next(error); // Global error handler handle karega
     }
@@ -39,7 +37,7 @@ export class AdminController {
   static async AdminUser(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       if (!req.user) {
@@ -59,7 +57,6 @@ export class AdminController {
         message: "User found",
         user,
       });
-
     } catch (error) {
       next(error);
     }
@@ -68,7 +65,7 @@ export class AdminController {
   static async LogoutUser(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       if (!req.user) {
@@ -84,7 +81,7 @@ export class AdminController {
       const isuservalid = await AdminAuthService.LogoutUser(id);
 
       if (!isuservalid) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           message: "Unable to Logout",
         });
@@ -96,7 +93,6 @@ export class AdminController {
         message: "Logout successful",
         success: true,
       });
-
     } catch (error) {
       next(error);
     }

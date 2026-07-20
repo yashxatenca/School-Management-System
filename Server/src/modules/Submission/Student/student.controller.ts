@@ -48,7 +48,7 @@ export class SubmissionController {
 
       const result = await SubmissionService.editSubmission(
         studentId,
-        homeworkId,
+        homeworkId as string,
         submissionLink,
         remark || "",
       );

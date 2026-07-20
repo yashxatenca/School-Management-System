@@ -8,7 +8,9 @@ export class ClassAssignTeacherRepo {
     if (!data) {
       throw new ApiError(400, "Please Provide the Details");
     }
-    const checkuser = await this.checkuserbyteacherid(data.classTeacherId);
+    const checkuser = await this.checkuserbyteacherid(
+      data.classTeacherId as string,
+    );
     if (checkuser) {
       throw new ApiError(409, "Registry Created Please Update");
     } else {
@@ -48,7 +50,7 @@ export class ClassAssignTeacherRepo {
     return deletedAssign;
   }
 
-  private static async checkuserbyteacherid(Id: Types.ObjectId) {
+  private static async checkuserbyteacherid(Id: string) {
     const user = await ClassSubjectAssign.findOne({ classTeacherId: Id });
     if (user) return true;
     return false;

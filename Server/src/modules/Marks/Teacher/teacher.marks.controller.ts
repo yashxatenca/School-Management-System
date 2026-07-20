@@ -13,7 +13,7 @@ export class MarksController {
 
   static async getMarkById(req: Request, res: Response): Promise<void> {
     try {
-      const mark = await MarksService.getMarkById(req.params.id);
+      const mark = await MarksService.getMarkById(req.params.id as string);
       res.status(200).json({ success: true, data: mark });
     } catch (error: any) {
       res.status(404).json({ success: false, message: error.message });
@@ -38,7 +38,7 @@ export class MarksController {
   static async updateMark(req: Request, res: Response): Promise<void> {
     try {
       const updatedMark = await MarksService.updateMark(
-        req.params.id,
+        req.params.id as string,
         req.body,
       );
       res.status(200).json({ success: true, data: updatedMark });
@@ -49,7 +49,7 @@ export class MarksController {
 
   static async deleteMark(req: Request, res: Response): Promise<void> {
     try {
-      await MarksService.deleteMark(req.params.id);
+      await MarksService.deleteMark(req.params.id as string);
       res
         .status(200)
         .json({ success: true, message: "Mark record deleted successfully" });

@@ -8,10 +8,16 @@ export class LeaveService {
     const { startDate, endDate, teacherId, studentId, leaveType, reason } =
       data;
 
+    // Fix 1: Date undefined check
+    if (!startDate || !endDate) {
+      throw new Error("Start date and End date are required");
+    }
+
     if (new Date(startDate) > new Date(endDate)) {
       throw new Error("End date cannot be before start date");
     }
 
+    // Fix 2: Status type casting
     const payload = {
       studentId,
       teacherId,
@@ -19,7 +25,7 @@ export class LeaveService {
       endDate,
       leaveType,
       reason,
-      status: "Pending",
+      status: "Pending" as "Pending" | "Approved" | "Rejected",
     };
 
     return await this.leaveRepo.createLeave(payload);
@@ -33,8 +39,11 @@ export class LeaveService {
     const leave = await this.leaveRepo.findLeaveById(leaveId);
 
     if (!leave) throw new Error("Leave request not found");
-    if (leave.studentId.toString() !== studentId.toString())
+
+    // Fix 3: Optional chaining/null check agar leave.studentId undefined ho sakta hai
+    if (leave.studentId?.toString() !== studentId.toString())
       throw new Error("Unauthorized");
+
     if (leave.status !== "Pending")
       throw new Error("Only pending leaves can be deleted");
 

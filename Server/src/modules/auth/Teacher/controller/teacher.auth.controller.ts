@@ -28,7 +28,7 @@ export class TeacherController {
 
   getById = async (req: Request, res: Response) => {
     try {
-      const teacher = await this.service.getTeacherById(req.params.id);
+      const teacher = await this.service.getTeacherById(req.params.id as string);
       res.status(200).json({ success: true, data: teacher });
     } catch (err: any) {
       res.status(404).json({ success: false, message: err.message });
@@ -38,7 +38,7 @@ export class TeacherController {
   update = async (req: Request, res: Response) => {
     try {
       const teacher = await this.service.updateTeacher(
-        req.params.id,
+        req.params.id as string,
         req.body
       );
       res.status(200).json({ success: true, data: teacher });

@@ -7,7 +7,7 @@ declare global {
         id: string;
         email?: string;
         role?: "admin" | "teacher" | "student";
-        principal?: string;
+        principalId?: string;
         teacherId?: string;
       };
     }

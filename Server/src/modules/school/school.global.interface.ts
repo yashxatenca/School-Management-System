@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 export interface ISchoolProfile {
-  authId: Types.ObjectId;
+  authId: Types.ObjectId | string;
   schoolId?: string;
   schoolName?: string;
   schoolCode?: string;
@@ -9,10 +9,12 @@ export interface ISchoolProfile {
   board?: string;
   schoolType?: string;
   website?: string;
+  schoolEmail?: string;
   supportEmail?: string;
   schoolPhone?: string;
   motto?: string;
   address?: string;
+  principalName?: string;
   totalStudents?: number;
   totalTeachers?: number;
 }

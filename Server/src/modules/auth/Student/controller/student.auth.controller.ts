@@ -23,7 +23,6 @@ export class StudentController {
       return res.status(201).json({
         success: true,
         message: "Student registered successfully",
-        data: result.student,
       });
     } catch (error: any) {
       return res.status(400).json({
@@ -118,7 +117,10 @@ export class StudentController {
         });
       }
 
-      const updated = await StudentService.updateStudent(id, req.body);
+      const updated = await StudentService.updateStudent(
+        id as string,
+        req.body,
+      );
 
       return res.status(200).json({
         success: true,
@@ -147,7 +149,7 @@ export class StudentController {
         });
       }
 
-      const result = await StudentService.deleteStudent(id);
+      const result = await StudentService.deleteStudent(id as string);
 
       return res.status(200).json({
         success: true,
@@ -201,7 +203,7 @@ export class StudentController {
         });
       }
 
-      const student = await StudentService.getStudentById(id);
+      const student = await StudentService.getStudentById(id as string);
       return res.status(200).json({
         success: true,
         data: student,

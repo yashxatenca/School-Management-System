@@ -6,7 +6,7 @@ export class ClassAssignTeacherController {
     try {
       const result = await ClassAssignTeacherService.createAssignment(
         req.body,
-        req.user?.principal,
+        req.user?.principalId as string,
       );
       res.status(201).json({
         success: true,

@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 import { TeacherRepository } from "../repository/teacher.auth.repository";
 import { TeacherHelperRepo } from "../../../Helper/Teacher/teacher.helper.repo";
 export class TeacherService {
-
   private repository = new TeacherRepository();
 
   // CREATE (Admin Only)
@@ -14,7 +13,6 @@ export class TeacherService {
     password: string;
     principalId?: string;
   }) {
-
     const existing = await this.repository.findByEmail(data.email);
     if (existing) {
       throw new Error("Teacher already exists");
@@ -41,10 +39,12 @@ export class TeacherService {
     if (!id) throw new Error("Unauthorized");
     const teacher = await this.repository.findById(id);
     if (!teacher) throw new Error("Teacher not found");
-    const classData = await TeacherHelperRepo.getClassAndTotalStudentByTeacherId(teacher._id);
-    return { teacher, classData }
+    const classData =
+      await TeacherHelperRepo.getClassAndTotalStudentByTeacherId(
+        teacher._id.toString(),
+      );
+    return { teacher, classData };
   }
-
 
   // DELETE
   async deleteTeacher(id: string) {
@@ -59,7 +59,6 @@ export class TeacherService {
 
   // LOGIN
   async login(email: string, password: string) {
-
     const teacher = await this.repository.findByEmail(email);
     if (!teacher) {
       throw new Error("Invalid credentials");
@@ -69,7 +68,10 @@ export class TeacherService {
     if (!isMatch) {
       throw new Error("Invalid credentials");
     }
-    const token = this.generateToken(teacher._id.toString(), teacher.principalId)
+    const token = this.generateToken(
+      teacher._id.toString(),
+      teacher.principalId as string,
+    );
     return { token, teacher };
   }
 
@@ -81,8 +83,8 @@ export class TeacherService {
       {
         expiresIn: "7d",
         audience: "school-management",
-        issuer: "auth-service"
-      }
+        issuer: "auth-service",
+      },
     );
   }
 }

@@ -11,6 +11,5 @@ router.post("/", StudentTimetableController.create);
 router.get("/class/:classId", StudentTimetableController.getByClassId);
 
 router.get("/:id", StudentTimetableController.getById);
-router.patch("/:id", StudentTimetableController.update);
 router.delete("/:id", StudentTimetableController.delete);
 export default router;

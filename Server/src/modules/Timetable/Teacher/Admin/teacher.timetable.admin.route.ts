@@ -8,6 +8,5 @@ router.post("/", StudentTimetableController.create);
 router.get("/teacher/:teacherId", StudentTimetableController.getByTeacherId);
 
 router.get("/:id", StudentTimetableController.getById);
-router.patch("/:id", StudentTimetableController.update);
 router.delete("/:id", StudentTimetableController.delete);
 export default router;

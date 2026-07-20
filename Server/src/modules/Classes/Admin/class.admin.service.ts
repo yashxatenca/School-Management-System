@@ -16,7 +16,7 @@ export class AdminClassService {
     }
 
     payload.schoolId = schoolid._id;
-    payload.createdBy = authId;
+    payload.createdBy = authId as string;
     const user = await AdminClassRepo.createClass(payload);
     return user;
   }

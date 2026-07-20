@@ -20,7 +20,7 @@ export class StudentTimetableController {
   static async getById(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const timetable = await TeacherTimetableService.getById(id);
+      const timetable = await TeacherTimetableService.getById(id as string);
       res.status(200).json({
         success: true,
         data: timetable,
@@ -39,21 +39,6 @@ export class StudentTimetableController {
       res.status(200).json({
         success: true,
         data: timetables,
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  static async update(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { id } = req.params;
-      const data = req.body;
-      const updatedTimetable = await TeacherTimetableService.update(id, data);
-      res.status(200).json({
-        success: true,
-        message: "Timetable updated successfully",
-        data: updatedTimetable,
       });
     } catch (error) {
       next(error);

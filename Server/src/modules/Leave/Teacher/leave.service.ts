@@ -7,22 +7,30 @@ export class LeaveService {
 
   async applyForLeave(data: Partial<ILeave>) {
     const { startDate, endDate, teacherId, leaveType, reason } = data;
-    if (new Date(startDate) > new Date(endDate)) {
-      throw new Error("End date cannot be before start date");
+
+    // Fix 1: Null check lagayein taaki Date constructor ko sirf string/number mile
+    if (!startDate || !endDate) {
+      throw new ApiError(400, "Start date and End date are required");
     }
 
+    if (new Date(startDate) > new Date(endDate)) {
+      throw new ApiError(400, "End date cannot be before start date");
+    }
+
+    // Fix 2: 'status' ko type assertion ke sath handle karein
     const payload = {
       teacherId,
       startDate,
       endDate,
       leaveType,
       reason,
-      status: "Pending",
+      status: "Pending" as "Pending" | "Approved" | "Rejected",
     };
 
     return await this.leaveRepo.createLeave(payload);
   }
 
+  // ... baaki methods waisey hi rahenge ...
   async getTeacherLeaves(teacherId: string) {
     return await this.leaveRepo.findLeavesByTeacher(teacherId);
   }
@@ -43,8 +51,19 @@ export class LeaveService {
     if (!teacherId) throw new ApiError(400, "All field Required");
     return await this.leaveRepo.findPendingLeaveByTeacherId(teacherId);
   }
+
   async ApproveLeaveByLeaveID(leaveId: string, status: string) {
     if (!leaveId || !status) throw new ApiError(400, "All field Required");
-    return await this.leaveRepo.ApproveLeaveID(leaveId, status);
+
+    // Fix 3: Status ki validity check karein
+    const validStatuses = ["Pending", "Approved", "Rejected"];
+    if (!validStatuses.includes(status)) {
+      throw new ApiError(400, "Invalid status provided");
+    }
+
+    return await this.leaveRepo.ApproveLeaveID(
+      leaveId,
+      status as "Pending" | "Approved" | "Rejected",
+    );
   }
 }
