@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { LeaveService } from "./leave.service";
+import { ApiError } from "../../../core/errors/ApiErrors";
 
 export class LeaveController {
   private leaveService = new LeaveService();
@@ -50,6 +51,36 @@ export class LeaveController {
       return res
         .status(200)
         .json({ success: true, message: "Leave deleted successfully" });
+    } catch (error: any) {
+      return res.status(400).json({ success: false, message: error.message });
+    }
+  };
+
+  pendingLeaveByteacherId = async (req: Request, res: Response) => {
+    try {
+      const teacherId = req.user?.id;
+      if (!teacherId) throw new ApiError(401, "unauthorized");
+      const leave = await this.leaveService.GetPendingByTeacherID(
+        teacherId as string,
+      );
+      return res
+        .status(200)
+        .json({ success: true, message: "Leave Fetched successfully", leave });
+    } catch (error: any) {
+      return res.status(400).json({ success: false, message: error.message });
+    }
+  };
+  statusApproval = async (req: Request, res: Response) => {
+    try {
+      const { leaveId, status } = req.body;
+      if (!leaveId || !status) throw new ApiError(400, "All field Required");
+      const leave = await this.leaveService.ApproveLeaveByLeaveID(
+        leaveId as string,
+        status as string,
+      );
+      return res
+        .status(200)
+        .json({ success: true, message: "Leave Updated successfully" });
     } catch (error: any) {
       return res.status(400).json({ success: false, message: error.message });
     }

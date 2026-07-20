@@ -1,0 +1,58 @@
+import { Request, Response } from "express";
+import { LeaveService } from "./leave.service";
+
+export class LeaveController {
+  private leaveService = new LeaveService();
+
+  // 1. Apply Leave
+  applyLeave = async (req: Request, res: Response) => {
+    try {
+      const studentId = req.user?.id as string;
+      const teacherId = req.user?.teacherId as string;
+      const { startDate, endDate, leaveType, reason } = req.body;
+
+      const newLeave = await this.leaveService.applyForLeave({
+        studentId,
+        teacherId,
+        startDate,
+        endDate,
+        leaveType,
+        reason,
+      });
+
+      return res.status(201).json({ success: true, data: newLeave });
+    } catch (error: any) {
+      return res.status(400).json({ success: false, message: error.message });
+    }
+  };
+
+  // 2. Get My Leaves
+  getMyLeaves = async (req: Request, res: Response) => {
+    try {
+      const studentId = req.user?.id;
+      const leaves = await this.leaveService.getStudentLeaves(
+        studentId as string,
+      );
+      return res.status(200).json({ success: true, data: leaves });
+    } catch (error: any) {
+      return res.status(500).json({ success: false, message: error.message });
+    }
+  };
+
+  // 3. Delete Leave
+  deleteLeave = async (req: Request, res: Response) => {
+    try {
+      const leaveId = req.params.id;
+      const studentId = req.user?.id;
+      await this.leaveService.deleteLeaveRequest(
+        leaveId as string,
+        studentId as string,
+      );
+      return res
+        .status(200)
+        .json({ success: true, message: "Leave deleted successfully" });
+    } catch (error: any) {
+      return res.status(400).json({ success: false, message: error.message });
+    }
+  };
+}

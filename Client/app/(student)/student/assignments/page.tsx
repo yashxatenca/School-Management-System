@@ -21,10 +21,10 @@ interface Homework {
 }
 
 const StudentHomeworkPage = () => {
-  const user = useSelector((state: RootState) => state.studentauthstate.user);
-  const classId = user?.classId || "";
-
-  const { data, isLoading, isError } = useStudentFetchAssignment(classId);
+  const classId = useSelector((state: RootState) => state.studentclassstate);
+  const { data, isLoading, isError } = useStudentFetchAssignment(
+    classId.classId as string,
+  );
 
   const [selectedHomework, setSelectedHomework] = useState<Homework | null>(
     null,

@@ -11,6 +11,8 @@ import {
   FolderOpen,
   GraduationCap,
   Library,
+  UserRound,
+  CalendarOff,
   Presentation,
 } from "lucide-react";
 
@@ -46,15 +48,15 @@ export const AdminUrl: NavItem[] = [
   { name: "Classes", href: "/admin/classes", icon: BookOpen },
   { name: "Subjects", href: "/admin/subject", icon: BookOpen },
 
-  {
-    name: "Attendance",
-    href: "#",
-    icon: UserCheck,
-    subItems: [
-      //{ name: "Mark Attendance", href: "/admin/attendance/add", icon: Plus },
-      { name: "View Attendance", href: "/admin/attendance/read", icon: Eye },
-    ],
-  },
+  // {
+  //   name: "Attendance",
+  //   href: "#",
+  //   icon: UserCheck,
+  //   subItems: [
+  //     //{ name: "Mark Attendance", href: "/admin/attendance/add", icon: Plus },
+  //     { name: "View Attendance", href: "/admin/attendance/read", icon: Eye },
+  //   ],
+  // },
   // {
   //   name: "Homework",
   //   href: "#",
@@ -123,6 +125,18 @@ export const AdminUrl: NavItem[] = [
         name: "Teacher Timetable",
         href: "/admin/timetable/teacher",
         icon: GraduationCap,
+      },
+    ],
+  },
+  {
+    name: "Leave",
+    href: "/admin/leaves",
+    icon: CalendarOff,
+    subItems: [
+      {
+        name: "Faculty Leave",
+        href: "/admin/leaves/teacher-leave",
+        icon: UserRound,
       },
     ],
   },

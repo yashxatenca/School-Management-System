@@ -2,7 +2,7 @@ import { AdminStudentRepo } from "./admin.student.repo";
 import { StudentAuthDocument } from "../../auth/Student/interface/student.auth.interface";
 import { ApiError } from "../../../core/errors/ApiErrors";
 import { StudentService } from "../../auth/Student/service/student.auth.service";
-
+import StudentProfileRepository from "../../profile/Student/student.profile.repo";
 export class AdminStudentService {
   static async createstudentservice(data: StudentAuthDocument) {
     if (!data) {
@@ -13,6 +13,9 @@ export class AdminStudentService {
     }
 
     const user = await StudentService.registerStudent(data);
+    if (!user) throw new ApiError(400, "Unable to create student");
+    await StudentProfileRepository.createProfile(user);
+
     return user;
   }
   static async getStudentByStudentIdService(id: string) {

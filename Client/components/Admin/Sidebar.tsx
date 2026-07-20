@@ -11,9 +11,7 @@ import { RootState } from "@/app/redux/store";
 import { logoutAdmin } from "@/app/redux/Slice/authSlice";
 import FullScreenLoader from "../ui/FullScreenLoader";
 import { LogoutUser } from "@/lib/Admin/User.Api";
-
 import { AdminUrl as navItems } from "./AdminUrl";
-
 import { LogOut, GraduationCap, ChevronRight } from "lucide-react";
 
 export default function Sidebar({
@@ -49,17 +47,13 @@ export default function Sidebar({
     <>
       {logoutMutation.isPending && <FullScreenLoader />}
 
-      {open && (
-        <div
-          className="fixed inset-0 bg-black/40 z-20 lg:hidden"
-          onClick={() => setOpen(false)}
-        />
-      )}
-
       <aside
-        className={`fixed left-0 top-0 h-full w-72 bg-white border-r z-30 transform transition-transform duration-300
-        ${open ? "translate-x-0" : "-translate-x-full"}
-        lg:translate-x-0 lg:static flex flex-col`}
+        className={`
+          fixed lg:relative inset-y-0 left-0 z-30 w-72 bg-white border-r 
+          transform transition-transform duration-300 ease-in-out 
+          flex flex-col flex-shrink-0 h-full
+          ${open ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0
+        `}
       >
         <div className="p-5 border-b">
           <Link href="/admin/dashboard" className="flex items-center gap-2">
@@ -68,7 +62,8 @@ export default function Sidebar({
           </Link>
         </div>
 
-        <nav className="p-3 space-y-1 overflow-y-auto flex-1">
+        {/* Sidebar Menu - Scrollable area */}
+        <nav className="p-3 space-y-1 overflow-y-auto flex-1 custom-scrollbar">
           {navItems.map((item) => {
             const hasSub = !!item.subItems;
             const isOpen = openMenu === item.name;
@@ -134,7 +129,8 @@ export default function Sidebar({
           })}
         </nav>
 
-        <div className="p-4 border-t bg-gray-50 mt-auto">
+        {/* User Profile fixed at bottom */}
+        <div className="p-4 border-t bg-gray-50 mt-auto flex-shrink-0">
           <div className="flex items-center gap-3 mb-3">
             <Image
               src={user?.photoURL || "/avatar.png"}

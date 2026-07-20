@@ -5,11 +5,29 @@ import { GlobalAuthMiddleware } from "../../../middleware/Gloabal.auth.middlewar
 const router = Router();
 const leaveController = new LeaveController();
 
-router.use(GlobalAuthMiddleware(["teacher"]));
-
 // Teacher Routes
-router.post("/apply", leaveController.applyLeave);
-router.get("/get-leave", leaveController.getMyLeaves);
-router.delete("/:id", leaveController.deleteLeave);
+router.post(
+  "/apply",
+  GlobalAuthMiddleware(["teacher"]),
+  leaveController.applyLeave,
+);
+router.get(
+  "/get-leave",
+  GlobalAuthMiddleware(["teacher"]),
+  leaveController.getMyLeaves,
+);
+router.delete(
+  "/:id",
+  GlobalAuthMiddleware(["teacher"]),
+  leaveController.deleteLeave,
+);
+
+// student route for approval
+router.get(
+  "/pending-leave",
+  GlobalAuthMiddleware(["teacher"]),
+  leaveController.pendingLeaveByteacherId,
+);
+router.put("/approval", GlobalAuthMiddleware(['teacher']), leaveController.statusApproval)
 
 export default router;

@@ -1,22 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
 import { useMarks } from "@/hooks/Admin/useMarks";
 // TODO: Update this path according to your project structure
 import { useGetClasses } from "@/hooks/Admin/useClass";
-import {
-  Edit,
-  Trash2,
-  Plus,
-  FileText,
-  Search,
-  Filter,
-  AlertCircle,
-} from "lucide-react";
+import { Plus, FileText, Search, Filter, AlertCircle } from "lucide-react";
 
 export default function MarksListPage() {
-  const { marksQuery, deleteMutation } = useMarks();
+  const { marksQuery } = useMarks();
   const { data: classes } = useGetClasses();
 
   // Input States
@@ -208,9 +199,6 @@ export default function MarksListPage() {
                   <th className="p-4 font-semibold text-gray-600 text-sm">
                     Status
                   </th>
-                  <th className="p-4 font-semibold text-gray-600 text-sm text-right">
-                    Actions
-                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -260,36 +248,12 @@ export default function MarksListPage() {
                         {mark.resultStatus}
                       </span>
                     </td>
-                    <td className="p-4 flex justify-end gap-3">
-                      <Link
-                        href={`/admin/marks/edit/${mark._id}`}
-                        className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition"
-                      >
-                        <Edit className="w-4 h-4" />
-                      </Link>
-                      <button
-                        onClick={() => {
-                          if (
-                            confirm(
-                              "Are you sure you want to delete this record?",
-                            )
-                          ) {
-                            deleteMutation.mutate(mark._id!);
-                          }
-                        }}
-                        className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition disabled:opacity-50"
-                        disabled={deleteMutation.isPending}
-                        title="Delete Record"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </td>
                   </tr>
                 ))}
                 {filteredMarks.length === 0 && (
                   <tr>
                     <td
-                      colSpan={6}
+                      colSpan={5}
                       className="p-12 text-center text-gray-500 bg-gray-50/30"
                     >
                       <FileText className="w-12 h-12 text-gray-300 mx-auto mb-3" />

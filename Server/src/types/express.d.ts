@@ -8,6 +8,7 @@ declare global {
         email?: string;
         role?: "admin" | "teacher" | "student";
         principal?: string;
+        teacherId?: string;
       };
     }
   }

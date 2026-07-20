@@ -2,7 +2,6 @@ import {
   LayoutDashboard,
   Users,
   BookOpen,
-  Settings,
   GraduationCap,
   School,
   ClipboardList,
@@ -11,14 +10,11 @@ import {
   CalendarDays,
   FileText,
   FileQuestion,
-  Download,
-  BookCheck,
-  Video,
-  MessageSquare,
   Megaphone,
   CalendarOff,
   EyeIcon,
   Edit,
+  UserRound,
 } from "lucide-react";
 
 export interface NavItem {
@@ -137,6 +133,11 @@ export const navItems: NavItem[] = [
         name: "My Leaves",
         href: "/teacher/leaves/history",
         icon: ClipboardList,
+      },
+      {
+        name: "Student Leave",
+        href: "/teacher/leaves/student-leave",
+        icon: UserRound,
       },
     ],
   },

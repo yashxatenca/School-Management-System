@@ -1,3 +1,4 @@
+import { ApiError } from "../../../core/errors/ApiErrors";
 import { ILeave } from "./leave.interface";
 import { LeaveRepository } from "./leave.repo";
 
@@ -6,7 +7,6 @@ export class LeaveService {
 
   async applyForLeave(data: Partial<ILeave>) {
     const { startDate, endDate, teacherId, leaveType, reason } = data;
-
     if (new Date(startDate) > new Date(endDate)) {
       throw new Error("End date cannot be before start date");
     }
@@ -37,5 +37,14 @@ export class LeaveService {
       throw new Error("Only pending leaves can be deleted");
 
     return await this.leaveRepo.deleteLeave(leaveId);
+  }
+
+  async GetPendingByTeacherID(teacherId: string) {
+    if (!teacherId) throw new ApiError(400, "All field Required");
+    return await this.leaveRepo.findPendingLeaveByTeacherId(teacherId);
+  }
+  async ApproveLeaveByLeaveID(leaveId: string, status: string) {
+    if (!leaveId || !status) throw new ApiError(400, "All field Required");
+    return await this.leaveRepo.ApproveLeaveID(leaveId, status);
   }
 }

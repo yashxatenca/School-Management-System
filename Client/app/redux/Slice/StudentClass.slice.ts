@@ -18,7 +18,7 @@ const StudentClassSlice = createSlice({
   name: "StudentClass",
   initialState,
   reducers: {
-    setStudentClassDetail(state, action: PayloadAction<any>) {
+    setStudentClassDetail(state, action) {
       const data = action.payload;
       state.academicSession = data.academicYear;
       state.sectionName = data.section;
