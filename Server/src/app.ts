@@ -11,7 +11,7 @@ import { registerteacherroute } from "./route/Teacher/teacher.route";
 import { registerstudentroute } from "./route/Student/student.route";
 
 const app: Application = express();
-
+app.set("trust proxy", 1);
 /* ========================
    SECURITY HEADERS
 ======================== */
