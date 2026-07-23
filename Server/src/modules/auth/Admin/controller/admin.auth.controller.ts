@@ -1,100 +1,99 @@
-import type { Request, Response, NextFunction } from "express";
-import { AdminAuthService } from "../service/admin.auth.service";
+import { verifyGoogleToken } from "../../../../config/auth.config";
+import { AdminRepo } from "../repository/admin.auth.repo";
 import { ApiError } from "../../../../core/errors/ApiErrors";
+import { Token } from "../../../../core/utils/user.token";
+import { AdminRole } from "../interface/admin.interface";
+import profileservice from "../../../profile/Admin/admin.profile.service";
+import { SchoolRepo } from "../../../school/Admin/admin.school.repo";
 
-export class AdminController {
-  static async adminlogin(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> {
-    try {
-      const googletoken = req.body.token;
-
-      if (!googletoken) {
-        throw new ApiError(400, "Google token is required");
-      }
-
-      const { user, token } =
-        await AdminAuthService.createAndLoginUser(googletoken);
-
-      res.cookie("token", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      });
-
-      res.status(200).json({
-        success: true,
-        user,
-      });
-    } catch (error) {
-      next(error); // Global error handler handle karega
+export class AdminAuthService {
+  static async createAndLoginUser(googletoken: string) {
+    // 1️⃣ Token check
+    if (!googletoken) {
+      throw new ApiError(401, "Firebase token required");
     }
+
+    // 2️⃣ Verify Google/Firebase token
+    const decoded = await verifyGoogleToken(googletoken);
+
+    // 3️⃣ Mandatory fields validation
+    if (!decoded.googleId) {
+      throw new ApiError(400, "Google ID missing in token");
+    }
+
+    if (!decoded.email) {
+      throw new ApiError(400, "Email not found in Firebase token");
+    }
+
+    if (!decoded.name) {
+      throw new ApiError(400, "Name not found in Firebase token");
+    }
+
+    // 4️⃣ Find existing admin
+    let user = await AdminRepo.findwithemail(decoded.email);
+
+    // 5️⃣ Naya user banayein (DB Schema isVerified: false default set kar lega)
+    if (!user) {
+      user = await AdminRepo.createuser({
+        googleId: decoded.googleId,
+        email: decoded.email,
+        name: decoded.name,
+        photoURL: decoded.picture ?? "",
+        isActive: true,
+        role: AdminRole.ADMIN,
+        authProvider: "google",
+      });
+
+      await profileservice.createProfile(user._id.toString());
+      await SchoolRepo.createSchool(user._id.toString());
+
+      // Naye user ka login block karo aur verification message bhej do
+      throw new ApiError(403, "First contact admin to verify");
+    }
+
+    // 6️⃣ Existing user verification check
+    if (!user.isVerified) {
+      throw new ApiError(403, "First contact admin to verify");
+    }
+
+    // 7️⃣ Sirf verified user ke liye Token banega (Saare required keys ke saath)
+    const jwtToken = Token.createToken({
+      id: user._id.toString(),
+      email: user.email,
+      role: user.role,
+      name: user.name,
+      isActive: user.isActive,
+      isVerified: user.isVerified,
+    });
+
+    // 8️⃣ Return full payload
+    return {
+      user,
+      token: jwtToken,
+    };
   }
 
-  static async AdminUser(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> {
-    try {
-      if (!req.user) {
-        throw new ApiError(401, "Unauthorized");
-      }
-
-      const { id } = req.user as { id: string };
-
-      if (!id) {
-        throw new ApiError(401, "User ID not found in token");
-      }
-
-      const user = await AdminAuthService.GetUser(id);
-
-      res.status(200).json({
-        success: true,
-        message: "User found",
-        user,
-      });
-    } catch (error) {
-      next(error);
+  static async GetUser(id: string) {
+    if (!id) {
+      throw new ApiError(400, "id not found");
     }
+
+    const user = await AdminRepo.findwithid(id);
+    if (!user) {
+      throw new ApiError(400, "User not found");
+    }
+    return user;
   }
 
-  static async LogoutUser(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> {
-    try {
-      if (!req.user) {
-        throw new ApiError(401, "Unauthorized");
-      }
-
-      const { id } = req.user as { id: string };
-
-      if (!id) {
-        throw new ApiError(401, "User ID not found in token");
-      }
-
-      const isuservalid = await AdminAuthService.LogoutUser(id);
-
-      if (!isuservalid) {
-        res.status(400).json({
-          success: false,
-          message: "Unable to Logout",
-        });
-      }
-
-      res.clearCookie("token");
-
-      res.status(200).json({
-        message: "Logout successful",
-        success: true,
-      });
-    } catch (error) {
-      next(error);
+  // Logout user
+  static async LogoutUser(id: string) {
+    if (!id) {
+      throw new ApiError(400, "Unauthorized");
     }
+    const user = await AdminRepo.findwithid(id);
+    if (!user) {
+      return false;
+    }
+    return true;
   }
 }
