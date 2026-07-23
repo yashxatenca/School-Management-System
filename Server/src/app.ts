@@ -53,7 +53,7 @@ app.use(cookieParser());
 /* ========================
    CORS CONFIG
 ======================== */
-
+console.log(process.env.ORIGIN);
 app.use(
   cors({
     origin: process.env.ORIGIN,
