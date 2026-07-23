@@ -37,6 +37,10 @@ const AdminSchmea: Schema<IUser> = new Schema({
     default: "google",
 
   },
+  verified:{
+    type:Boolean,
+    default:false,
+  }
 
   isActive: {
     type: Boolean,

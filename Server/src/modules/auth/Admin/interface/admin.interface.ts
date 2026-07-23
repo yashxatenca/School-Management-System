@@ -3,10 +3,11 @@ export const AdminRole = {
   ADMIN: "admin",
 } as const;
 
-export type AdminRoleType = typeof AdminRole[keyof typeof AdminRole];
+export type AdminRoleType = (typeof AdminRole)[keyof typeof AdminRole];
 
 export interface IUser {
   googleId: string;
+  verified?: boolean;
   name: string;
   email: string;
   photoURL?: string;

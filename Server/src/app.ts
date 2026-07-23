@@ -53,17 +53,10 @@ app.use(cookieParser());
 /* ========================
    CORS CONFIG
 ======================== */
-const allowedOrigins = [process.env.ORIGIN];
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("CORS policy violation: Origin not allowed."));
-      }
-    },
+    origin: process.env.ORIGIN,
     credentials: true,
   }),
 );
