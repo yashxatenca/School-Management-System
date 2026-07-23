@@ -1,22 +1,26 @@
-# from the image you want to use
+# Build Stage
+FROM node:20-alpine AS builder
 
-FROM node:20-alpine
-
-WORKDIR /src
+WORKDIR /app
 
 COPY package*.json ./
-
 RUN npm install
-COPY . . 
 
-# env variable
+COPY . .
 
-ENV PORT=8001
-ENV GOOGLE_CLIENT_ID=403554056859-2lrrqd17llo897qpv4tipmf0csrjrals.apps.googleusercontent.com
-ENV JWT_SECRET=mysecret
-ENV URL=mongodb+srv://timtim:timtim@cluster0.m2dvo.mongodb.net/school
 
-RUN npm run build 
-EXPOSE 8001 
+RUN npm run build
+
+# Production Stage
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install --omit=dev
+
+COPY --from=builder /app/dist ./dist
+
+EXPOSE 8001
+
 CMD ["npm", "start"]
-

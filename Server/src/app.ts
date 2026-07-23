@@ -1,33 +1,59 @@
-import express, { Application, Request, Response } from "express";
+import express, { Application, Request, Response, NextFunction } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import helmet from "helmet";
+import morgan from "morgan";
+import rateLimit from "express-rate-limit";
+
 import { errorhandler } from "./core/errors/errorHandler";
-import { registeradminroute } from './route/Admin/admin.route'
-import connectDB from "./config/Database";
-import { AdminHelperRepo } from "./modules/Helper/Admin/admin.helper.repo";
+import { registeradminroute } from "./route/Admin/admin.route";
 import { registerteacherroute } from "./route/Teacher/teacher.route";
 import { registerstudentroute } from "./route/Student/student.route";
-
 
 const app: Application = express();
 
 /* ========================
-   MIDDLEWARES
+   SECURITY HEADERS
 ======================== */
+// Helmet secures HTTP headers (prevents XSS, clickjacking, MIME sniffing, etc.)
+app.use(helmet());
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+/* ========================
+   LOGGER
+======================== */
+// Detailed logging for production, colored concise logging for dev
+const loggerFormat = process.env.NODE_ENV === "production" ? "combined" : "dev";
+app.use(morgan(loggerFormat));
+
+/* ========================
+   RATE LIMITING
+======================== */
+// General Rate Limiter: max 100 requests per 15 minutes per IP
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: "Too many requests from this IP, please try again in 15 minutes.",
+  },
+});
+
+app.use(globalLimiter);
+
+/* ========================
+   MIDDLEWARES & BODY PARSING
+======================== */
+// Bound body size to 10kb to block memory-exhaustion (DoS) payload attacks
+app.use(express.json({ limit: "10kb" }));
+app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 app.use(cookieParser());
-connectDB();
 
 /* ========================
    CORS CONFIG
 ======================== */
-
-const allowedOrigins = [
-  "http://localhost:3000",
-  "http://127.0.0.1:3000"
-];
+const allowedOrigins = [process.env.ORIGIN];
 
 app.use(
   cors({
@@ -35,17 +61,16 @@ app.use(
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        callback(new Error("CORS not allowed"));
+        callback(new Error("CORS policy violation: Origin not allowed."));
       }
     },
     credentials: true,
-  })
+  }),
 );
 
 /* ========================
    HEALTH CHECK
 ======================== */
-
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({
     success: true,
@@ -56,15 +81,23 @@ app.get("/", (req: Request, res: Response) => {
 /* ========================
    ROUTES
 ======================== */
-registeradminroute(app); // for admin
-registerteacherroute(app) // for teacher
-registerstudentroute(app) // for student
+registeradminroute(app); // Admin routes
+registerteacherroute(app); // Teacher routes
+registerstudentroute(app); // Student routes
+
 /* ========================
    404 HANDLER
 ======================== */
+app.use((req: Request, res: Response) => {
+  res.status(404).json({
+    success: false,
+    message: `Cannot ${req.method} ${req.originalUrl} - Endpoint not found`,
+  });
+});
+
 /* ========================
    GLOBAL ERROR HANDLER
 ======================== */
-
 app.use(errorhandler);
+
 export default app;
