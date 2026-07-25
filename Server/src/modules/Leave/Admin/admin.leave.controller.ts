@@ -26,7 +26,7 @@ export class AdminLeaveController {
       const leave = await AdminLeaveService.findPendingByPrincipalId(
         id as string,
       );
-      console.log(leave);
+
       return res
         .status(200)
         .json({ success: true, message: "Leave deleted successfully", leave });
