@@ -1,8 +1,8 @@
-import { AdminAuthService as AdminController } from "../controller/admin.auth.controller";
+import express from "express";
+import { AdminAuthController } from "../controller/admin.auth.controller";
 import { catchAsync } from "../../../../core/errors/catchAsync";
 import { authenticationmiddleware } from "../middleware/admin.auth.middleware";
 
-import express, { Router } from "express";
 const router = express.Router();
 
 router.get("/login", (req, res) => {
@@ -10,18 +10,19 @@ router.get("/login", (req, res) => {
     message: "admin api is working in controller",
   });
 });
-router.post("/login", (req, res) => {
-  console.log("POST LOGIN HIT");
-  return res.status(200).json({ ok: true });
-});
-// router.post("/login",(req,res,next)=>{
 
-//     console.log("post route login ht")
-// }, catchAsync(AdminController.createAndLoginUser));
-router.get("/adminuser", authenticationmiddleware, AdminController.GetUser);
+router.post("/login", catchAsync(AdminAuthController.createAndLoginUser));
+
+router.get(
+  "/adminuser",
+  authenticationmiddleware,
+  catchAsync(AdminAuthController.GetUser),
+);
+
 router.post(
   "/adminlogout",
   authenticationmiddleware,
-  AdminController.LogoutUser,
+  catchAsync(AdminAuthController.LogoutUser),
 );
+
 export default router;

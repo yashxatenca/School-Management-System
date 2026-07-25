@@ -3,7 +3,6 @@ import type { IUser } from "../interface/admin.interface";
 export class AdminRepo {
   //create user by data
   static async createuser(data: IUser) {
-    console.log("user creating");
     return AdminModel.create(data);
   }
 
