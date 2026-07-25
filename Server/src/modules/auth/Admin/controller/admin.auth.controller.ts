@@ -8,6 +8,7 @@ import { SchoolRepo } from "../../../school/Admin/admin.school.repo";
 
 export class AdminAuthService {
   static async createAndLoginUser(googletoken: string) {
+    console.log(googletoken);
     // 1️⃣ Token check
     if (!googletoken) {
       throw new ApiError(401, "Firebase token required");
@@ -15,6 +16,7 @@ export class AdminAuthService {
 
     // 2️⃣ Verify Google/Firebase token
     const decoded = await verifyGoogleToken(googletoken);
+    console.log(decoded);
 
     // 3️⃣ Mandatory fields validation
     if (!decoded.googleId) {
