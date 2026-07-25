@@ -16,6 +16,10 @@ app.set("trust proxy", 1);
    SECURITY HEADERS
 ======================== */
 // Helmet secures HTTP headers (prevents XSS, clickjacking, MIME sniffing, etc.)
+app.use((req, res, next) => {
+  console.log("Incoming:", req.method, req.originalUrl);
+  next();
+});
 app.use(helmet());
 
 /* ========================
