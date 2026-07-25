@@ -3,11 +3,10 @@ import { AdminRepo } from "../repository/admin.auth.repo";
 import { ApiError } from "../../../../core/errors/ApiErrors";
 import { Token } from "../../../../core/utils/user.token";
 import { AdminRole } from "../interface/admin.interface";
-import profileservice from '../../../profile/Admin/admin.profile.service'
+import profileservice from "../../../profile/Admin/admin.profile.service";
 import { SchoolRepo } from "../../../school/Admin/admin.school.repo";
 export class AdminAuthService {
   static async createAndLoginUser(googletoken: string) {
-
     // 1️⃣ Token check
     if (!googletoken) {
       throw new ApiError(401, "Firebase token required");
@@ -15,6 +14,7 @@ export class AdminAuthService {
 
     // 2️⃣ Verify Google/Firebase token
     const decoded = await verifyGoogleToken(googletoken);
+    console.log(decoded);
 
     // 3️⃣ Mandatory fields validation
     if (!decoded.googleId) {
@@ -46,7 +46,6 @@ export class AdminAuthService {
       await SchoolRepo.createSchool(user._id.toString());
     }
 
-
     // 6️⃣ Create backend JWT
     const jwtToken = Token.createToken({
       id: user._id.toString(),
@@ -61,10 +60,9 @@ export class AdminAuthService {
     };
   }
 
-
   static async GetUser(id: string) {
     if (!id) {
-      throw new ApiError(400, "id not found")
+      throw new ApiError(400, "id not found");
     }
 
     const user = await AdminRepo.findwithid(id);
@@ -73,13 +71,13 @@ export class AdminAuthService {
     }
     return user;
   }
-  // logout user 
+  // logout user
 
   static async LogoutUser(id: string) {
     if (!id) {
-      throw new ApiError(400, "Unauthrized")
+      throw new ApiError(400, "Unauthrized");
     }
-    const user = await AdminRepo.findwithid(id)
+    const user = await AdminRepo.findwithid(id);
     if (!user) {
       return false;
     }

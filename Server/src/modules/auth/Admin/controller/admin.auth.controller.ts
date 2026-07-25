@@ -4,6 +4,7 @@ import { AdminAuthService } from "../service/admin.auth.service";
 export class AdminAuthController {
   static async createAndLoginUser(req: Request, res: Response) {
     const { token } = req.body;
+    
 
     const result = await AdminAuthService.createAndLoginUser(token);
 
