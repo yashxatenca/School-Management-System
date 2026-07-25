@@ -74,6 +74,7 @@ app.get("/", (req: Request, res: Response) => {
 /* ========================
    ROUTES
 ======================== */
+
 registeradminroute(app); // Admin routes
 registerteacherroute(app); // Teacher routes
 registerstudentroute(app); // Student routes

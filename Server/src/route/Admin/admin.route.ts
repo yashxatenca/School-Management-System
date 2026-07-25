@@ -15,12 +15,11 @@ import adminteachertimetableroute from "../../modules/Timetable/Teacher/Admin/te
 import AdminLeaveRoute from "../../modules/Leave/Admin/admin.leave.route";
 // fucntion for initializing the routes
 export const registeradminroute = (app: Application) => {
-  app.use((req, res, next) => {
-    console.log(req.url);
-    next();
-  });
+  console.log("✅ registeradminroute called");
   app.use("/api/v1/admin/subject", subjectRoute);
-  app.use("/api/v1/auth/admin", adminRoutes);
+
+  //app.use("/api/v1/admin/auth", adminRoutes);
+  app.use("/api/v1/admin/auth", adminRoutes);
   app.use("/api/v1/admin/profile", adminprofileRoute);
   app.use("/api/v1/admin/school", adminschoolroute);
   app.use("/api/v1/admin/class", adminclassroute);

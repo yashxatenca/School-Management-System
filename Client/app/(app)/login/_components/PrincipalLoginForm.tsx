@@ -10,7 +10,7 @@ export default function PrincipalLogin() {
 
   const handleGoogleLogin = async (token: string) => {
     try {
-      const res = await api.post("/api/v1/auth/admin/login", { token });
+      const res = await api.post("/api/v1/admin/auth/login", { token });
       if (res.data?.success) {
         dispatch(setAdmin(res.data.user));
       }
