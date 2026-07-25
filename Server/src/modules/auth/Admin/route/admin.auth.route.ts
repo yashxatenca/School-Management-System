@@ -10,7 +10,7 @@ router.get("/login", (req, res) => {
     message: "admin api is working in controller",
   });
 });
-router.post("/login",, (req,res,next)=>{
+router.post("/login",(req,res,next)=>{
     
     console.log("post route login ht")
 }, catchAsync(AdminController.createAndLoginUser));
