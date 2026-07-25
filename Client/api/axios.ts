@@ -6,6 +6,7 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
+  console.log("");
   console.log("Base URL:", config.baseURL);
   console.log("URL:", config.url);
   console.log("Final:", `${config.baseURL}${config.url}`);
