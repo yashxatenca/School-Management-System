@@ -4,7 +4,6 @@ import { AdminAuthService } from "../service/admin.auth.service";
 export class AdminAuthController {
   static async createAndLoginUser(req: Request, res: Response) {
     const { token } = req.body;
-    
 
     const result = await AdminAuthService.createAndLoginUser(token);
 
@@ -23,6 +22,7 @@ export class AdminAuthController {
   }
 
   static async GetUser(req: Request, res: Response) {
+    console.log("admin user ", req.user);
     const user = await AdminAuthService.GetUser(req.user?.id as string);
 
     return res.status(200).json({

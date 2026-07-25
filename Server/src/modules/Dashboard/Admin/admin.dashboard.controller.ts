@@ -9,6 +9,7 @@ export class AdminDashboardController {
   ) {
     try {
       const id = req.user?.id;
+      
       const TotalDashboard = await AdminDashboardService.getDashboard(
         id as string,
       );
