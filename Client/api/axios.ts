@@ -1,8 +1,9 @@
 import axios from "axios";
-console.log(process.env.NEXT_ORIGIN);
-// Instance for Auth/General Admin (Port 8001)
+
+console.log(process.env.NEXT_PUBLIC_API_URL);
+
 export const api = axios.create({
-  baseURL: process.env.NEXT_ORIGIN as string,
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
