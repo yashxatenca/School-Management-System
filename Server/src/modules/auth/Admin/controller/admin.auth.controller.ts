@@ -52,7 +52,7 @@ export class AdminAuthService {
     }
 
     // 6️⃣ Existing user verification check
-    if (!user.isVerified) {
+    if (!user.verified) {
       throw new ApiError(403, "First contact admin to verify");
     }
 
@@ -61,9 +61,6 @@ export class AdminAuthService {
       id: user._id.toString(),
       email: user.email,
       role: user.role,
-      name: user.name,
-      isActive: user.isActive,
-      isVerified: user.isVerified,
     });
 
     // 8️⃣ Return full payload
