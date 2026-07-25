@@ -22,7 +22,7 @@ export class AdminAuthController {
   }
 
   static async GetUser(req: Request, res: Response) {
-    const user = await AdminAuthService.GetUser(req.user.id);
+    const user = await AdminAuthService.GetUser(req.user?.id as string);
 
     return res.status(200).json({
       success: true,
@@ -31,7 +31,7 @@ export class AdminAuthController {
   }
 
   static async LogoutUser(req: Request, res: Response) {
-    await AdminAuthService.LogoutUser(req.user.id);
+    await AdminAuthService.LogoutUser(req.user?.id as string);
 
     res.clearCookie("token");
 
