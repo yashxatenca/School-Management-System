@@ -1,4 +1,4 @@
-import express, { Application, Request, Response, NextFunction } from "express";
+import express, { Application, Request, Response } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import helmet from "helmet";
@@ -12,27 +12,53 @@ import { registerstudentroute } from "./route/Student/student.route";
 
 const app: Application = express();
 app.set("trust proxy", 1);
+
 /* ========================
-   SECURITY HEADERS
+   1. INCOMING REQUEST LOG
 ======================== */
-// Helmet secures HTTP headers (prevents XSS, clickjacking, MIME sniffing, etc.)
 app.use((req, res, next) => {
   console.log("Incoming:", req.method, req.originalUrl);
   next();
 });
-app.use(helmet());
 
 /* ========================
-   LOGGER
+   2. CORS CONFIG (MUST BE ON TOP)
 ======================== */
-// Detailed logging for production, colored concise logging for dev
+// Hardcoded array + env fallback with trailing slash cleanup
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+  process.env.ORIGIN?.replace(/\/$/, ""), // Trailing slash remove kar dega
+].filter(Boolean) as string[];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps, curl, postman)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.log("Blocked by CORS:", origin);
+        callback(new Error("CORS policy violation"));
+      }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }),
+);
+
+/* ========================
+   3. SECURITY HEADERS & LOGGER
+======================== */
+app.use(helmet());
+
 const loggerFormat = process.env.NODE_ENV === "production" ? "combined" : "dev";
 app.use(morgan(loggerFormat));
 
 /* ========================
-   RATE LIMITING
+   4. RATE LIMITING
 ======================== */
-// General Rate Limiter: max 100 requests per 15 minutes per IP
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
@@ -47,26 +73,14 @@ const globalLimiter = rateLimit({
 app.use(globalLimiter);
 
 /* ========================
-   MIDDLEWARES & BODY PARSING
+   5. BODY PARSING & COOKIES
 ======================== */
-// Bound body size to 10kb to block memory-exhaustion (DoS) payload attacks
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 app.use(cookieParser());
 
 /* ========================
-   CORS CONFIG
-======================== */
-console.log(process.env.ORIGIN);
-app.use(
-  cors({
-    origin: process.env.ORIGIN,
-    credentials: true,
-  }),
-);
-
-/* ========================
-   HEALTH CHECK
+   6. HEALTH CHECK
 ======================== */
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({
@@ -76,15 +90,14 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 /* ========================
-   ROUTES
+   7. ROUTES
 ======================== */
-
-registeradminroute(app); // Admin routes
-registerteacherroute(app); // Teacher routes
-registerstudentroute(app); // Student routes
+registeradminroute(app);
+registerteacherroute(app);
+registerstudentroute(app);
 
 /* ========================
-   404 HANDLER
+   8. 404 HANDLER
 ======================== */
 app.use((req: Request, res: Response) => {
   res.status(404).json({
@@ -94,7 +107,7 @@ app.use((req: Request, res: Response) => {
 });
 
 /* ========================
-   GLOBAL ERROR HANDLER
+   9. GLOBAL ERROR HANDLER
 ======================== */
 app.use(errorhandler);
 
