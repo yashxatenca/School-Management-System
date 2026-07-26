@@ -2,12 +2,14 @@ import { Request, Response } from "express";
 import { TeacherService } from "../service/teacher.auth.service";
 
 export class TeacherController {
-
   private service = new TeacherService();
 
   create = async (req: Request, res: Response) => {
     try {
-      const teacher = await this.service.createTeacher({ ...req.body, principalId: req.user?.id });
+      const teacher = await this.service.createTeacher({
+        ...req.body,
+        principalId: req.user?.id,
+      });
       res.status(201).json({ success: true, data: teacher });
     } catch (err: any) {
       res.status(400).json({ success: false, message: err.message });
@@ -17,7 +19,9 @@ export class TeacherController {
   getAll = async (req: Request, res: Response) => {
     try {
       if (!req.user?.id) {
-        return res.status(401).json({ success: false, message: "Unauthorized" });
+        return res
+          .status(401)
+          .json({ success: false, message: "Unauthorized" });
       }
       const teachers = await this.service.getAllTeachers(req.user?.id);
       res.status(200).json({ success: true, teachers });
@@ -28,7 +32,9 @@ export class TeacherController {
 
   getById = async (req: Request, res: Response) => {
     try {
-      const teacher = await this.service.getTeacherById(req.params.id as string);
+      const teacher = await this.service.getTeacherById(
+        req.params.id as string,
+      );
       res.status(200).json({ success: true, data: teacher });
     } catch (err: any) {
       res.status(404).json({ success: false, message: err.message });
@@ -39,7 +45,7 @@ export class TeacherController {
     try {
       const teacher = await this.service.updateTeacher(
         req.params.id as string,
-        req.body
+        req.body,
       );
       res.status(200).json({ success: true, data: teacher });
     } catch (err: any) {
@@ -62,21 +68,24 @@ export class TeacherController {
 
       res.status(200).json({ success: true, teacher: teacher });
     } catch (err: any) {
-
       res.status(404).json({ success: false, message: err.message });
     }
-  }
+  };
 
   login = async (req: Request, res: Response) => {
     try {
       const { email, password } = req.body;
       const { token, teacher } = await this.service.login(email, password);
-
-      res.status(200).cookie("token", token).json({
-        success: true,
-        teacher
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
       });
-
+      res.status(200).json({
+        success: true,
+        teacher,
+      });
     } catch (err: any) {
       res.status(401).json({ success: false, message: err.message });
     }
@@ -84,22 +93,20 @@ export class TeacherController {
 
   logout = async (req: Request, res: Response) => {
     try {
-
       res.clearCookie("token", {
         httpOnly: true,
         secure: true,
-        sameSite: "strict"
+        sameSite: "strict",
       });
 
       res.status(200).json({
         success: true,
-        message: "Logged out successfully"
+        message: "Logged out successfully",
       });
-
     } catch (error: any) {
       res.status(500).json({
         success: false,
-        message: "Logout failed"
+        message: "Logout failed",
       });
     }
   };
