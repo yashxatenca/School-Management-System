@@ -3,14 +3,15 @@ import { AdminAuthService } from "../service/admin.auth.service";
 
 export class AdminAuthController {
   static async createAndLoginUser(req: Request, res: Response) {
+    console.log(req.cookies);
     const { token } = req.body;
 
     const result = await AdminAuthService.createAndLoginUser(token);
 
     res.cookie("token", result.token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      secure: true,
+      sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
