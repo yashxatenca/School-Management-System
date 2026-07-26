@@ -3,7 +3,7 @@ import { AdminAuthService } from "../service/admin.auth.service";
 
 export class AdminAuthController {
   static async createAndLoginUser(req: Request, res: Response) {
-    console.log(req.cookies);
+   
     const { token } = req.body;
 
     const result = await AdminAuthService.createAndLoginUser(token);
@@ -23,7 +23,7 @@ export class AdminAuthController {
   }
 
   static async GetUser(req: Request, res: Response) {
-    console.log(req.user, "from the admin user route");
+
 
     const user = await AdminAuthService.GetUser(req.user?.id as string);
 

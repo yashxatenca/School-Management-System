@@ -14,7 +14,7 @@ export class AdminAuthService {
 
     // 2️⃣ Verify Google/Firebase token
     const decoded = await verifyGoogleToken(googletoken);
-    console.log(decoded);
+  
 
     // 3️⃣ Mandatory fields validation
     if (!decoded.googleId) {
