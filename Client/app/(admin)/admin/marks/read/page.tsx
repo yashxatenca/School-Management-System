@@ -4,7 +4,14 @@ import React, { useState } from "react";
 import { useMarks } from "@/hooks/Admin/useMarks";
 // TODO: Update this path according to your project structure
 import { useGetClasses } from "@/hooks/Admin/useClass";
-import { Plus, FileText, Search, Filter, AlertCircle } from "lucide-react";
+import {
+  Plus,
+  FileText,
+  Search,
+  Filter,
+  AlertCircle,
+  RefreshCw,
+} from "lucide-react";
 
 export default function MarksListPage() {
   const { marksQuery } = useMarks();
@@ -20,20 +27,9 @@ export default function MarksListPage() {
     type: "class",
   });
 
-  // Naya State: Check karne ke liye ki kya pehli baar fetch dab chuka hai?
+  // State: Check karne ke liye ki kya fetch dab chuka hai
   const [isFetched, setIsFetched] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-
-  if (marksQuery.isLoading)
-    return (
-      <div className="p-8 text-center flex justify-center items-center h-64">
-        Loading marks...
-      </div>
-    );
-  if (marksQuery.isError)
-    return (
-      <div className="p-8 text-center text-red-500">Error loading marks.</div>
-    );
 
   // Jab Search Type change ho, sab kuch reset kar do
   const handleSearchTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -43,7 +39,7 @@ export default function MarksListPage() {
     setIsFetched(false); // Naya type select kiya toh table wapas hide kar do
   };
 
-  // Asli Fetch Logic yahan hai
+  // Asli Fetch Logic
   const handleFetch = () => {
     // Validation: Agar input khali hai toh error dikhao
     if (!searchInput.trim()) {
@@ -61,34 +57,35 @@ export default function MarksListPage() {
     setIsFetched(true); // Table show karne ki permission de do
   };
 
-  // Filter Logic (Sirf tabhi chalega jab isFetched true hoga)
-  const filteredMarks =
-    marksQuery.data?.filter((mark: any) => {
-      if (!isFetched) return false;
+  // Filter Logic (Safely handle dynamic/undefined data)
+  const marksData = Array.isArray(marksQuery.data) ? marksQuery.data : [];
 
-      if (appliedSearch.type === "student") {
-        const term = appliedSearch.term.toLowerCase();
-        const studentStr =
-          typeof mark.studentId === "string"
-            ? mark.studentId
-            : mark.studentId?.name || mark.studentId?._id || "";
-        return studentStr.toLowerCase().includes(term);
-      }
+  const filteredMarks = marksData.filter((mark: any) => {
+    if (!isFetched) return false;
 
-      if (appliedSearch.type === "class") {
-        const markClassId =
-          typeof mark.classId === "string"
-            ? mark.classId
-            : mark.classId?._id || "";
-        return markClassId === appliedSearch.term;
-      }
+    if (appliedSearch.type === "student") {
+      const term = appliedSearch.term.toLowerCase();
+      const studentStr =
+        typeof mark.studentId === "string"
+          ? mark.studentId
+          : mark.studentId?.name || mark.studentId?._id || "";
+      return studentStr.toLowerCase().includes(term);
+    }
 
-      return false;
-    }) || [];
+    if (appliedSearch.type === "class") {
+      const markClassId =
+        typeof mark.classId === "string"
+          ? mark.classId
+          : mark.classId?._id || "";
+      return markClassId === appliedSearch.term;
+    }
+
+    return false;
+  });
 
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-6">
-      {/* Header Section */}
+      {/* Header Section - Humesha dikhega */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <h1 className="text-2xl font-bold flex items-center gap-2 text-gray-800">
           <FileText className="w-6 h-6 text-blue-600" /> Student Marks
@@ -96,7 +93,7 @@ export default function MarksListPage() {
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        {/* Search & Filter Bar */}
+        {/* Search & Filter Bar - Humesha dikhega */}
         <div className="p-4 border-b border-gray-100 bg-gray-50/50">
           <div className="flex flex-col md:flex-row gap-3 items-center">
             <div className="w-full md:w-auto flex-shrink-0">
@@ -116,12 +113,16 @@ export default function MarksListPage() {
                   value={searchInput}
                   onChange={(e) => {
                     setSearchInput(e.target.value);
-                    setErrorMsg(""); // Select karte hi error gayab
+                    setErrorMsg("");
                   }}
-                  className={`w-full border p-2.5 rounded-lg focus:ring-2 outline-none bg-white text-sm text-gray-700 ${errorMsg ? "border-red-400 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"}`}
+                  className={`w-full border p-2.5 rounded-lg focus:ring-2 outline-none bg-white text-sm text-gray-700 ${
+                    errorMsg
+                      ? "border-red-400 focus:ring-red-500"
+                      : "border-gray-300 focus:ring-blue-500"
+                  }`}
                 >
                   <option value="">-- Select a Class --</option>
-                  {classes?.data.map((cls: any) => (
+                  {classes?.data?.map((cls: any) => (
                     <option key={cls._id} value={cls._id}>
                       {cls.className || cls.name}
                     </option>
@@ -138,16 +139,20 @@ export default function MarksListPage() {
                     value={searchInput}
                     onChange={(e) => {
                       setSearchInput(e.target.value);
-                      setErrorMsg(""); // Type karte hi error gayab
+                      setErrorMsg("");
                     }}
                     onKeyDown={(e) => e.key === "Enter" && handleFetch()}
-                    className={`w-full border p-2.5 pl-10 rounded-lg focus:ring-2 outline-none bg-white text-sm ${errorMsg ? "border-red-400 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"}`}
+                    className={`w-full border p-2.5 pl-10 rounded-lg focus:ring-2 outline-none bg-white text-sm ${
+                      errorMsg
+                        ? "border-red-400 focus:ring-red-500"
+                        : "border-gray-300 focus:ring-blue-500"
+                    }`}
                   />
                 </>
               )}
             </div>
 
-            {/* Fetch Button - type="button" explicitly given */}
+            {/* Fetch Button */}
             <button
               type="button"
               onClick={handleFetch}
@@ -157,7 +162,7 @@ export default function MarksListPage() {
             </button>
           </div>
 
-          {/* Error Message Display */}
+          {/* Validation Error Message */}
           {errorMsg && (
             <p className="text-red-500 text-xs font-medium mt-2 flex items-center gap-1">
               <AlertCircle className="w-3 h-3" /> {errorMsg}
@@ -165,8 +170,24 @@ export default function MarksListPage() {
           )}
         </div>
 
-        {/* Table Container - Sirf tabhi dikhega jab Fetch dabaya gaya ho */}
-        {!isFetched ? (
+        {/* Content & Table Area - Dynamic Inline Handling */}
+        {marksQuery.isLoading ? (
+          <div className="p-16 text-center text-gray-500 flex flex-col items-center justify-center">
+            <RefreshCw className="w-8 h-8 text-blue-500 animate-spin mb-3" />
+            <p className="text-sm font-medium">Loading marks data...</p>
+          </div>
+        ) : marksQuery.isError ? (
+          <div className="p-12 text-center text-red-500 bg-red-50/30 flex flex-col items-center justify-center">
+            <AlertCircle className="w-10 h-10 text-red-400 mb-2" />
+            <p className="text-base font-semibold text-red-700">
+              Unable to load marks data
+            </p>
+            <p className="text-xs text-red-500 mt-1 max-w-md">
+              Server Error: Please check your backend connection or refresh the
+              page.
+            </p>
+          </div>
+        ) : !isFetched ? (
           <div className="p-16 text-center bg-white flex flex-col items-center justify-center">
             <div className="bg-blue-50 p-4 rounded-full mb-4">
               <Filter className="w-8 h-8 text-blue-500" />

@@ -1,13 +1,6 @@
 import { Request, Response } from "express";
 import { StudentService } from "../service/student.auth.service";
 
-const COOKIE_OPTIONS = {
-  httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: "strict" as const,
-  maxAge: 24 * 60 * 60 * 1000, // 1 day
-};
-
 export class StudentController {
   // ==============================
   // ✅ REGISTER
@@ -48,7 +41,12 @@ export class StudentController {
 
       const result = await StudentService.login(studentId, password);
 
-      res.cookie("token", result.token, COOKIE_OPTIONS);
+      res.cookie("token", result.token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: 24 * 60 * 60 * 1000, // 1 day
+      });
 
       return res.status(200).json({
         success: true,
