@@ -35,6 +35,8 @@ export const AdminUrl: NavItem[] = [
       { name: "View Teachers", href: "/admin/teachers/read", icon: Eye },
     ],
   },
+  { name: "Classes", href: "/admin/classes", icon: BookOpen },
+  { name: "Subjects", href: "/admin/subject", icon: BookOpen },
 
   {
     name: "Students",
@@ -43,10 +45,14 @@ export const AdminUrl: NavItem[] = [
     subItems: [
       { name: "Add Student", href: "/admin/students/add", icon: Plus },
       { name: "View Students", href: "/admin/students/read", icon: Eye },
+      { name: "Bulk Update", href: "/admin/students/bulk-update", icon: Users },
     ],
   },
-  { name: "Classes", href: "/admin/classes", icon: BookOpen },
-  { name: "Subjects", href: "/admin/subject", icon: BookOpen },
+  {
+    name: "Attendance",
+    href: "/admin/attendance",
+    icon: UserCheck,
+  },
 
   // {
   //   name: "Attendance",

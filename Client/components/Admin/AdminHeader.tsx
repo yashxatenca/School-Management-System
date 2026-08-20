@@ -3,7 +3,7 @@
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
 import Image from "next/image";
-import { Bell } from "lucide-react";
+import { Menu, X } from "lucide-react";
 
 interface AdminHeaderProps {
   setOpen: (open: boolean) => void;
@@ -20,87 +20,59 @@ export default function AdminHeader({ setOpen, isOpen }: AdminHeaderProps) {
   return (
     <header
       className="
-      flex-shrink-0 z-40
-      flex h-16 items-center justify-between
-      border-b bg-white px-4 sm:px-6 lg:px-8
-      shadow-sm relative
-    "
+        flex-shrink-0 z-20
+        flex h-20 items-center justify-between
+        bg-[#e6eaf0] border-b border-[#d1d9e6]/60 px-4 sm:px-6 lg:px-8
+        relative text-slate-700
+      "
     >
-      {/* Toggle sidebar */}
+      {/* Toggle sidebar button (Mobile) */}
       <button
         onClick={() => setOpen(!isOpen)}
         className="
-          lg:hidden p-2 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500
+          lg:hidden p-2.5 bg-[#e6eaf0] rounded-xl text-slate-700
+          shadow-[-3px_-3px_6px_#ffffff,_3px_3px_6px_rgba(166,180,200,0.5)]
+          hover:text-indigo-600
+          active:shadow-[inset_2px_2px_4px_rgba(166,180,200,0.5),_inset_-2px_-2px_4px_#ffffff]
+          transition-all duration-150 focus:outline-none
         "
         aria-label={isOpen ? "Close menu" : "Open menu"}
       >
         {isOpen ? (
-          <svg
-            className="h-6 w-6 text-gray-700"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
+          <X className="h-5 w-5 text-slate-700" />
         ) : (
-          <svg
-            className="h-6 w-6 text-gray-700"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          </svg>
+          <Menu className="h-5 w-5 text-slate-700" />
         )}
       </button>
 
       {/* Title */}
       <h1
         className="
-        flex-1 text-center lg:text-left
-        text-xl font-semibold tracking-tight text-gray-900
-      "
+          flex-1 text-center lg:text-left
+          text-xl font-bold tracking-wide text-slate-800
+        "
       >
         {user.name}
       </h1>
 
-      {/* Right side */}
-      <div className="flex items-center gap-5">
-        <button
-          className="
-            relative p-2 text-gray-600 hover:text-indigo-600 rounded-full hover:bg-indigo-50
-            focus:outline-none focus:ring-2 focus:ring-indigo-500
-          "
-          aria-label="Notifications"
-        >
-          <Bell className="h-6 w-6" />
-          <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500" />
-        </button>
-
-        <div className="flex items-center gap-3">
-          <Image
-            src={user.photoURL || "/avatar.png"}
-            alt={user.name || "Principal"}
-            width={40}
-            height={40}
-            className="h-10 w-10 rounded-full object-cover ring-2 ring-indigo-100"
-          />
+      {/* Right side controls */}
+      <div className="flex items-center gap-4">
+        {/* User Card */}
+        <div className="flex items-center gap-3 p-1.5 pr-3 bg-[#e6eaf0] rounded-2xl shadow-[-3px_-3px_6px_#ffffff,_3px_3px_6px_rgba(166,180,200,0.5)]">
+          <div className="p-0.5 rounded-full bg-[#e6eaf0] shadow-[inset_2px_2px_4px_rgba(166,180,200,0.5),_inset_-2px_-2px_4px_#ffffff]">
+            <Image
+              src={user.photoURL || "/avatar.png"}
+              alt={user.name || "Principal"}
+              width={36}
+              height={36}
+              className="h-9 w-9 rounded-full object-cover"
+            />
+          </div>
           <div className="hidden md:block">
-            <p className="text-sm font-medium text-gray-900">
+            <p className="text-sm font-semibold text-slate-800 leading-tight">
               {user.name || "Principal"}
             </p>
-            <p className="text-xs text-gray-500">Administrator</p>
+            <p className="text-xs text-slate-500 font-medium">Administrator</p>
           </div>
         </div>
       </div>

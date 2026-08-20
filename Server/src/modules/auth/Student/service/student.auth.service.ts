@@ -4,6 +4,7 @@ import { StudentRepository } from "../repository/student.auth.repo";
 import { StudentAuthDocument } from "../interface/student.auth.interface";
 import { ClassModel } from "../../../Classes/global.class.model";
 import { ApiError } from "../../../../core/errors/ApiErrors";
+import studentProfileModel from "../../../profile/Student/student.profile.model";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 const JWT_EXPIRES_IN = "1d";
@@ -25,6 +26,9 @@ export class StudentService {
       ...data,
       classId: classId._id,
     });
+    if (!student) throw new ApiError(409, "Error Creatring student");
+
+    await studentProfileModel.create({ student_id: student._id.toString() });
     return student;
   }
 

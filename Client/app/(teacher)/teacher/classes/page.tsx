@@ -1,130 +1,167 @@
 "use client";
 
-import React, { useState, useEffect, useMemo, Suspense, memo } from "react";
+import React, { memo, useMemo } from "react";
 import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 import { RootState } from "@/app/redux/store";
-import { toast } from "react-toastify";
+import { useTeacherSubjectAssignForClass as useTeacherSubjectAssign } from "@/hooks/Teacher/useTeacherSubjectAssign";
 
-// 🚀 Interfaces Import
-import { ClassDetails, SubjectTeacher } from "@/app/(teacher)/teacher/classes/class.interface";
+interface MappedSubjectTeacher {
+  subject: string;
+  teacherName: string;
+}
 
-
-// --- Sub-components (Memoized for Performance) ---
-const SubjectCard = memo(({ subj }: { subj: SubjectTeacher }) => (
-    <div className="flex justify-between items-center p-4 bg-gray-50 rounded-lg border border-gray-100 hover:shadow-sm transition-shadow">
-        <div>
-            <p className="font-bold text-gray-800">{subj.subject}</p>
-            <p className="text-sm text-gray-500">Teacher: {subj.teacherName}</p>
-        </div>
-        <span className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
-            {subj.subject.charAt(0)}
-        </span>
+const SubjectCard = memo(({ subj }: { subj: MappedSubjectTeacher }) => (
+  <div className="flex justify-between items-center p-4 rounded-xl border border-gray-200 bg-white hover:shadow-md transition-all">
+    <div>
+      <h3 className="font-semibold text-gray-900">{subj.subject}</h3>
+      <p className="text-sm text-gray-500 mt-1">Teacher : {subj.teacherName}</p>
     </div>
+
+    <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold">
+      {subj.subject.charAt(0).toUpperCase()}
+    </div>
+  </div>
 ));
 
 SubjectCard.displayName = "SubjectCard";
 
-// --- Main Component ---
 export default function ClassDetailsPage() {
-    const { user } = useSelector((state: RootState) => state.teacherauthstate);
-    const classData = useSelector((state: RootState) => state.teacherclassstate);
+  const router = useRouter();
 
+  const { user } = useSelector((state: RootState) => state.teacherauthstate);
 
-    if (!classData) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <div className="flex flex-col items-center gap-2">
-                    <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-                    <p className="text-gray-500 font-medium">Fetching details...</p>
-                </div>
-            </div>
-        );
-    }
+  const classData = useSelector((state: RootState) => state.teacherclassstate);
 
-    if (!classData) return <div className="p-8 text-center">Class details unavailable.</div>;
-    return (
-        <div className="min-h-screen bg-gray-50 p-4 md:p-8 text-gray-800 font-sans">
-            <div className="max-w-5xl mx-auto">
+  const { data: assignResponse, isLoading } = useTeacherSubjectAssign();
 
-                {/* Header Section */}
-                <header className="mb-8">
-                    <button className="text-blue-600 text-sm font-medium hover:underline mb-4 flex items-center gap-1 transition-all">
-                        <span>←</span> Back to Dashboard
-                    </button>
-                    <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">
-                        {classData.className}
-                        <span className="text-blue-600 mx-2">/</span>
-                        <span className="font-light text-gray-500">Section {classData.sectionName}</span>
-                    </h1>
-                </header>
+  const subjectList = useMemo<MappedSubjectTeacher[]>(() => {
+    const assignments =
+      assignResponse?.data?.data ?? assignResponse?.data ?? [];
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    if (!Array.isArray(assignments)) return [];
 
-                    {/* Left Column: Essential Info */}
-                    <aside className="lg:col-span-1 space-y-6">
-                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                            <h3 className="text-xs font-uppercase tracking-wider text-gray-400 font-bold mb-4 uppercase">
-                                Quick Overview
-                            </h3>
+    const mapped = assignments.flatMap((item: any) => {
+      const teacherName =
+        item?.classId?.teacherId?.name ||
+        item?.classTeacherId?.name ||
+        "Unassigned";
 
-                            <div className="space-y-4">
-                                <div className="flex items-center gap-4">
-                                    <div className="p-3 bg-blue-50 rounded-lg text-blue-600 text-xl">👨‍🏫</div>
-                                    <div>
-                                        <p className="text-xs text-gray-500">Class Teacher</p>
-                                        <p className="font-bold text-gray-900">{user?.name || "Assigned"}</p>
-                                    </div>
-                                </div>
+      const subjects = Array.isArray(item?.subjectId)
+        ? item.subjectId
+        : item?.subjectId
+          ? [item.subjectId]
+          : [];
 
-                                <div className="flex items-center gap-4">
-                                    <div className="p-3 bg-purple-50 rounded-lg text-purple-600 text-xl">👥</div>
-                                    <div>
-                                        <p className="text-xs text-gray-500">Total Students</p>
-                                        <p className="font-bold text-gray-900">{classData.totalStudent}</p>
-                                    </div>
-                                </div>
+      return subjects.map((subject: any) => ({
+        subject: subject?.name || subject?.subjectName || "Subject",
+        teacherName,
+      }));
+    });
 
-                                <div className="flex items-center gap-4">
-                                    <div className="p-3 bg-green-50 rounded-lg text-green-600 text-xl">📅</div>
-                                    <div>
-                                        <p className="text-xs text-gray-500">Academic Session</p>
-                                        <p className="font-bold text-gray-900">{classData.academicSession}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </aside>
-
-                    {/* Right Column: Subject Teachers */}
-                    <main className="lg:col-span-2">
-                        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                            <div className="p-6 border-b border-gray-50 flex justify-between items-center">
-                                <h2 className="text-xl font-bold text-gray-900">Subject Teachers</h2>
-                                {/* <span className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-md font-bold">
-                                    {classData.subjectTeachers.length} Subjects
-                                </span> */}
-                            </div>
-
-                            <div className="p-6">
-                                {/* {classData.subjectTeachers.length > 0 ? (
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <Suspense fallback={<div className="h-20 bg-gray-100 animate-pulse rounded-lg" />}>
-                                            {classData.subjectTeachers.map((subj, idx) => (
-                                                <SubjectCard key={`${subj.subject}-${idx}`} subj={subj} />
-                                            ))}
-                                        </Suspense>
-                                    </div>
-                                ) : (
-                                    <div className="text-center py-12">
-                                        <p className="text-gray-400 italic text-sm">No subject data mapped yet.</p>
-                                    </div>
-                                )} */}
-                            </div>
-                        </div>
-                    </main>
-
-                </div>
-            </div>
-        </div>
+    return mapped.filter(
+      (value, index, self) =>
+        index ===
+        self.findIndex(
+          (t) =>
+            t.subject === value.subject && t.teacherName === value.teacherName,
+        ),
     );
+  }, [assignResponse]);
+
+  if (!classData || isLoading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center bg-gray-50">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+
+          <p className="mt-4 text-gray-500">Loading Class Details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-100 p-5 md:p-8">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+
+        <div className="mb-8">
+          <button
+            onClick={() => router.back()}
+            className="text-blue-600 hover:text-blue-800 font-medium mb-4"
+          >
+            ← Back
+          </button>
+
+          <h1 className="text-4xl font-bold text-gray-900">
+            Class {classData.className}
+            <span className="text-blue-600 mx-2">|</span>
+            <span className="font-normal">Section {classData.sectionName}</span>
+          </h1>
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Left */}
+
+          <div className="space-y-5">
+            <div className="bg-white rounded-2xl shadow p-6">
+              <h2 className="font-bold text-lg mb-5">Quick Overview</h2>
+
+              <div className="space-y-5">
+                <div>
+                  <p className="text-gray-500 text-sm">Class Teacher</p>
+
+                  <p className="font-semibold">{user?.name || "N/A"}</p>
+                </div>
+
+                <div>
+                  <p className="text-gray-500 text-sm">Students</p>
+
+                  <p className="font-semibold">{classData.totalStudent || 0}</p>
+                </div>
+
+                <div>
+                  <p className="text-gray-500 text-sm">Academic Session</p>
+
+                  <p className="font-semibold">{classData.academicSession}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right */}
+
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-2xl shadow">
+              <div className="border-b p-6 flex justify-between items-center">
+                <h2 className="text-2xl font-bold">Subject Teachers</h2>
+
+                <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-semibold">
+                  {subjectList.length} Subjects
+                </span>
+              </div>
+
+              <div className="p-6">
+                {subjectList.length ? (
+                  <div className="grid md:grid-cols-2 gap-5">
+                    {subjectList.map((subject, index) => (
+                      <SubjectCard
+                        key={`${subject.subject}-${index}`}
+                        subj={subject}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-20 text-gray-500">
+                    No Subjects Assigned
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }

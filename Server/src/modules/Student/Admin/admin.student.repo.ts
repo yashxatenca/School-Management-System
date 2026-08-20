@@ -5,7 +5,6 @@ import { after } from "node:test";
 
 export class AdminStudentRepo {
   static async getStudentByStudentIdRepo(id: string) {
-
     // 1. Check if the passed 'id' is a valid MongoDB ObjectId
     const isValidObjectId = mongoose.isValidObjectId(id);
 
@@ -47,6 +46,16 @@ export class AdminStudentRepo {
       },
       data,
       { returnDocument: "after" },
+    );
+  }
+
+  static async bulkUpdateWithIds(
+    studentIds: string[],
+    updatePayload: { classId?: string; teacherId?: string },
+  ) {
+    return await StudentAuth.updateMany(
+      { _id: { $in: studentIds } },
+      { $set: updatePayload },
     );
   }
 }

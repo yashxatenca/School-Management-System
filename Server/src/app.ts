@@ -11,57 +11,63 @@ import { registerteacherroute } from "./route/Teacher/teacher.route";
 import { registerstudentroute } from "./route/Student/student.route";
 
 const app: Application = express();
-app.set("trust proxy", 1);
+const isProduction = process.env.NODE_ENV === "production";
 
 /* ========================
-   1. INCOMING REQUEST LOG
+   1. PROXY CONFIGURATION
 ======================== */
-app.use((req, res, next) => {
-  console.log("Incoming:", req.method, req.originalUrl);
-  next();
-});
+// Crucial in production when deployed behind reverse proxies (Nginx, Render, AWS ALB, Cloudflare)
+if (isProduction || process.env.TRUST_PROXY === "true") {
+  app.set("trust proxy", 1);
+}
 
 /* ========================
-   2. CORS CONFIG (MUST BE ON TOP)
+   2. CORS CONFIGURATION
 ======================== */
-// Hardcoded array + env fallback with trailing slash cleanup
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:3000",
-  process.env.ORIGIN?.replace(/\/$/, ""), // Trailing slash remove kar dega
-].filter(Boolean) as string[];
+// Parse comma-separated origins from process.env.ALLOWED_ORIGINS if available
+const defaultOrigins = ["http://localhost:3000", "http://localhost:3000"];
+const envOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",").map((origin) =>
+      origin.trim().replace(/\/$/, ""),
+    )
+  : [];
+
+const allowedOrigins = [...new Set([...defaultOrigins, ...envOrigins])];
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps, curl, postman)
-      if (!origin || allowedOrigins.includes(origin)) {
+      // Allow requests with no origin (e.g., Postman, mobile apps, server-to-server) or matched origins
+      if (
+        !origin ||
+        allowedOrigins.includes(origin) ||
+        (!isProduction && origin.includes("localhost"))
+      ) {
         callback(null, true);
       } else {
-        console.log("Blocked by CORS:", origin);
-        callback(new Error("CORS policy violation"));
+        callback(
+          new Error(`CORS policy violation: Origin ${origin} not allowed`),
+        );
       }
     },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
   }),
 );
 
 /* ========================
-   3. SECURITY HEADERS & LOGGER
+   3. SECURITY & LOGGING
 ======================== */
 app.use(helmet());
-
-const loggerFormat = process.env.NODE_ENV === "production" ? "combined" : "dev";
-app.use(morgan(loggerFormat));
+app.use(morgan(isProduction ? "combined" : "dev"));
 
 /* ========================
    4. RATE LIMITING
 ======================== */
 const globalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: isProduction ? 100 : 1000, // Higher threshold in dev to prevent blocking during active testing
   standardHeaders: true,
   legacyHeaders: false,
   message: {
@@ -86,6 +92,7 @@ app.get("/", (req: Request, res: Response) => {
   res.status(200).json({
     success: true,
     message: "School Auth API is running 🚀",
+    environment: process.env.NODE_ENV || "development",
   });
 });
 

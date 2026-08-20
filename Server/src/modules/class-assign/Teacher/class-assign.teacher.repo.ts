@@ -22,11 +22,15 @@ export class ClassAssignTeacherRepo {
   }
 
   static async read(filter: any = {}) {
-    // Populating references so you get actual data, not just ObjectIds
     return await ClassSubjectAssign.find(filter)
-      .populate("classId")
-      .populate("subjectId")
-      .populate("classTeacherId");
+      .populate({
+        path: "classId",
+        populate: {
+          path: "teacherId",
+          select: "name email",
+        },
+      })
+      .populate("subjectId");
   }
 
   static async update(id: string, data: Partial<classassignmodel>) {

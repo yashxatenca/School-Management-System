@@ -78,3 +78,28 @@ export const useUpdateStudent = () => {
     },
   });
 };
+
+export const bulkUpdateStudentsAPI = async (payload: {
+  studentIds: string[];
+  classId?: string;
+  teacherId?: string;
+}) => {
+  const response = await api.patch(
+    "/api/v1/admin/student/bulk-update",
+    payload,
+  );
+  return response.data;
+};
+
+export const useBulkUpdateStudents = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: bulkUpdateStudentsAPI,
+    onSuccess: () => {
+      // Invalidate relevant student and class queries to keep UI fresh
+      queryClient.invalidateQueries({ queryKey: ["studentsByClass"] });
+      queryClient.invalidateQueries({ queryKey: ["student"] });
+    },
+  });
+};

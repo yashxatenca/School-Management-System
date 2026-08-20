@@ -13,6 +13,7 @@ import { TeacherTimetableRoutes } from "../../modules/Timetable/Teacher/Teacher/
 import TeacherStudentResult from "../../modules/Result/Teacher/teacher.result.route";
 import TeacherLeaveRoute from "../../modules/Leave/Teacher/leave.route";
 import TeacherProfileRoute from "../../modules/profile/Teacher/teacher.profile.route";
+import TeacherAttendanceRoute from "../../modules/Attendance/Teacher/teacher.attendance.route";
 // register route function
 export const registerteacherroute = (app: Application) => {
   app.use("/api/v1/auth/teacher", teacherauthroute);
@@ -32,4 +33,5 @@ export const registerteacherroute = (app: Application) => {
   app.use("/api/v1/teacher/result/", TeacherStudentResult);
   app.use("/api/v1/teacher/leave/", TeacherLeaveRoute);
   app.use("/api/v1/teachre/profile", TeacherProfileRoute);
+  app.use("/api/v1/teacher/attendance/", TeacherAttendanceRoute);
 };

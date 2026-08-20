@@ -1,216 +1,210 @@
 "use client";
-import { useState } from "react";
-import { toast } from "react-toastify";
-// Apne naye hooks yahan import karein (path apne project ke hisaab se adjust kar lein)
+
+import { useState, useRef, useEffect } from "react";
+import { useStudentMyAttendance } from "./_components/useAttendance";
 import {
-  useFetchAttendanceBySingleDate,
-  useFetchAttendanceByRangeDate,
-} from "@/hooks/Student/useStudentAttendance";
+  Calendar,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  ShieldAlert,
+  AlertCircle,
+  RotateCcw,
+  Loader2,
+} from "lucide-react";
 
-export default function StudentAttendance() {
-  const [fetchType, setFetchType] = useState<"single" | "range" | "">("");
-  const [singleDate, setSingleDate] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+export default function StudentAttendancePage() {
+  // Date filter state
+  const [selectedDate, setSelectedDate] = useState<string>("");
 
-  const [isFetchTriggered, setIsFetchTriggered] = useState(false);
+  // Lazy loading state
+  const [visibleCount, setVisibleCount] = useState<number>(10);
+  const loaderRef = useRef<HTMLDivElement>(null);
 
-  // 1. Dono queries ko call karein
-  const {
-    data: singleData,
-    isFetching: isSingleFetching,
-    refetch: refetchSingle,
-  } = useFetchAttendanceBySingleDate(singleDate);
+  // Pass selectedDate to hook
+  const { data, isLoading, isError } = useStudentMyAttendance(selectedDate);
 
-  const {
-    data: rangeData,
-    isFetching: isRangeFetching,
-    refetch: refetchRange,
-  } = useFetchAttendanceByRangeDate(startDate, endDate);
+  // Reset visible items when date filter changes or new data arrives
+  useEffect(() => {
+    setVisibleCount(10);
+  }, [selectedDate, data]);
 
-  const handleTypeChange = (type: "single" | "range") => {
-    setFetchType(type);
-    setIsFetchTriggered(false);
-    setSingleDate("");
-    setStartDate("");
-    setEndDate("");
+  // Intersection Observer for Infinite Scrolling
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const target = entries[0];
+        if (
+          target.isIntersecting &&
+          data?.data &&
+          visibleCount < data.data.length
+        ) {
+          // Load 10 more items when scrolled to the bottom
+          setVisibleCount((prev) => prev + 10);
+        }
+      },
+      { threshold: 0.1 }, // Trigger slightly before it comes fully into view
+    );
+
+    if (loaderRef.current) {
+      observer.observe(loaderRef.current);
+    }
+
+    return () => {
+      if (loaderRef.current) {
+        observer.unobserve(loaderRef.current);
+      }
+    };
+  }, [visibleCount, data]);
+
+  // Helper to safely render Class Name
+  const getClassName = (cls: string | (typeof data.data)[0]["class"]) => {
+    if (typeof cls === "object" && cls !== null) {
+      return cls.section ? `${cls.name} (${cls.section})` : cls.name;
+    }
+    return cls || "General Class";
   };
 
-  const handleFetchData = async () => {
-    // Validations
-    if (fetchType === "single" && !singleDate) {
-      toast.error("Please select a date!");
-      return;
-    }
-    if (fetchType === "range" && (!startDate || !endDate)) {
-      toast.error("Please select both start and end dates!");
-      return;
-    }
-
-    setIsFetchTriggered(true);
-
+  // Helper to format date safely
+  const formatDate = (dateStr: string) => {
     try {
-      // 2. Jo fetchType selected hai, uske hisaab se uska refetch() function call karein
-      const fetchPromise =
-        fetchType === "single" ? refetchSingle() : refetchRange();
-
-      // react-toastify me 'loading' ki jagah 'pending' use hota hai
-      await toast.promise(fetchPromise, {
-        pending: "Fetching attendance records...",
-        success: "Data fetched successfully!",
-        error: "Failed to fetch attendance data.",
-      });
-    } catch (error) {
-      console.error("Fetch failed", error);
+      const dateObj = new Date(dateStr);
+      return isNaN(dateObj.getTime())
+        ? dateStr.split("T")[0]
+        : dateObj.toLocaleDateString("en-US", {
+            weekday: "short",
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          });
+    } catch {
+      return dateStr;
     }
   };
 
-  // 3. Current active state aur data ko merge karein
-  const isPending = fetchType === "single" ? isSingleFetching : isRangeFetching;
-  const activeData = fetchType === "single" ? singleData : rangeData;
-
-  // Extract records safely
-  const attendanceRecords = Array.isArray(activeData)
-    ? activeData
-    : activeData?.records || [];
+  // Slice the data to only show the visible count
+  const visibleData = data?.data?.slice(0, visibleCount) || [];
 
   return (
-    <div className="p-4 md:p-6 max-w-5xl mx-auto w-full">
-      <h1 className="text-2xl md:text-3xl font-bold mb-6 text-gray-800 text-center md:text-left">
-        Student Attendance
-      </h1>
+    <div className="p-6 max-w-4xl mx-auto space-y-6">
+      <h1 className="text-2xl font-bold text-gray-900">My Attendance Logs</h1>
 
-      {/* Selection Section */}
-      <div className="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-100 mb-6">
-        <p className="text-gray-600 mb-4 font-medium">Select Fetch Type:</p>
-        <div className="flex flex-col sm:flex-row gap-4 mb-6">
-          <label className="flex items-center gap-2 cursor-pointer bg-gray-50 p-3 rounded-lg border hover:bg-gray-100 transition">
+      <div className="bg-white border rounded-xl overflow-hidden shadow-sm">
+        {/* Header with Date Picker */}
+        <div className="p-4 border-b flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gray-50/50">
+          <div className="font-semibold text-gray-800 flex items-center gap-2">
+            <Calendar className="w-4 h-4 text-blue-600" /> Attendance History
+          </div>
+
+          {/* Date Selector & Clear Control */}
+          <div className="flex items-center gap-2">
             <input
-              type="radio"
-              name="fetchType"
-              checked={fetchType === "single"}
-              onChange={() => handleTypeChange("single")}
-              className="w-4 h-4 text-blue-600"
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
             />
-            <span className="font-medium">Single Day</span>
-          </label>
-          <label className="flex items-center gap-2 cursor-pointer bg-gray-50 p-3 rounded-lg border hover:bg-gray-100 transition">
-            <input
-              type="radio"
-              name="fetchType"
-              checked={fetchType === "range"}
-              onChange={() => handleTypeChange("range")}
-              className="w-4 h-4 text-blue-600"
-            />
-            <span className="font-medium">Date Range</span>
-          </label>
+            {selectedDate && (
+              <button
+                onClick={() => setSelectedDate("")}
+                className="flex items-center gap-1 text-xs font-medium text-gray-600 hover:text-gray-900 bg-white border border-gray-300 hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors shadow-sm"
+                title="Show all history"
+              >
+                <RotateCcw className="w-3.5 h-3.5" /> Clear
+              </button>
+            )}
+          </div>
         </div>
 
-        {/* Date Inputs */}
-        {fetchType && (
-          <div className="flex flex-col sm:flex-row gap-4 items-end">
-            {fetchType === "single" ? (
-              <div className="flex flex-col w-full sm:w-auto">
-                <label className="text-sm text-gray-600 mb-1 font-medium">
-                  Select Date
-                </label>
-                <input
-                  type="date"
-                  className="border rounded-lg p-2.5 w-full outline-none focus:ring-2 focus:ring-blue-500"
-                  value={singleDate}
-                  onChange={(e) => setSingleDate(e.target.value)}
-                />
-              </div>
-            ) : (
-              <>
-                <div className="flex flex-col w-full sm:w-auto">
-                  <label className="text-sm text-gray-600 mb-1 font-medium">
-                    Start Date
-                  </label>
-                  <input
-                    type="date"
-                    className="border rounded-lg p-2.5 w-full outline-none focus:ring-2 focus:ring-blue-500"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                  />
-                </div>
-                <div className="flex flex-col w-full sm:w-auto">
-                  <label className="text-sm text-gray-600 mb-1 font-medium">
-                    End Date
-                  </label>
-                  <input
-                    type="date"
-                    className="border rounded-lg p-2.5 w-full outline-none focus:ring-2 focus:ring-blue-500"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                  />
-                </div>
-              </>
-            )}
+        {/* Loading State */}
+        {isLoading && (
+          <p className="p-6 text-sm text-gray-500 text-center flex items-center justify-center gap-2">
+            <Loader2 className="w-4 h-4 animate-spin" /> Loading logs...
+          </p>
+        )}
 
-            <button
-              onClick={handleFetchData}
-              disabled={isPending}
-              className="bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 transition w-full sm:w-auto font-medium mt-2 sm:mt-0 disabled:opacity-50"
-            >
-              {isPending ? "Fetching..." : "Fetch Data"}
-            </button>
+        {/* Error State */}
+        {isError && (
+          <div className="p-6 text-sm text-rose-600 text-center flex items-center justify-center gap-2">
+            <AlertCircle className="w-4 h-4" />
+            Failed to load attendance records. Please try again later.
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!isLoading && !isError && data?.data?.length === 0 && (
+          <div className="p-8 text-center space-y-1">
+            <p className="text-sm font-medium text-gray-700">
+              No records found
+            </p>
+            <p className="text-xs text-gray-500">
+              {selectedDate
+                ? `No attendance marked for ${selectedDate}`
+                : "No attendance history available yet."}
+            </p>
+          </div>
+        )}
+
+        {/* Data List (Paginated) */}
+        {!isLoading && !isError && visibleData.length > 0 && (
+          <div className="divide-y text-sm">
+            {visibleData.map((log: any) => (
+              <div
+                key={log._id}
+                className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+              >
+                <div className="space-y-0.5">
+                  <div className="flex items-center gap-2">
+                    <p className="font-semibold text-gray-900">
+                      {formatDate(log.date)}
+                    </p>
+                    <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded font-medium">
+                      {getClassName(log.class)}
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-500">
+                    {log.remarks || "Regular daily record"}
+                  </p>
+                </div>
+
+                <div>
+                  {log.status === "PRESENT" && (
+                    <span className="flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">
+                      <CheckCircle2 className="w-3.5 h-3.5" /> Present
+                    </span>
+                  )}
+                  {log.status === "ABSENT" && (
+                    <span className="flex items-center gap-1 text-xs font-bold text-rose-700 bg-rose-50 px-2.5 py-1 rounded-md border border-rose-200">
+                      <XCircle className="w-3.5 h-3.5" /> Absent
+                    </span>
+                  )}
+                  {log.status === "LATE" && (
+                    <span className="flex items-center gap-1 text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-md border border-amber-200">
+                      <Clock className="w-3.5 h-3.5" /> Late
+                    </span>
+                  )}
+                  {log.status === "EXCUSED" && (
+                    <span className="flex items-center gap-1 text-xs font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-md border border-blue-200">
+                      <ShieldAlert className="w-3.5 h-3.5" /> Excused
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+
+            {/* Scroll Observer Target */}
+            {data?.data && visibleCount < data.data.length && (
+              <div
+                ref={loaderRef}
+                className="p-4 flex justify-center items-center text-gray-500 text-xs"
+              >
+                <Loader2 className="w-4 h-4 animate-spin mr-2" /> Loading
+                more...
+              </div>
+            )}
           </div>
         )}
       </div>
-
-      {/* Data Table */}
-      {isFetchTriggered && attendanceRecords.length > 0 && (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left whitespace-nowrap">
-              <thead className="bg-gray-50 border-b">
-                <tr>
-                  <th className="p-4 font-semibold text-gray-600">
-                    Student Name
-                  </th>
-                  <th className="p-4 font-semibold text-gray-600">Date</th>
-                  <th className="p-4 font-semibold text-gray-600">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {attendanceRecords.map((record: any, index: number) => (
-                  <tr
-                    key={record._id || index}
-                    className="hover:bg-gray-50 transition"
-                  >
-                    <td className="p-4">
-                      {record.studentId?.name || "Unknown"}
-                    </td>
-                    <td className="p-4">
-                      {new Date(record.date).toLocaleDateString("en-IN")}
-                    </td>
-                    <td className="p-4">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium ${
-                          record.status === "Present" || record.status === "P"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-red-100 text-red-700"
-                        }`}
-                      >
-                        {record.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {/* No Data Fallback */}
-      {isFetchTriggered && !isPending && attendanceRecords.length === 0 && (
-        <div className="text-center text-gray-500 mt-8 bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
-          No records found for the selected dates.
-        </div>
-      )}
     </div>
   );
 }
-  

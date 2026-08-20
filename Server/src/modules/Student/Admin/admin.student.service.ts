@@ -61,4 +61,32 @@ export class AdminStudentService {
     }
     return user;
   }
+  static async bulkUpdateStudents(data: any) {
+    const { studentIds, classId, teacherId } = data;
+
+    // 1. Validation checks
+    if (!Array.isArray(studentIds) || studentIds.length === 0) {
+      throw new Error("Please provide a non-empty array of student IDs.");
+    }
+
+    if (!classId && !teacherId) {
+      throw new Error("Please provide either a target classId or teacherId.");
+    }
+
+    // 2. Prepare payload
+    const updatePayload: { classId?: string; teacherId?: string } = {};
+    if (classId) updatePayload.classId = classId;
+    if (teacherId) updatePayload.teacherId = teacherId;
+
+    // 3. Execute DB operation via Repository
+    const result = await AdminStudentRepo.bulkUpdateWithIds(
+      studentIds,
+      updatePayload,
+    );
+
+    return {
+      matchedCount: result.matchedCount,
+      modifiedCount: result.modifiedCount,
+    };
+  }
 }

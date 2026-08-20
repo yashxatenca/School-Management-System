@@ -1,4 +1,5 @@
 import TeacherProfileModel from "./teacher.profile.model";
+import studentProfileModel from "../Student/student.profile.model";
 import { ITeacherProfile } from "./teacher.profile.interface";
 import { Types } from "mongoose";
 
@@ -24,6 +25,12 @@ class TeacherProfileRepository {
         upsert: true, // Bidu Magic: Agar profile nahi hui toh nayi bana dega
       },
     );
+  }
+
+  async GetStudentProfile(studentId: string) {
+    return await studentProfileModel
+      .findOne({ student_id: studentId })
+      .populate("student_id");
   }
 }
 

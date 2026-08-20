@@ -13,6 +13,7 @@ import AdminDashboardRoute from "../../modules/Dashboard/Admin/admin.dashboard.r
 import adminstudenttimetableroute from "../../modules/Timetable/Student/Admin/timetable.admin.route";
 import adminteachertimetableroute from "../../modules/Timetable/Teacher/Admin/teacher.timetable.admin.route";
 import AdminLeaveRoute from "../../modules/Leave/Admin/admin.leave.route";
+import AdminAttendance from "../../modules/Attendance/Admin/admin.attendance.route";
 // fucntion for initializing the routes
 export const registeradminroute = (app: Application) => {
   console.log("✅ registeradminroute called");
@@ -32,4 +33,5 @@ export const registeradminroute = (app: Application) => {
   app.use("/api/v1/admin/timetable/student", adminstudenttimetableroute);
   app.use("/api/v1/admin/timetable/teacher", adminteachertimetableroute);
   app.use("/api/v1/admin/leave/", AdminLeaveRoute);
+  app.use("/api/v1/admin/attendance", AdminAttendance);
 };

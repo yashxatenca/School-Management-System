@@ -1,6 +1,7 @@
 import repository from "./teacher.profile.repo";
 import { ITeacherProfile } from "./teacher.profile.interface";
 import { Types } from "mongoose";
+import { ApiError } from "../../../core/errors/ApiErrors";
 
 class TeacherProfileService {
   async createProfile(
@@ -29,6 +30,10 @@ class TeacherProfileService {
 
   async updateProfile(id: string, body: Partial<ITeacherProfile>) {
     return await repository.updateByAuthId(new Types.ObjectId(id), body);
+  }
+  async getStudentProfile(studentId: string) {
+    if (!studentId) throw new ApiError(400, "All field Required");
+    return await repository.GetStudentProfile(studentId);
   }
 }
 

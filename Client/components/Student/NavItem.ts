@@ -35,7 +35,11 @@ export const navItems: NavItem[] = [
       //{ name: "Study Materials", href: "/student/materials", icon: Download },
     ],
   },
-
+  {
+    name: "Attendance",
+    href: "/student/attendance",
+    icon: ClipboardList,
+  },
   {
     name: "Communication",
     href: "#",

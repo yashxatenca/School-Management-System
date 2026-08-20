@@ -24,7 +24,7 @@ export class AdminStudentController {
     try {
       const id = req.params.studentId as string;
       const user = await AdminStudentService.getStudentByStudentIdService(id);
-     
+
       if (user) {
         return res.status(200).json({
           message: "found successfull",
@@ -92,6 +92,29 @@ export class AdminStudentController {
       res.status(500).json({
         success: false,
         message: "Internal Server Error",
+      });
+    }
+  }
+  static async bulkUpdate(req: Request, res: Response) {
+    try {
+      const { studentIds, classId, teacherId } = req.body;
+
+      const result = await AdminStudentService.bulkUpdateStudents({
+        studentIds,
+        classId,
+        teacherId,
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: `Successfully updated ${result.modifiedCount} student(s).`,
+        data: result,
+      });
+    } catch (error: any) {
+      const statusCode = error.message.includes("Please provide") ? 400 : 500;
+      return res.status(statusCode).json({
+        success: false,
+        message: error.message || "Failed to bulk update students.",
       });
     }
   }

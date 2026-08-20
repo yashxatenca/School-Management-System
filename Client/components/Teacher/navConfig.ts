@@ -43,11 +43,6 @@ export const navItems: NavItem[] = [
         href: "/teacher/attendance/create",
         icon: ClipboardList,
       },
-      {
-        name: "View Attendance",
-        href: "/teacher/attendance/read",
-        icon: EyeIcon,
-      },
     ],
   },
 
