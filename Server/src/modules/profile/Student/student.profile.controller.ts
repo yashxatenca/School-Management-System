@@ -30,8 +30,7 @@ class StudentProfileController {
       const { student_id } = req.params;
 
       const profile = await profileService.fetchProfile(student_id as string);
-      console.log(profile);
-      res.status(200).json({
+       res.status(200).json({
         success: true,
         data: profile,
       });

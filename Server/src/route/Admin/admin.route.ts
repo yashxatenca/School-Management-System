@@ -16,7 +16,6 @@ import AdminLeaveRoute from "../../modules/Leave/Admin/admin.leave.route";
 import AdminAttendance from "../../modules/Attendance/Admin/admin.attendance.route";
 // fucntion for initializing the routes
 export const registeradminroute = (app: Application) => {
-  console.log("✅ registeradminroute called");
   app.use("/api/v1/admin/subject", subjectRoute);
 
   //app.use("/api/v1/admin/auth", adminRoutes);

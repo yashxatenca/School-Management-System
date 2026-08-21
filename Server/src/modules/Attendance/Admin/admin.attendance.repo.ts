@@ -1,5 +1,6 @@
 import { Types } from "mongoose";
 import { AttendanceModel } from "../attendance.model";
+import { StudentAuth } from "../../auth/Student/models/student.auth.model";
 
 export class AdminAttendanceRepository {
   // Fixed field name 'studentId' instead of 'student'
@@ -14,14 +15,20 @@ export class AdminAttendanceRepository {
       filter.date = { $gte: start, $lte: end };
     }
 
-    return AttendanceModel.find(filter)
-      .populate("class", "name section className")
-      .populate("markedBy", "name email")
-      .sort({ date: -1 })
-      .lean();
+    return (
+      AttendanceModel.find(filter)
+        .populate("class", "name section className")
+        // Explicitly TeacherAuth model use kiya markedBy ke liye
+        .populate({
+          path: "markedBy",
+          model: "TeacherAuth",
+          select: "name email",
+        })
+        .sort({ date: -1 })
+        .lean()
+    );
   }
 
-  // Uses full UTC day range for accurate date matching
   async findByClassAndDate(classId: string, date: Date) {
     const start = new Date(date);
     start.setUTCHours(0, 0, 0, 0);
@@ -29,15 +36,19 @@ export class AdminAttendanceRepository {
     const end = new Date(date);
     end.setUTCHours(23, 59, 59, 999);
 
-    return AttendanceModel.find({
+    const attendance = await AttendanceModel.find({
       class: new Types.ObjectId(classId),
       date: { $gte: start, $lte: end },
     })
-      .populate("studentId", "name rollNumber email") // Schema field is studentId
-      .populate("markedBy", "name")
-      .lean();
-  }
+      .populate("studentId") // Student collection se data layega
+      .populate("markedBy"); // Teacher collection se data layega
 
+    const validAttendance = attendance.filter(
+      (record) => record.studentId !== null,
+    );
+    console.log(validAttendance);
+    return validAttendance;
+  }
   // Aggregation for Date Cards Summary
   async getMarkedDatesCards(classId: string, startDate: Date, endDate: Date) {
     return AttendanceModel.aggregate([

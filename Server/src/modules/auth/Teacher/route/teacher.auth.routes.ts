@@ -2,6 +2,7 @@ import { Router } from "express";
 import { TeacherController } from "../controller/teacher.auth.controller";
 import { authMiddleware } from "../middleware/teacher.auth.middleware";
 import { catchAsync } from "../../../../core/errors/catchAsync";
+import { GlobalAuthMiddleware } from "../../../../middleware/Gloabal.auth.middleware";
 const router = Router();
 const controller = new TeacherController();
 
@@ -40,7 +41,7 @@ router.post(
 
 router.get(
   "/profile",
-  authMiddleware(["teacher"]),
+  GlobalAuthMiddleware(["teacher"]),
   catchAsync(controller.profile),
 );
 

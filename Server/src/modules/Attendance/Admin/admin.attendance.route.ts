@@ -5,7 +5,7 @@ import { GlobalAuthMiddleware } from "../../../middleware/Gloabal.auth.middlewar
 const router = Router();
 const controller = new AdminAttendanceController();
 
-router.use(GlobalAuthMiddleware(["teacher"]));
+router.use(GlobalAuthMiddleware(["admin"]));
 
 router.get("/student/:studentId", controller.getByStudent);
 router.get("/class/:classId", controller.getByClass);

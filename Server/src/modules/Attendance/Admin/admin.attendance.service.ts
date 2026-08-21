@@ -1,11 +1,8 @@
 import { AdminAttendanceRepository } from "./admin.attendance.repo";
 
 export class AdminAttendanceService {
-  private repo: AdminAttendanceRepository;
-
-  constructor() {
-    this.repo = new AdminAttendanceRepository();
-  }
+  // Optimization: Constructor injection makes the service easily testable
+  constructor(private readonly repo = new AdminAttendanceRepository()) {}
 
   private normalizeDate(dateStr: string): Date {
     const d = new Date(dateStr);
@@ -21,26 +18,29 @@ export class AdminAttendanceService {
   async getAttendanceByClass(classId: string, dateStr: string) {
     const date = this.normalizeDate(dateStr);
     const records = await this.repo.findByClassAndDate(classId, date);
-
-    // Maps studentId object to student key for Next.js UI compatibility
-    return records.map((record: any) => ({
+    console.log(records);
+    return records?.map((record: any) => ({
       _id: record._id,
       date: record.date,
       status: record.status,
       remarks: record.remarks,
-      student: {
-        _id: record.studentId?._id,
-        name: record.studentId?.name || "N/A",
-        rollNumber: record.studentId?.rollNumber,
-        email: record.studentId?.email,
-      },
+
+      // Optimization: Extracted single student object safely using optional chaining
+      student: record.students?.[0]
+        ? {
+            _id: record.students[0]._id,
+            name: record.students[0].name,
+            studentId: record.students[0].studentId,
+          }
+        : null,
+
       markedBy: record.markedBy
         ? {
             _id: record.markedBy._id,
             name: record.markedBy.name,
           }
         : null,
-    }));
+    })); // FIX: Added missing closing parenthesis here
   }
 
   async getDateCards(classId: string, year: number, month: number) {
@@ -53,7 +53,7 @@ export class AdminAttendanceService {
       endDate,
     );
 
-    return summaries.map((item) => ({
+    return summaries.map((item: any) => ({
       date: item._id,
       isMarked: true,
       totalMarked: item.totalMarked,

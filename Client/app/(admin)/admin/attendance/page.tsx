@@ -18,6 +18,14 @@ export default function AdminAttendancePage() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [searchStudentId, setSearchStudentId] = useState<string>("");
 
+  // Dynamic Date States (Replacing hardcoded 2026 and 8)
+  const [selectedYear, setSelectedYear] = useState<number>(
+    new Date().getFullYear(),
+  );
+  const [selectedMonth, setSelectedMonth] = useState<number>(
+    new Date().getMonth() + 1,
+  );
+
   // 2. Fetch all classes list
   const { data: classesResponse, isLoading: isClassesLoading } =
     useGetClasses();
@@ -29,8 +37,8 @@ export default function AdminAttendancePage() {
 
   const { data: cardsData, isLoading: isCardsLoading } = useAdminDateCards(
     selectedClassId,
-    2026,
-    8,
+    selectedYear,
+    selectedMonth,
   );
 
   const { data: classLogs } = useAdminClassAttendance(
@@ -40,7 +48,7 @@ export default function AdminAttendancePage() {
 
   const { data: studentLogs, isLoading: isStudentLogsLoading } =
     useAdminStudentAttendance(searchStudentId);
-
+  console.log(classLogs);
   return (
     <div className="p-6 max-w-6xl mx-auto space-y-6">
       {/* Top Bar with Class Dropdown */}
@@ -119,14 +127,14 @@ export default function AdminAttendancePage() {
       ) : activeTab === "CARDS" ? (
         <div className="space-y-6">
           <h2 className="text-sm font-semibold text-gray-500 uppercase">
-            Attendance Cards
+            Attendance Cards ({selectedMonth}/{selectedYear})
           </h2>
 
           {isCardsLoading ? (
             <p className="text-gray-500 text-sm">Loading attendance cards...</p>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {cardsData?.cards?.map((card) => (
+              {cardsData?.cards?.map((card: any) => (
                 <div
                   key={card.date}
                   onClick={() => setSelectedDate(card.date)}
@@ -201,9 +209,10 @@ export default function AdminAttendancePage() {
               >
                 <option value="">-- Select Student --</option>
                 {classStudentsData?.map((student: any) => (
-                  <option key={student._id} value={student._id}>
+                  // Changed value from student._id to student.studentId
+                  <option key={student._id} value={student._id || ""}>
                     {student.name}{" "}
-                    {student.studentId ? `(Roll: ${student.studentId})` : ""}
+                    {student.studentId ? `(ID: ${student.studentId})` : ""}
                   </option>
                 ))}
               </select>
@@ -211,13 +220,13 @@ export default function AdminAttendancePage() {
 
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-gray-600 uppercase">
-                Or Enter Student ObjectId Directly
+                Or Enter Student ID Directly
               </label>
               <div className="flex items-center gap-2 border rounded-lg px-3 py-2 bg-gray-50 focus-within:ring-2 focus-within:ring-blue-500">
                 <Search className="w-4 h-4 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Paste 24-character ObjectId..."
+                  placeholder="Enter Student ID..."
                   value={searchStudentId}
                   onChange={(e) => setSearchStudentId(e.target.value)}
                   className="w-full bg-transparent text-sm outline-none font-mono"

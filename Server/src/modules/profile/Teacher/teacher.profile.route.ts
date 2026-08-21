@@ -7,17 +7,17 @@ const router = Router();
 
 router.post(
   "/",
-  GlobalRouteMiddleware(["teacher", "admin"]),
+  GlobalRouteMiddleware(["teacher"]),
   controller.create.bind(controller),
 );
 router.get(
   "/get-profile",
-  GlobalRouteMiddleware(["teacher", "admin"]),
+  GlobalRouteMiddleware(["teacher"]),
   controller.get.bind(controller),
 );
 router.put(
   "/",
-  GlobalRouteMiddleware(["teacher", "admin"]),
+  GlobalRouteMiddleware(["teacher"]),
   controller.update.bind(controller),
 );
 router.get(
@@ -26,4 +26,3 @@ router.get(
   controller.getStudentProfile.bind(controller),
 );
 export default router;
- 

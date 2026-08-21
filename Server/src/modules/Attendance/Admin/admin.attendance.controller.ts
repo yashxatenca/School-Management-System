@@ -12,6 +12,8 @@ export class AdminAttendanceController {
     try {
       const { studentId } = req.params;
       const { date } = req.query;
+      console.log(req.params, req.query);
+
       const data = await this.service.getAttendanceByStudent(
         studentId as string,
         date as string,
@@ -54,7 +56,7 @@ export class AdminAttendanceController {
         year,
         month,
       );
-      console.log(cards);
+
       res.status(200).json({ success: true, year, month, cards });
     } catch (error: any) {
       res.status(500).json({ success: false, error: error.message });
