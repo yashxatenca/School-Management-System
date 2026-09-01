@@ -9,7 +9,9 @@ import { useEffect, useState } from "react";
 import ReduxProvider from "@/app/redux/provider";
 import StudentSidebar from "@/components/Student/StudentSidebar";
 import ProtectedStudentRoute from "@/components/Student/ProtectedStudentRoute";
-import StudentHeader from "@/components/Student/StudentHeader"; // ✅ Naya Header Import kiya
+import StudentHeader from "@/components/Student/StudentHeader";
+import GlobalChat from "@/components/Student/ChatBot/Chatbot";
+import { RootState } from "../redux/store";
 
 const fetchStudent = async () => {
   try {
@@ -27,7 +29,9 @@ function StudentLayoutInner({ children }: { children: React.ReactNode }) {
   const dispatch = useDispatch();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const { authChecked } = useSelector((state: any) => state.studentauthstate);
+  const { authChecked } = useSelector(
+    (state: RootState) => state.studentauthstate,
+  );
 
   const { data, isLoading } = useQuery({
     queryKey: ["student-auth"],
@@ -52,14 +56,12 @@ function StudentLayoutInner({ children }: { children: React.ReactNode }) {
 
   return (
     <ProtectedStudentRoute>
-      {/* ✅ h-screen lagaya taaki bahar ka scroll ruk jaye */}
-      <div className="h-screen bg-gray-50 flex flex-col overflow-hidden">
+      <div className="h-screen bg-gray-50 flex flex-col overflow-hidden relative">
         <StudentHeader setOpen={setSidebarOpen} isOpen={sidebarOpen} />
 
         <div className="flex flex-1 overflow-hidden relative">
           <StudentSidebar open={sidebarOpen} setOpen={setSidebarOpen} />
 
-          {/* Mobile Overlay */}
           {sidebarOpen && (
             <div
               className="fixed inset-0 z-20 bg-black/40 lg:hidden"
@@ -67,7 +69,6 @@ function StudentLayoutInner({ children }: { children: React.ReactNode }) {
             />
           )}
 
-          {/* ✅ Sirf ye hissa scroll hoga */}
           <main className="flex-1 overflow-y-auto bg-gray-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
               {children}
@@ -87,6 +88,7 @@ export default function StudentLayout({
   return (
     <ReduxProvider>
       <StudentLayoutInner>{children}</StudentLayoutInner>
+      <GlobalChat />
     </ReduxProvider>
   );
 }

@@ -8,6 +8,7 @@ import StudentNoticeRoute from "../../modules/Notice/Student/notice.student.rout
 import StudentProfileRoute from "../../modules/profile/Student/student.profile.route";
 import StudentLeaveRoute from "../../modules/Leave/Student/leave.route";
 import StudentAttendanceRoute from "../../modules/Attendance/Student/student.attendance.route";
+import StudentChatBotRoute from "../../modules/AritficialIntelligence/Student/ai.route";
 export const registerstudentroute = (app: Application) => {
   app.use("/api/v1/auth/student", studentAuthRoute);
   app.use("/api/v1/student/assignment", studentAssignmentRoute);
@@ -18,4 +19,5 @@ export const registerstudentroute = (app: Application) => {
   app.use("/api/v1/student/profile", StudentProfileRoute);
   app.use("/api/v1/student/leave/", StudentLeaveRoute);
   app.use("/api/v1/student/attendance/", StudentAttendanceRoute);
+  app.use("/api/v1/student/chatbot/", StudentChatBotRoute);
 };
