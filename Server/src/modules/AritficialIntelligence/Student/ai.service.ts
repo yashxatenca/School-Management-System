@@ -156,18 +156,13 @@ export async function handleStudentChat(
       response = await chat.sendMessage({
         message: [
           {
-            role: "user",
-            parts: [
-              {
-                functionResponse: {
-                  name: functionName,
-                  response:
-                    typeof finalPayload === "object" && finalPayload !== null
-                      ? (finalPayload as Record<string, unknown>)
-                      : { result: finalPayload },
-                },
-              },
-            ],
+            functionResponse: {
+              name: functionName,
+              response:
+                typeof finalPayload === "object" && finalPayload !== null
+                  ? (finalPayload as Record<string, unknown>)
+                  : { result: finalPayload },
+            },
           },
         ],
       });
