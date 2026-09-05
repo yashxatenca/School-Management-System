@@ -58,7 +58,7 @@ export default function StudentAttendancePage() {
   }, [visibleCount, data]);
 
   // Helper to safely render Class Name
-  const getClassName = (cls: string | (typeof data.data)[0]["class"]) => {
+  const getClassName = (cls: string | { name: string; section?: string }) => {
     if (typeof cls === "object" && cls !== null) {
       return cls.section ? `${cls.name} (${cls.section})` : cls.name;
     }

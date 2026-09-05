@@ -36,15 +36,19 @@ export class StudentAITools {
   static async getMyAttendance(studentId: string) {
     this.checkId(studentId);
 
-    // 1. Calculate the date exactly 30 days ago
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
 
-    // 2. Fetch records matching the studentId AND within the last 30 days
-    return await AttendanceModel.find({
+    const endOfToday = new Date();
+    endOfToday.setHours(23, 59, 59, 999);
+
+    return await AttendanceModel.findOne({
       studentId,
-      date: { $gte: thirtyDaysAgo },
-    }).sort({ date: -1 });
+      date: {
+        $gte: startOfToday,
+        $lte: endOfToday,
+      },
+    });
   }
 
   static async getMyMarks(studentId: string) {
@@ -56,7 +60,9 @@ export class StudentAITools {
 
   static async getMyExams(studentId: string) {
     this.checkId(studentId);
-    const exam = await examModel.find();
+    const student = await StudentAuth.findOne({ _id: studentId });
+    if (!student) return " record not found";
+    const exam = await examModel.find({ classesAssigned: student.classId });
     if (!exam || exam.length === 0) return "No exam found";
     return exam;
   }
@@ -92,12 +98,17 @@ export class StudentAITools {
 
   static async getMyNotice(studentId: string) {
     this.checkId(studentId);
-    const student = await StudentAuth.findOne({ _id: studentId });
+
+    const student = await StudentAuth.findById(studentId);
     if (!student) return "Student auth record not found";
 
-    const notice = await NoticeModel.find({ classId: student.classId });
-    if (!notice || notice.length === 0) return "Notice not found";
-    return notice;
+    // Sirf 1 line me find, exclude (-), aur performance ke liye .lean()
+    const notices = await NoticeModel.find(
+      { classId: student.classId },
+      "-classId",
+    ).lean();
+
+    return notices.length ? notices : "Notice not found";
   }
 
   static async getMySubject(studentId: string) {

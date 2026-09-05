@@ -4,7 +4,8 @@ import { useState } from "react";
 import AdminHeader from "@/components/Admin/AdminHeader";
 import Sidebar from "@/components/Admin/Sidebar";
 import ReduxProvider from "../redux/provider";
-import AdminAuthBootstrap from "@/components/Admin/AdminAuthBootstrap"; 
+import AdminAuthBootstrap from "@/components/Admin/AdminAuthBootstrap";
+import GlobalChat from "@/components/Admin/ChatBot/Chatbot";
 
 function AdminLayoutInner({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -12,13 +13,11 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
   return (
     // min-h-screen ki jagah h-screen aur overflow-hidden use kiya
     <div className="h-screen bg-gray-50 flex flex-col overflow-hidden">
-      
       {/* Header static rahega top par */}
       <AdminHeader setOpen={setSidebarOpen} isOpen={sidebarOpen} />
 
       {/* Main container jo header ke baad bachi hui space lega */}
       <div className="flex flex-1 overflow-hidden relative">
-        
         {/* Sidebar Component */}
         <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
 
@@ -50,6 +49,7 @@ export default function AdminLayout({
     <ReduxProvider>
       <AdminAuthBootstrap />
       <AdminLayoutInner>{children}</AdminLayoutInner>
+      <GlobalChat />
     </ReduxProvider>
   );
 }

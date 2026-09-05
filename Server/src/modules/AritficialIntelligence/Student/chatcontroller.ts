@@ -20,6 +20,7 @@ export const processStudentChat = async (
     const aiReply = await handleStudentChat(studentId, message);
     res.status(200).json({ success: true, reply: aiReply });
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       success: false,
       error: "Unable to process message right now.",

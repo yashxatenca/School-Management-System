@@ -34,22 +34,20 @@ const TeacherAuthSchema = new Schema<TeacherSchema>(
       select: false, // 👈 important for security
     },
     principalId: {
-     type: mongoose.Schema.Types.ObjectId,
-      ref: "Principal",
-     required: true,
-      index: true
-   },
-   role:{
-    type:String,
-    default:"teacher",
-   },
-
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Admin",
+      required: true,
+      index: true,
+    },
+    role: {
+      type: String,
+      default: "teacher",
+    },
   },
   {
     timestamps: true,
-  }
+  },
 );
-
 
 // 🔐 Hash Password Before Save
 TeacherAuthSchema.pre<TeacherSchema>("save", async function () {
@@ -61,18 +59,16 @@ TeacherAuthSchema.pre<TeacherSchema>("save", async function () {
   // No next() call needed here; Mongoose waits for this async function to finish
 });
 
-
 // 🔎 Compare Password Method
 TeacherAuthSchema.methods.comparePassword = async function (
-  candidatePassword: string
+  candidatePassword: string,
 ): Promise<boolean> {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-
 const TeacherAuthModel = mongoose.model<TeacherSchema>(
   "TeacherAuth",
-  TeacherAuthSchema
+  TeacherAuthSchema,
 );
 
 export default TeacherAuthModel;

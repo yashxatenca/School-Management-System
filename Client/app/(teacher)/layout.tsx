@@ -6,6 +6,7 @@ import TeacherHeader from "@/components/Teacher/TeacherHeader";
 import TeacherAuthBootstrap from "@/components/Teacher/TeacherAuthBootstrap";
 import TeacherProtectedRoute from "@/components/Teacher/ProtectedTeacherRoute";
 import { ToastContainer } from "react-toastify";
+import GlobalChat from "@/components/Teacher/ChatBot/Chatbot";
 function TeacherLayoutInner({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -26,13 +27,24 @@ function TeacherLayoutInner({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function TeacherLayout({ children }: { children: React.ReactNode }) {
+export default function TeacherLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <ReduxProvider>
       <TeacherAuthBootstrap />
-      <TeacherLayoutInner>{children}
-        <ToastContainer position="top-right" autoClose={2000} draggable closeOnClick />
+      <TeacherLayoutInner>
+        {children}
+        <ToastContainer
+          position="top-right"
+          autoClose={2000}
+          draggable
+          closeOnClick
+        />
       </TeacherLayoutInner>
+      <GlobalChat />
     </ReduxProvider>
   );
 }

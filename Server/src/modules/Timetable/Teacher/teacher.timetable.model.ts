@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import { TeacherTimetableInterface } from "./teacher.timetable.interface";
 
-const StudentTimetableSchema: Schema = new Schema(
+const TeacherTimetableSchema: Schema = new Schema(
   {
     title: {
       type: String,
@@ -44,5 +44,5 @@ const StudentTimetableSchema: Schema = new Schema(
 export default mongoose.models.Timetable ||
   mongoose.model<TeacherTimetableInterface>(
     "TeacherTimetable",
-    StudentTimetableSchema,
+    TeacherTimetableSchema,
   );

@@ -82,7 +82,7 @@ export async function handleStudentChat(
 ): Promise<string> {
   try {
     const chat = ai.chats.create({
-      model: "gemini-2.5-flash",
+      model: "gemini-3.5-flash-lite",
       config: {
         systemInstruction:
           "You are a polite school database assistant. If the user asks for personal or school records, use the provided tools. If the tools return no database entries, or if the user asks general questions outside the database context, use your own knowledge to directly help and answer them accurately.",
@@ -145,23 +145,31 @@ export async function handleStudentChat(
         (typeof functionResult === "object" &&
           Object.keys(functionResult).length === 0);
 
-      const finalPayload = isEmpty
-        ? {
-            status: "not_found",
-            message:
-              "No explicit records found matching this inquiry inside the database. Provide a general contextual answer or ask for refinement if needed.",
-          }
-        : functionResult;
+      let finalPayload: Record<string, unknown>;
+
+      if (isEmpty) {
+        finalPayload = {
+          status: "not_found",
+          message:
+            "No explicit records found matching this inquiry inside the database. Provide a general contextual answer or ask for refinement if needed.",
+        };
+      } else if (Array.isArray(functionResult)) {
+        finalPayload = { data: functionResult };
+      } else if (
+        typeof functionResult === "object" &&
+        functionResult !== null
+      ) {
+        finalPayload = functionResult as Record<string, unknown>;
+      } else {
+        finalPayload = { result: functionResult };
+      }
 
       response = await chat.sendMessage({
         message: [
           {
             functionResponse: {
               name: functionName,
-              response:
-                typeof finalPayload === "object" && finalPayload !== null
-                  ? (finalPayload as Record<string, unknown>)
-                  : { result: finalPayload },
+              response: finalPayload,
             },
           },
         ],

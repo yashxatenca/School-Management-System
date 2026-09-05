@@ -48,7 +48,7 @@ export default function AdminAttendancePage() {
 
   const { data: studentLogs, isLoading: isStudentLogsLoading } =
     useAdminStudentAttendance(searchStudentId);
-  console.log(classLogs);
+
   return (
     <div className="p-6 max-w-6xl mx-auto space-y-6">
       {/* Top Bar with Class Dropdown */}
