@@ -20,24 +20,21 @@ const isProduction = process.env.NODE_ENV === "production";
 if (isProduction || process.env.TRUST_PROXY === "true") {
   app.set("trust proxy", 1);
 }
+/* ======================== 2. CORS CONFIGURATION ======================== */
 
-/* ========================
-   2. CORS CONFIGURATION
-======================== */
-// Parse comma-separated origins from process.env.ALLOWED_ORIGINS if available
-const defaultOrigins = ["http://localhost:3000", "http://localhost:3000"];
-const envOrigins = process.env.ALLOWED_ORIGINS
+// Environment variable se comma-separated origins uthayein aur sanitize karein
+const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(",").map((origin) =>
       origin.trim().replace(/\/$/, ""),
     )
   : [];
 
-const allowedOrigins = [...new Set([...defaultOrigins, ...envOrigins])];
-
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (e.g., Postman, mobile apps, server-to-server) or matched origins
+      // 1. Requests bina origin ke allow karein (like Postman, mobile apps)
+      // 2. Ya fir agar origin environment variable ki list me match ho jaye
+      // 3. Ya fir development mode (!isProduction) me koi bhi localhost request ho
       if (
         !origin ||
         allowedOrigins.includes(origin) ||
