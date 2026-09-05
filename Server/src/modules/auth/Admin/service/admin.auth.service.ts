@@ -14,7 +14,6 @@ export class AdminAuthService {
 
     // 2️⃣ Verify Google/Firebase token
     const decoded = await verifyGoogleToken(googletoken);
-  
 
     // 3️⃣ Mandatory fields validation
     if (!decoded.googleId) {
@@ -30,6 +29,7 @@ export class AdminAuthService {
     }
     // 4️⃣ Find existing admin
     let user = await AdminRepo.findwithemail(decoded.email);
+    if (user?.verified === false) throw new ApiError(403, "Not verified Yet");
 
     // 5️⃣ Create admin if not exists
     if (!user) {
