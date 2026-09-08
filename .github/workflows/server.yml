@@ -1,4 +1,4 @@
-name: School_Backend_Deployment
+name: School_Backend_Deployment_Server
 
 on:
   push:
