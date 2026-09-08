@@ -2,9 +2,6 @@ import { Schema, model, Types, Document } from "mongoose";
 
 import { IClass } from "./global.class.interface";
 
-/* =================================
-CLASS SCHEMA
-================================= */
 
 const classSchema = new Schema<IClass>(
     {
@@ -69,22 +66,14 @@ const classSchema = new Schema<IClass>(
     }
 );
 
-/* =================================
-INDEXES
-================================= */
 
-// Prevent duplicate class in same school + section + year
 classSchema.index(
     { name: 1, section: 1, schoolId: 1, academicYear: 1 },
     { unique: true }
 );
 
-// Faster lookup for school classes
 classSchema.index({ schoolId: 1 });
 
-/* =================================
-EXPORT MODEL
-================================= */
 
 export const ClassModel = model<IClass>(
     "Class",

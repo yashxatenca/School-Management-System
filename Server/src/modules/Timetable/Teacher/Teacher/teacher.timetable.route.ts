@@ -14,7 +14,7 @@ router.get(
 
 router.get(
   "/class/:classId",
-  TeacherTimetableController.getClassTimetable // Assuming you create this method later
+  TeacherTimetableController.getClassTimetable
 );
 
 export const TeacherTimetableRoutes = router;

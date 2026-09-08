@@ -40,7 +40,7 @@ export class AdminAttendanceService {
             name: record.markedBy.name,
           }
         : null,
-    })); // FIX: Added missing closing parenthesis here
+    })); 
   }
 
   async getDateCards(classId: string, year: number, month: number) {

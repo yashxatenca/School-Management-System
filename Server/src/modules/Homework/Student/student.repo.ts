@@ -5,9 +5,9 @@ export class StudentHomeworkRepo {
   static async fetchassignment(classId: string) {
     return await Homework.find({
       classId: classId,
-      isDeleted: false, // Sirf active assignments fetch honge
+      isDeleted: false, 
     })
-      .populate("subjectId") // Subject ki details (name, etc.) populate karega
-      .sort({ createdAt: -1 }); // Naye assignments sabse upar aayenge
+      .populate("subjectId")
+      .sort({ createdAt: -1 }); 
   }
 }

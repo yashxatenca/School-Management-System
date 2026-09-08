@@ -13,7 +13,7 @@ export class TeacherClassRepo {
     }
 
     static async updateClass(classId: Types.ObjectId, payload: Partial<IClass>) {
-        // { new: true } ensures Mongoose returns the updated document, not the old one
+      
         return await ClassModel.findByIdAndUpdate(classId, payload, { returnDocument: "after", runValidators: true });
     }
 

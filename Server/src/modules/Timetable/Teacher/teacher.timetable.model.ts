@@ -27,12 +27,12 @@ const TeacherTimetableSchema: Schema = new Schema(
     },
     teacherId: {
       type: Schema.Types.ObjectId,
-      ref: "TeacherAuth", // Tumhare 'Class' model ka naam yahan likhna
+      ref: "TeacherAuth", 
       required: [true, "Class ID is required for student mapping"],
     },
     principalId: {
       type: Schema.Types.ObjectId,
-      ref: "Admin", // Ya "User" / "Admin" jo bhi tumhara admin model hai
+      ref: "Admin", 
       required: [true, "Principal ID is required for data isolation"],
     },
   },

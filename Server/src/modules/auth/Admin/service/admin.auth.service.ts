@@ -7,15 +7,14 @@ import profileservice from "../../../profile/Admin/admin.profile.service";
 import { SchoolRepo } from "../../../school/Admin/admin.school.repo";
 export class AdminAuthService {
   static async createAndLoginUser(googletoken: string) {
-    // 1️⃣ Token check
+    
     if (!googletoken) {
       throw new ApiError(401, "Firebase token required");
     }
 
-    // 2️⃣ Verify Google/Firebase token
     const decoded = await verifyGoogleToken(googletoken);
 
-    // 3️⃣ Mandatory fields validation
+   
     if (!decoded.googleId) {
       throw new ApiError(400, "Google ID missing in token");
     }
@@ -27,11 +26,11 @@ export class AdminAuthService {
     if (!decoded.name) {
       throw new ApiError(400, "Name not found in Firebase token");
     }
-    // 4️⃣ Find existing admin
+  
     let user = await AdminRepo.findwithemail(decoded.email);
     if (user?.verified === false) throw new ApiError(403, "Not verified Yet");
 
-    // 5️⃣ Create admin if not exists
+  
     if (!user) {
       user = await AdminRepo.createuser({
         googleId: decoded.googleId,
@@ -46,14 +45,14 @@ export class AdminAuthService {
       await SchoolRepo.createSchool(user._id.toString());
     }
 
-    // 6️⃣ Create backend JWT
+   
     const jwtToken = Token.createToken({
       id: user._id.toString(),
       email: user.email,
       role: user.role,
     });
 
-    // 7️⃣ Return result
+    
     return {
       user,
       token: jwtToken,
@@ -71,7 +70,7 @@ export class AdminAuthService {
     }
     return user;
   }
-  // logout user
+  
 
   static async LogoutUser(id: string) {
     if (!id) {

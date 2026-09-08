@@ -2,10 +2,10 @@ import { Request, Response } from "express";
 import { homeworkService } from "./admin.homework.service";
 
 export class HomeworkController {
-  // POST /api/homework
+
   async create(req: Request, res: Response): Promise<void> {
     try {
-      // req.user.id auth middleware se aayega (Admin/Teacher ID)
+     
       const assignedById = req.user?.id;
       const data = { ...req.body, assignedById };
 
@@ -19,21 +19,6 @@ export class HomeworkController {
     }
   }
 
-  // GET /api/homework?classId=123&subjectId=456
-  //   async getAll(req: Request, res: Response): Promise<void> {
-  //     try {
-  //       const filters = {
-  //         classId: req.query.classId as string,
-  //         subjectId: req.query.subjectId as string,
-  //       };
-  //       const homeworkList = await homeworkService.fetchAllHomework(filters);
-  //       res.status(200).json({ success: true, data: homeworkList });
-  //     } catch (error: any) {
-  //       res.status(500).json({ success: false, message: error.message });
-  //     }
-  //   }
-
-  // GET /api/homework/:id
   async getById(req: Request, res: Response): Promise<void> {
     try {
       const homework = await homeworkService.fetchHomeworkById(req.params.id as string);

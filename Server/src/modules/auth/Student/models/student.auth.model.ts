@@ -58,7 +58,7 @@ const StudentAuthSchema = new Schema<StudentAuthDocument>(
 
 
 
-// 🔹 Generate 6 Digit Student ID (Safe Version)
+
 StudentAuthSchema.pre("validate", async function () {
   if (!this.studentId) {
 
@@ -84,7 +84,7 @@ StudentAuthSchema.pre("validate", async function () {
 
 
 
-// 🔹 Hash Password Before Save
+//  Hash Password Before Save
 StudentAuthSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
 
@@ -99,7 +99,7 @@ StudentAuthSchema.pre("save", async function () {
 
 
 
-// 🔹 Compare Password
+//  Compare Password
 StudentAuthSchema.methods.comparePassword = async function (
   candidatePassword: string
 ): Promise<boolean> {

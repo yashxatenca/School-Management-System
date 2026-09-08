@@ -12,7 +12,7 @@ import { School } from "../../school/admin.school.model";
 import teacherTimetableModel from "../../Timetable/Teacher/teacher.timetable.model";
 
 export class AdminAITools {
-  // Sahi kiya: Ab ye function sahi me code ko aage badhne se rokega agar ID nahi hai
+ 
   private static checkId(studentId: string) {
     if (!studentId) {
       throw new Error("Unable to fetch document: student ID is missing");

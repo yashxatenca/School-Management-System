@@ -26,9 +26,7 @@ const LeaveSchema = new Schema<ILeave>(
   { timestamps: true },
 );
 
-// ==========================================
-// PERFORMANCE INDEXES
-// ==========================================
+
 
 // Optimizes: Fetching a specific teacher's leaves sorted by newest first
 LeaveSchema.index({ teacherId: 1, createdAt: -1 });

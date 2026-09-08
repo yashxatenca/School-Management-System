@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { ExamService } from "./admin.exam.services";
-// Assuming you have an ApiError class defined somewhere
+
 import { ApiError } from "../../../core/errors/ApiErrors";
 
 export class ExamController {
@@ -13,9 +13,9 @@ export class ExamController {
             res.status(201).json({
                 message: "Exam created Successfull",
                 success: true
-            }); // 201 Created is better for POST requests
+            }); 
         } catch (err) {
-            next(err); // 'next' is now defined in the parameters
+            next(err); 
         }
     }
 

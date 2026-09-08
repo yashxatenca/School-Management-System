@@ -1,6 +1,4 @@
-/* =================================
-CLASS INTERFACE
-================================= */
+
 import { Types, Document } from "mongoose";
 export interface IClass extends Document {
   name: string; // Example: 10

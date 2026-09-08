@@ -3,7 +3,7 @@ import { AttendanceModel } from "../attendance.model";
 import { AttendanceRecordDTO, IAttendance } from "../attendance.interface";
 
 export class TeacherAttendanceRepository {
-  // Bulk Upsert using Types.ObjectId to prevent TS2345 type mismatch
+
   async bulkUpsert(
     classId: string,
     normalizedDate: Date,

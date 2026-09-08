@@ -5,8 +5,8 @@ export interface IHomework extends Document {
     description: string;
     classId: Types.ObjectId | string;
     subjectId: Types.ObjectId | string;
-    assignedById: Types.ObjectId | any; // Use 'any' if you plan to .populate() this
-    assignedUser: 'TeacherAuth' | 'Admin'; // This tells Mongoose which model to use
+    assignedById: Types.ObjectId | any; 
+    assignedUser: 'TeacherAuth' | 'Admin'; 
     hasDueDate: boolean;
     dueDate?: Date;
     attachments: string[];

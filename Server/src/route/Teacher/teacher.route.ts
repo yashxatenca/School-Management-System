@@ -16,7 +16,7 @@ import TeacherProfileRoute from "../../modules/profile/Teacher/teacher.profile.r
 import TeacherAttendanceRoute from "../../modules/Attendance/Teacher/teacher.attendance.route";
 
 import TeacherChatBotRoute from "../../modules/AritficialIntelligence/Teacher/ai.route";
-// register route function
+
 export const registerteacherroute = (app: Application) => {
   app.use("/api/v1/auth/teacher", teacherauthroute);
   app.use("/api/v1/teacher/profile", teacherprofileRoute);

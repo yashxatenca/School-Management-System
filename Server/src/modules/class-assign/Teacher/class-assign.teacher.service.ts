@@ -4,7 +4,7 @@ import { ApiError } from "../../../core/errors/ApiErrors";
 
 export class ClassAssignTeacherService {
   static async createAssignment(data: Partial<classassignmodel>, principalId:string) {
-    // Example of business logic validation:
+    
     if (!data.classId || !data.subjectId || !data.classTeacherId) {
       throw new ApiError(
         400,

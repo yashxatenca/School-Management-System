@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-dotenv.config(); // Must be called before reading process.env or importing app
+dotenv.config(); 
 
 import app from "./app";
 import mongoose from "mongoose";

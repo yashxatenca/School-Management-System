@@ -1,9 +1,6 @@
 import { Schema, model, Types, Document } from "mongoose";
 import { ISubject } from "./global.interface";
 
-/* ================================
-SUBJECT SCHEMA
-================================ */
 
 const subjectSchema = new Schema<ISubject>(
     {
@@ -62,25 +59,19 @@ const subjectSchema = new Schema<ISubject>(
     }
 );
 
-/* ================================
-INDEXES (Performance + Safety)
-================================ */
 
-// Prevent duplicate subject names inside the same school
+
 subjectSchema.index(
     { name: 1, schoolId: 1 },
     { unique: true }
 );
 
-// Prevent duplicate subject codes inside same school
+
 subjectSchema.index(
     { code: 1, schoolId: 1 },
     { unique: true }
 );
 
-/* ================================
-EXPORT MODEL
-================================ */
 
 export const SubjectModel = model<ISubject>(
     "Subject",

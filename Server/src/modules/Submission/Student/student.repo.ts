@@ -10,7 +10,7 @@ export class SubmissionRepo {
     return await submission.save();
   }
 
-  // NAYA: Edit ke liye method
+  
   static async updateSubmission(submissionId: string, updateData: any) {
     return await HomeworkSubmission.findByIdAndUpdate(
       submissionId,

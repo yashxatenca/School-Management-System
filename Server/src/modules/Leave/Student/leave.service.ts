@@ -40,7 +40,7 @@ export class LeaveService {
 
     if (!leave) throw new Error("Leave request not found");
 
-    // Fix 3: Optional chaining/null check agar leave.studentId undefined ho sakta hai
+    
     if (leave.studentId?.toString() !== studentId.toString())
       throw new Error("Unauthorized");
 

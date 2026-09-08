@@ -14,10 +14,9 @@ export class TeacherTimetableController {
         });
       }
 
-      // Call the service layer to fetch the timetable from the database
+      
       const timetables = await TeacherTimetableService.getTimetable(teacherId);
 
-      // Return the response matching what your frontend Axios setup expects
       return res.status(200).json({
         success: true,
         data: timetables,
@@ -46,12 +45,12 @@ export class TeacherTimetableController {
         });
       }
 
-      // Call the service layer to fetch the timetable from the database
+    
       const timetables = await TeacherTimetableService.getClassTimetable(
         classId as string,
       );
 
-      // Return the response matching what your frontend Axios setup expects
+  
       return res.status(200).json({
         success: true,
         data: timetables,

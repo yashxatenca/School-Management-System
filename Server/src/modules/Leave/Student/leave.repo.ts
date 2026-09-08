@@ -15,7 +15,7 @@ export class LeaveRepository {
     return await LeaveModel.findByIdAndDelete(leaveId);
   }
 
-  // (Already exists from before) Fetch leaves for a specific teacher
+  
   async findLeavesByStudentId(studentId: string) {
     return await LeaveModel.find({ studentId }).sort({ createdAt: -1 });
   }

@@ -19,7 +19,6 @@ import AdminChatBotRoute from "../../modules/AritficialIntelligence/Admin/ai.rou
 export const registeradminroute = (app: Application) => {
   app.use("/api/v1/admin/subject", subjectRoute);
 
-  //app.use("/api/v1/admin/auth", adminRoutes);
   app.use("/api/v1/admin/auth", adminRoutes);
   app.use("/api/v1/admin/profile", adminprofileRoute);
   app.use("/api/v1/admin/school", adminschoolroute);

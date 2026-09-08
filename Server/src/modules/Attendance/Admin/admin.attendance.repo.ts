@@ -40,8 +40,8 @@ export class AdminAttendanceRepository {
       class: new Types.ObjectId(classId),
       date: { $gte: start, $lte: end },
     })
-      .populate("studentId") // Student collection se data layega
-      .populate("markedBy"); // Teacher collection se data layega
+      .populate("studentId") 
+      .populate("markedBy"); 
 
     const validAttendance = attendance.filter(
       (record) => record.studentId !== null,
@@ -49,7 +49,7 @@ export class AdminAttendanceRepository {
     console.log(validAttendance);
     return validAttendance;
   }
-  // Aggregation for Date Cards Summary
+ 
   async getMarkedDatesCards(classId: string, startDate: Date, endDate: Date) {
     return AttendanceModel.aggregate([
       {

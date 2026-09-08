@@ -2,9 +2,7 @@ import { Request, Response } from "express";
 import { StudentService } from "../service/student.auth.service";
 
 export class StudentController {
-  // ==============================
-  // ✅ REGISTER
-  // ==============================
+ 
   static async register(req: Request, res: Response) {
     try {
       const result = await StudentService.registerStudent({
@@ -25,9 +23,7 @@ export class StudentController {
     }
   }
 
-  // ==============================
-  // ✅ LOGIN (studentId + password)
-  // ==============================
+  
   static async login(req: Request, res: Response) {
     try {
       const { studentId, password } = req.body;
@@ -61,9 +57,7 @@ export class StudentController {
     }
   }
 
-  // ==============================
-  // ✅ LOGOUT
-  // ==============================
+  
   static async logout(req: Request, res: Response) {
     try {
       res.clearCookie("token");
@@ -80,9 +74,6 @@ export class StudentController {
     }
   }
 
-  // ==============================
-  // ✅ GET PROFILE (Protected)
-  // ==============================
   static async getProfile(req: Request, res: Response) {
     try {
       const userId = (req as any).user.id;
@@ -101,9 +92,6 @@ export class StudentController {
     }
   }
 
-  // ==============================
-  // ✅ UPDATE STUDENT (by _id)
-  // ==============================
   static async update(req: Request, res: Response) {
     try {
       const { id } = req.params;
@@ -133,9 +121,6 @@ export class StudentController {
     }
   }
 
-  // ==============================
-  // ✅ DELETE STUDENT (by _id)
-  // ==============================
   static async delete(req: Request, res: Response) {
     try {
       const { id } = req.params;
@@ -161,9 +146,7 @@ export class StudentController {
     }
   }
 
-  // ==============================
-  // ✅ GET STUDENTS BY TEACHER
-  // ==============================
+  
   static async getByTeacher(req: Request, res: Response) {
     try {
       const teacherId = req.user?.id;
@@ -189,7 +172,7 @@ export class StudentController {
     }
   }
 
-  // get by student _id
+  
 
   static getById = async (req: Request, res: Response) => {
     try {

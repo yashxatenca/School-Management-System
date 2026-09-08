@@ -4,7 +4,7 @@ import { GlobalAuthMiddleware } from "../../../middleware/Gloabal.auth.middlewar
 
 const router = Router();
 router.use(GlobalAuthMiddleware(["teacher"]));
-// Matches standard RESTful patterns
+
 router.post("/assign", ClassAssignTeacherController.create);
 router.get("/assign", ClassAssignTeacherController.read);
 router.put("/assign/:id", ClassAssignTeacherController.update);

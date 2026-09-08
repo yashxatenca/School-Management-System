@@ -1,12 +1,10 @@
 import { AdminModel } from "../models/admin.auth.model";
 import type { IUser } from "../interface/admin.interface";
 export class AdminRepo {
-  //create user by data
+ 
   static async createuser(data: IUser) {
     return AdminModel.create(data);
   }
-
-  //check user by firebase id
 
   static async findwithuid(uid: string) {
     const user = await AdminModel.findOne({ uid: uid });

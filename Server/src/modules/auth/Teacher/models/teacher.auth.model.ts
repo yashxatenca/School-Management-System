@@ -49,17 +49,15 @@ const TeacherAuthSchema = new Schema<TeacherSchema>(
   },
 );
 
-// 🔐 Hash Password Before Save
 TeacherAuthSchema.pre<TeacherSchema>("save", async function () {
   // If password isn't modified, just exit the function
   if (!this.isModified("password")) return;
 
   const salt = await bcrypt.genSalt(12);
   this.password = await bcrypt.hash(this.password, salt);
-  // No next() call needed here; Mongoose waits for this async function to finish
+  
 });
 
-// 🔎 Compare Password Method
 TeacherAuthSchema.methods.comparePassword = async function (
   candidatePassword: string,
 ): Promise<boolean> {

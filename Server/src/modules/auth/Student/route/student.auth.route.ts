@@ -5,9 +5,7 @@ import { GlobalAuthMiddleware } from "../../../../middleware/Gloabal.auth.middle
 import { ApiError } from "../../../../core/errors/ApiErrors";
 const router = Router();
 
-// ===============================
-// 🔓 PUBLIC ROUTES
-// ===============================
+
 
 router.post("/login", StudentController.login);
 router.post(
@@ -16,9 +14,6 @@ router.post(
   StudentController.logout,
 );
 
-// ===============================
-// 🔐 PROTECTED ROUTES
-// ===============================
 
 // Get logged-in student profile
 router.get(

@@ -28,7 +28,7 @@ const ExamSchema: Schema = new Schema({
         type: Date,
         required: true
     },
-    // Optional: Agar aap restrict karna chahte hain ki ye exam sirf specific classes ke liye hai
+    
     classesAssigned: [{
         type: Schema.Types.ObjectId,
         ref: 'Class'

@@ -10,7 +10,7 @@ const JWT_SECRET = process.env.JWT_SECRET as string;
 const JWT_EXPIRES_IN = "1d";
 
 export class StudentService {
-  // ✅ REGISTER
+  
   static async registerStudent(data: {
     name: string;
     email: string;
@@ -32,7 +32,7 @@ export class StudentService {
     return student;
   }
 
-  // ✅ LOGIN using studentId
+  // 
   static async login(studentId: string, password: string) {
     const student = await StudentRepository.findByStudentId(studentId);
 
@@ -54,7 +54,7 @@ export class StudentService {
     };
   }
 
-  // ✅ GET PROFILE
+  // 
   static async getProfile(studentId: string) {
     const student = await StudentRepository.findById(studentId);
 
@@ -65,7 +65,7 @@ export class StudentService {
     return student;
   }
 
-  // ✅ UPDATE
+  //
   static async updateStudent(id: string, updateData: any) {
     const updated = await StudentRepository.updateStudent(id, updateData);
 
@@ -76,7 +76,7 @@ export class StudentService {
     return this.removePassword(updated);
   }
 
-  // ✅ DELETE
+  // 
   static async deleteStudent(id: string) {
     const deleted = await StudentRepository.deleteStudent(id);
 
@@ -87,12 +87,12 @@ export class StudentService {
     return { message: "Student deleted successfully" };
   }
 
-  // ✅ GET STUDENTS BY TEACHER
+  // 
   static async getStudentsByTeacher(teacherId: string) {
     return await StudentRepository.getStudentsByTeacher(teacherId);
   }
 
-  // 🔐 JWT GENERATOR
+  
   private static generateToken(student: StudentAuthDocument) {
     return jwt.sign(
       {
@@ -116,7 +116,7 @@ export class StudentService {
     return this.removePassword(student);
   }
 
-  // 🔒 REMOVE PASSWORD FROM RESPONSE
+  //
   private static removePassword(student: any) {
     const obj = student.toObject();
     delete obj.password;

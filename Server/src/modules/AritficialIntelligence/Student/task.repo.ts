@@ -11,7 +11,7 @@ import { ClassSubjectAssign } from "../../class-assign/class-subject-assign.mode
 import { School } from "../../school/admin.school.model";
 
 export class StudentAITools {
-  // Sahi kiya: Ab ye function sahi me code ko aage badhne se rokega agar ID nahi hai
+  
   private static checkId(studentId: string) {
     if (!studentId) {
       throw new Error("Unable to fetch document: student ID is missing");
@@ -79,7 +79,7 @@ export class StudentAITools {
 
   static async getLeaveStatus(studentId: string) {
     this.checkId(studentId);
-    const status = await LeaveModel.find({ studentId }); // Sahi kiya: findOne se saari leaves nahi dikhtin, isliye find use kiya
+    const status = await LeaveModel.find({ studentId }); 
     if (!status || status.length === 0) return "Leave applications not found";
     return status;
   }
@@ -92,7 +92,7 @@ export class StudentAITools {
     const timetable = await timetableModel.findOne({
       classId: student.classId,
     });
-    if (!timetable) return "Timetable not found"; // Sahi kiya: Pehle yahan Homework likha tha
+    if (!timetable) return "Timetable not found"; 
     return timetable;
   }
 
@@ -102,7 +102,7 @@ export class StudentAITools {
     const student = await StudentAuth.findById(studentId);
     if (!student) return "Student auth record not found";
 
-    // Sirf 1 line me find, exclude (-), aur performance ke liye .lean()
+    
     const notices = await NoticeModel.find(
       { classId: student.classId },
       "-classId",

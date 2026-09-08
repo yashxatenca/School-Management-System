@@ -30,8 +30,7 @@ export async function handleAdminChat(
 
       let functionResult: unknown;
 
-      // The switch cases MUST perfectly match
-      // the "name" field in your AdminTools array
+    
 
       switch (functionName) {
         case "getMyInfo":
@@ -86,7 +85,7 @@ export async function handleAdminChat(
           functionResult = null;
       }
 
-      // Check if data is truly empty
+    
       const isEmpty =
         !functionResult ||
         (Array.isArray(functionResult) && functionResult.length === 0) ||

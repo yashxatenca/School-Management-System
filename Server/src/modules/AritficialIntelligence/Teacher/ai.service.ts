@@ -25,7 +25,7 @@ export async function handleTeacherChat(
 
       let functionResult: unknown;
 
-      // The switch cases MUST perfectly match the "name" field in your TeacherTools array
+ 
       switch (functionName) {
         case "getMyInfo":
           functionResult = await TeacherAITools.getMyInfo(teacherId);
@@ -70,7 +70,7 @@ export async function handleTeacherChat(
           functionResult = null;
       }
 
-      // Check if data is truly empty
+      
       const isEmpty =
         !functionResult ||
         (Array.isArray(functionResult) && functionResult.length === 0) ||

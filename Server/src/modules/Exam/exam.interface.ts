@@ -1,9 +1,9 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IExam extends Document {
-    name: string;           // e.g., "Half-Yearly Examination", "Unit Test 1"
-    examType: string;       // e.g., "Mid-Term", "Final", "Weekly"
-    academicYear: string;   // e.g., "2025-2026"
+    name: string;           
+    examType: string;       
+    academicYear: string;   
     startDate: Date;
     endDate: Date;
     principal: mongoose.Types.ObjectId;

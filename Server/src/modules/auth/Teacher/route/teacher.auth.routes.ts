@@ -6,7 +6,7 @@ import { GlobalAuthMiddleware } from "../../../../middleware/Gloabal.auth.middle
 const router = Router();
 const controller = new TeacherController();
 
-// Admin Only CRUD
+
 router.post(
   "/create",
   authMiddleware(["admin"]),
