@@ -1,0 +1,31 @@
+name: School_Client_Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - name: Install Dependencies
+        working-directory: Client
+        run: npm ci
+
+      - name: Build Next.js Project
+        working-directory: Client
+        run: npm run build

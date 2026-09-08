@@ -1,4 +1,4 @@
-name: School_Backend_Deployment_Server
+name: School_Backend_Deployment
 
 on:
   push:
@@ -18,13 +18,14 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: 20
-          cache: npm
+          node-version: 24
 
       - name: Install Dependencies
+        working-directory: Server
         run: npm ci
 
       - name: Build Project
+        working-directory: Server
         run: npm run build
